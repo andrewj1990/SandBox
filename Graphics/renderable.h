@@ -45,14 +45,21 @@ public:
 		m_Colour.b = b;
 	}
 
+	void setColor(const glm::vec3& color)
+	{
+		m_Colour = glm::vec4(color, 1);
+	}
+
 	void addDirection(float dx, float dy)
 	{
 		m_Position.x += dx;
 		m_Position.y += dy;
 	}
 
+
 	void setTexture(Texture* texture) { m_Texture = texture; m_UV = m_Texture->getUVs(); }
 
+	void setPosition(const glm::vec3& position) { m_Position = position; }
 	inline const glm::vec3& getPosition() const { return m_Position; }
 	inline const glm::vec2& getSize() const { return m_Size; }
 	inline const glm::vec4& getColour() const { return m_Colour; }

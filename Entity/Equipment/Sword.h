@@ -13,6 +13,7 @@ public:
 
 	void move(float x, float y);
 
+	void setAttackParams(float angle);
 	void setAnimating(bool animating) { m_Animating = animating; }
 
 	void update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed);
@@ -25,9 +26,9 @@ private:
 	std::vector<std::unique_ptr<Entity>> m_Entities;
 
 	bool m_Animating;
-	float m_AnimDuration;
+	float m_SwipeAngle;
+	float m_AttackDuration;
+	float m_DeltaAngle;
 	float m_CumulativeTime;
-	float m_CurrentAngle;
 	float m_StartAngle;
-	float m_EndAngle;
 };

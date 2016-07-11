@@ -15,11 +15,10 @@ void Level::init()
 		m_Platforms.push_back(Renderable(glm::vec3(x * 32, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Level/Terrain.png")));
 	}
 
-	//m_Enemies.push_back(std::unique_ptr<BasicMob>(new BasicMob(600, 400)));
+	m_Enemies.push_back(std::unique_ptr<BasicMob>(new BasicMob(600, 400)));
 	for (int i = 0; i < 21; i++)
 	{
-		m_Enemies.push_back(std::unique_ptr<BasicMob>(new BasicMob(600, 400)));
-		//m_Enemies.push_back(std::unique_ptr<BasicMob>(new BasicMob(100, 100)));
+		//m_Enemies.push_back(std::unique_ptr<BasicMob>(new BasicMob(600, 400)));
 	}
 }
 
@@ -28,12 +27,14 @@ void Level::update(float timeElapsed)
 	m_QuadTree = std::unique_ptr<QuadTree>(new QuadTree(0, BoundingBox(m_Player.getSprite().getPosition().x - Window::Instance().width() / 2 + 16.0f, m_Player.getSprite().getPosition().y - Window::Instance().height() / 2 + 16.0f, Window::Instance().width(), Window::Instance().height())));
 	for (const auto& enemy : m_Enemies)
 	{
-		enemy->update(timeElapsed);
+		//enemy->update(timeElapsed);
 		m_QuadTree->insert(&enemy->getSprite());
 	}
 
 	m_Player.update(m_QuadTree, timeElapsed);
 	m_Player.update(timeElapsed);
+
+	m_Terrain.update(m_Player.getX() - Window::Instance().width() / 2, m_Player.getY() - Window::Instance().height() / 2, timeElapsed);
 
 	std::vector<BoundingBox> bbox;
 	m_QuadTree->getBounds(bbox);
@@ -53,6 +54,8 @@ void Level::update(float timeElapsed)
 
 void Level::render(Renderer& renderer)
 {
+	m_Terrain.render(renderer);
+
 	for (const auto& enemy : m_Enemies)
 	{
 		enemy->render(renderer);

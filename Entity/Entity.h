@@ -15,6 +15,9 @@ public:
 	virtual bool shouldDestroy() const { return m_Destroy; }
 	virtual Sprite& getSprite() { return m_Sprite; }
 
+	virtual float getX() const { return m_Sprite.getPosition().x; }
+	virtual float getY() const { return m_Sprite.getPosition().y; }
+
 protected:
 	float m_X;
 	float m_Y;

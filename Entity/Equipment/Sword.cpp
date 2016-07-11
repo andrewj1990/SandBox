@@ -3,11 +3,12 @@
 Sword::Sword(float x, float y)
 	: m_Sprite(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/Sword.png"))
 {
-	m_AnimDuration = 2.0f;
 	m_CumulativeTime = 0.0f;
-	m_CurrentAngle = 0.0f;
-	m_StartAngle = 0.0f;
-	m_EndAngle = 180.0f;
+	m_StartAngle = glm::radians(-45.0f);
+	//m_Sprite.setAngle(m_StartAngle);
+	m_AttackDuration = 0.2f;
+	m_SwipeAngle = 180.0f;
+	m_DeltaAngle = 0.0f;
 
 	for (int i = 2; i < 6; i++)
 	{
@@ -25,17 +26,26 @@ void Sword::move(float x, float y)
 	}
 }
 
+void Sword::setAttackParams(float angle)
+{
+	if (!m_Animating)
+	{
+		m_StartAngle = angle - glm::radians(90.0f + 45.0f);
+		m_Sprite.setAngle(m_StartAngle);
+		m_DeltaAngle = glm::radians(m_SwipeAngle / m_AttackDuration);
+		m_Animating = true;
+	}
+}
+
 void Sword::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 {
 	if (m_Animating)
 	{
 		m_CumulativeTime += timeElapsed;
-		float rotation = 0.0f;
-		float currentAngle = m_Sprite.getAngle();
-		if (glm::degrees(currentAngle) < m_EndAngle)
+		if (m_CumulativeTime <= m_AttackDuration)
 		{
-			float angle = (m_EndAngle - m_StartAngle) / (m_AnimDuration - m_CumulativeTime);
-			m_Sprite.setAngle(currentAngle + glm::radians(m_EndAngle * timeElapsed * 5.0f));
+			float currentAngle = m_Sprite.getAngle();
+			m_Sprite.setAngle(currentAngle + m_DeltaAngle * timeElapsed);
 		}
 		else
 		{
@@ -101,22 +111,20 @@ void Sword::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 
 void Sword::render(Renderer & renderer)
 {
-	//std::cout << "hitbox : " << m_HitBoxes[0].getPosition().x << ", " << m_HitBoxes[0].getPosition().y << "\n";
-
 	glm::mat4 transform;
 	transform = glm::translate(transform, glm::vec3(m_Sprite.getPosition().x + 5, m_Sprite.getPosition().y + 5, 0));
 	transform = glm::rotate(transform, m_Sprite.getAngle(), glm::vec3(0, 0, 1));
 	transform = glm::translate(transform, glm::vec3(-m_Sprite.getPosition().x - 5, -m_Sprite.getPosition().y - 5, 0));
 	renderer.push(transform);
 	renderer.render(m_Sprite);
-	renderer.render(m_HitBoxes);
+	//renderer.render(m_HitBoxes);
 	renderer.pop();
 
-	//renderer.render(m_HitParticles);
-
+	renderer.push(glm::mat4(), true);
 	for (auto& particle : m_Entities)
 	{
 		particle->render(renderer);
 	}
+	renderer.pop();
 
 }

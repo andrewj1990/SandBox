@@ -5,6 +5,7 @@
 #include "..\Entity\player.h"
 #include "..\Entity\Mob\BasicMob.h"
 #include "..\Utils\quadTree.h"
+#include "Terrain.h"
 
 class Level
 {
@@ -20,6 +21,7 @@ public:
 
 private:
 	Player m_Player;
+	Terrain m_Terrain;
 
 	std::vector<std::unique_ptr<Entity>> m_Enemies;
 	std::vector<Renderable> m_Platforms;

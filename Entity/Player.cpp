@@ -35,10 +35,10 @@ void Player::move(float dx, float dy)
 
 void Player::dodge()
 {
-	float dodgeDistance = 4.0f;
+	float dodgeDistance = 2.0f;
 	float dx = dodgeDistance * std::cosf(m_DodgeAngle);
 	float dy = dodgeDistance * std::sinf(m_DodgeAngle);
-	float dodgeDuration = 1.0f;
+	float dodgeDuration = 0.5f;
 
 	dx /= dodgeDuration;
 	dy /= dodgeDuration;
@@ -95,18 +95,19 @@ void Player::update(float timeElapsed)
 
 	m_CumulativeTime += timeElapsed;
 
-	// shield
-	m_Shield.setAngle(angle);
-	m_ShieldActive = window.isButtonPressed(GLFW_MOUSE_BUTTON_2);
-
-	// sword
-	if (window.isButtonPressed(GLFW_MOUSE_BUTTON_1)) m_Sword.setAnimating(true);
-
-	// movement
 	switch (m_State)
 	{
+	case (PlayerState::ATTACK) :		
+		break;
 	case (PlayerState::NORMAL) :
+		// shield
+		m_Shield.setAngle(angle);
+		m_ShieldActive = window.isButtonPressed(GLFW_MOUSE_BUTTON_2);
 
+		// sword
+		if (window.isButtonPressed(GLFW_MOUSE_BUTTON_1)) m_Sword.setAttackParams(angle);
+
+		// movement
 		if (window.isKeyPressed(GLFW_KEY_W))
 		{
 			move(0, 1.0f);
@@ -133,8 +134,6 @@ void Player::update(float timeElapsed)
 	case (PlayerState::DODGE) :
 		dodge();
 		break;
-	case (PlayerState::ATTACK) :
-		break;
 	default:
 		break;
 	}
@@ -149,6 +148,7 @@ void Player::render(Renderer& renderer)
 	transform = glm::translate(transform, glm::vec3(-m_Sprite.getPosition().x - m_Sprite.getSize().x / 2.0f, -m_Sprite.getPosition().y - m_Sprite.getSize().y / 2.0f, 0));
 	renderer.push(transform);
 	renderer.render(m_Sprite);
+	m_Sword.render(renderer);
 	renderer.pop();
 
 	if (m_ShieldActive)
@@ -162,5 +162,4 @@ void Player::render(Renderer& renderer)
 		renderer.pop();
 	}
 
-	m_Sword.render(renderer);
 }
