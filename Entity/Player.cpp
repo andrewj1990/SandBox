@@ -1,13 +1,13 @@
 #include "player.h"
 
 Player::Player()
-	: Entity(0, 0), m_Sword(0, 0)
+	: Entity(0, 0), m_Sword(0, 0), m_Gun(0, 0)
 {
 	init();
 }
 
 Player::Player(float x, float y)
-	: Entity(x, y), m_Sword(x + 2, y + 8)
+	: Entity(x, y), m_Sword(x + 2, y + 8), m_Gun(x + 2, y + 8)
 {
 	m_Sprite = Sprite(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/PlayerSpritesheet10.png"));
 	m_Shield = Sprite(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/Shield.png"));
@@ -26,6 +26,7 @@ void Player::move(float dx, float dy)
 	m_Sprite.addDirection(dx, dy);
 	m_Shield.addDirection(dx, dy);
 	m_Sword.move(dx, dy);
+	m_Gun.move(dx, dy);
 
 	Camera& camera = Window::Instance().getCamera();
 	camera.moveCamera(dx, dy);
@@ -81,6 +82,7 @@ void Player::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed
 	update(timeElapsed);
 
 	m_Sword.update(quadTree, timeElapsed);
+	m_Gun.update(timeElapsed);
 }
 
 void Player::update(float timeElapsed)
@@ -95,9 +97,20 @@ void Player::update(float timeElapsed)
 
 	m_CumulativeTime += timeElapsed;
 
+	// fire projectile
+	if (window.isButtonPressed(GLFW_MOUSE_BUTTON_1))
+	{
+		m_Bullets.push_back(Bullet(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle));
+	}
+
+	for (Bullet& bullet : m_Bullets)
+	{
+		bullet.update(timeElapsed);
+	}
+
 	switch (m_State)
 	{
-	case (PlayerState::ATTACK) :		
+	case (PlayerState::ATTACK) :
 		break;
 	case (PlayerState::NORMAL) :
 		// shield
@@ -142,14 +155,21 @@ void Player::update(float timeElapsed)
 
 void Player::render(Renderer& renderer)
 {
+	for (Bullet& bullet : m_Bullets)
+	{
+		bullet.render(renderer);
+	}
+
 	glm::mat4 transform;
 	transform = glm::translate(transform, glm::vec3(m_Sprite.getPosition().x + m_Sprite.getSize().x / 2.0f, m_Sprite.getPosition().y + m_Sprite.getSize().y / 2.0f, 0));
 	transform = glm::rotate(transform, m_Sprite.getAngle(), glm::vec3(0, 0, 1));
 	transform = glm::translate(transform, glm::vec3(-m_Sprite.getPosition().x - m_Sprite.getSize().x / 2.0f, -m_Sprite.getPosition().y - m_Sprite.getSize().y / 2.0f, 0));
 	renderer.push(transform);
 	renderer.render(m_Sprite);
-	m_Sword.render(renderer);
+	//m_Sword.render(renderer);
+	m_Gun.render(renderer);
 	renderer.pop();
+
 
 	if (m_ShieldActive)
 	{

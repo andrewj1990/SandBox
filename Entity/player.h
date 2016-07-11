@@ -8,6 +8,8 @@
 #include "..\Graphics\Window.h"
 #include "..\Utils\ResourceManager.h"
 #include "Equipment\Sword.h"
+#include "Equipment\Gun.h"
+#include "Projectile\Bullet.h"
 #include "..\Utils\quadTree.h"
 
 enum PlayerState
@@ -41,4 +43,7 @@ private:
 	bool m_ShieldActive;
 	Sprite m_Shield;
 	Sword m_Sword;
+	Gun m_Gun;
+
+	std::vector<Bullet> m_Bullets;
 };
