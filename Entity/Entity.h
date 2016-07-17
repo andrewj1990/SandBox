@@ -1,6 +1,5 @@
 #pragma once
 
-#include "..\Graphics\Renderer.h"
 #include "..\Graphics\Sprite.h"
 
 class Entity {
@@ -12,11 +11,14 @@ public:
 	virtual void update(float timeElapsed);
 	virtual void render(Renderer& renderer);
 
-	virtual bool shouldDestroy() const { return m_Destroy; }
-	virtual Sprite& getSprite() { return m_Sprite; }
+	void setDestroy(bool flag) { m_Destroy = flag; }
+	bool shouldDestroy() const { return m_Destroy; }
+	Sprite& getSprite() { return m_Sprite; }
 
-	virtual float getX() const { return m_Sprite.getPosition().x; }
-	virtual float getY() const { return m_Sprite.getPosition().y; }
+	float getX() const { return m_Sprite.getPosition().x; }
+	float getY() const { return m_Sprite.getPosition().y; }
+	float getCenterX() const { return getX() + m_Sprite.getSize().x / 2.0f; }
+	float getCenterY() const { return getY() + m_Sprite.getSize().y / 2.0f; }
 
 protected:
 	float m_X;

@@ -1,7 +1,7 @@
 #include "Level.h"
 
 Level::Level()
-	: m_Noise(), m_Player(Window::Instance().width() / 2 - 16.0f, Window::Instance().height() / 2 - 16.0f)
+	: m_Player(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f)
 {
 	init();
 }
@@ -16,7 +16,7 @@ void Level::init()
 	}
 
 	m_Enemies.push_back(std::unique_ptr<BasicMob>(new BasicMob(600, 400)));
-	for (int i = 0; i < 21; i++)
+	for (int i = 0; i < 11; i++)
 	{
 		m_Enemies.push_back(std::unique_ptr<BasicMob>(new BasicMob(600, 400)));
 	}
@@ -24,17 +24,16 @@ void Level::init()
 
 void Level::update(float timeElapsed)
 {
-	m_QuadTree = std::unique_ptr<QuadTree>(new QuadTree(0, BoundingBox(m_Player.getSprite().getPosition().x - Window::Instance().width() / 2 + 16.0f, m_Player.getSprite().getPosition().y - Window::Instance().height() / 2 + 16.0f, Window::Instance().width(), Window::Instance().height())));
+	m_QuadTree = std::unique_ptr<QuadTree>(new QuadTree(0, BoundingBox(m_Player.getSprite().getPosition().x - Window::Instance().getWidth() / 2 + 16.0f, m_Player.getSprite().getPosition().y - Window::Instance().getHeight() / 2 + 16.0f, Window::Instance().getWidth(), Window::Instance().getHeight())));
 	for (const auto& enemy : m_Enemies)
 	{
 		enemy->update(timeElapsed);
 		m_QuadTree->insert(&enemy->getSprite());
 	}
 
-	m_Player.update(m_QuadTree, timeElapsed);
-	m_Player.update(timeElapsed);
+	m_Player.update(m_Terrain, m_QuadTree, timeElapsed);
 
-	m_Terrain.update(m_Player.getX() - Window::Instance().width() / 2, m_Player.getY() - Window::Instance().height() / 2, timeElapsed);
+	m_Terrain.update(timeElapsed);
 
 	std::vector<BoundingBox> bbox;
 	m_QuadTree->getBounds(bbox);

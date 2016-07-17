@@ -12,13 +12,18 @@ public:
 
 	void init();
 	Renderable getTile(float x, float y, float height);
-	glm::vec3 getColor(float height);
+	glm::vec4 getColor(float height);
 
-	void update(float x, float y, float timeElapsed);
+	bool isCollidable(float x, float y) const;
+
+	void update(float timeElapsed);
 	void render(Renderer& renderer);
 
 private:
 	SimplexNoise m_Noise;
+
+	int m_Width;
+	int m_Height;
 
 	std::vector<Renderable> m_Ground;
 

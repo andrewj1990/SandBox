@@ -35,8 +35,8 @@ public:
 	
 	void moveCamera(const double& xpos, const double& ypos);
 
-	inline int width() const { return m_Width; }
-	inline int height() const { return m_Height; }
+	inline int getWidth() const { return m_Width; }
+	inline int getHeight() const { return m_Height; }
 	inline float mouseX() const { return m_MousePosX; }
 	inline float mouseY() const { return m_MousePosY; }
 	Camera& getCamera() { return m_Camera; }

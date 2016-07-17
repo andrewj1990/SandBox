@@ -6,57 +6,6 @@ SimplexNoise::SimplexNoise()
 
 float SimplexNoise::octaveNoise(float octaves, float persistence, float scale, float x, float y)
 {
-	/*
-	std::string key = std::to_string(octaves) + "_" + std::to_string(persistence) + "_" + std::to_string(scale) + "_" + std::to_string(x) + "_" + std::to_string(y);
-
-	auto value = m_CachedNoise.find(key);
-
-	// key not found
-	if (value == m_CachedNoise.end())
-	{
-		float total = 0;
-		float frequency = scale;
-		float amplitude = 1;
-
-		float maxAmplitude = 0;
-
-		for (int i = 0; i < octaves; ++i)
-		{
-			total += rawNoise(x * frequency, y * frequency) * amplitude;
-
-			frequency *= 2;
-			maxAmplitude += amplitude;
-			amplitude *= persistence;
-		}
-
-		total = total / maxAmplitude;
-
-		//double a = 0.1;
-		//double b = 0.3;
-		//double c = 2.5;
-		////double a = 0.05;
-		////double b = 1.0;
-		////double c = 1.5;
-
-		//double width = 144.0;
-		//double height = 144.0;
-		//double nx = (width - x) / width;
-		//double ny = (height - y) / height;
-
-		//double d = 2.0 * std::fmax(std::abs(nx), std::abs(ny));
-		////double d = 2 * std::sqrt(nx * nx + ny * ny);
-
-		//total = (total + a) - (b * std::pow(d, c));
-		////total = (total + a) * (1.0 - b * std::pow(d, c));
-
-		m_CachedNoise[key] = total;
-		return total;
-	}
-	else
-	{
-		return value->second;
-	}
-	*/
 	float total = 0;
 	float frequency = scale;
 	float amplitude = 1;
@@ -65,7 +14,7 @@ float SimplexNoise::octaveNoise(float octaves, float persistence, float scale, f
 
 	for (int i = 0; i < octaves; ++i)
 	{
-		total += rawNoise(x * frequency, y * frequency) * amplitude;
+		total += rawNoise((x * frequency) + 1, (y * frequency) + 1) * amplitude;
 
 		frequency *= 2;
 		maxAmplitude += amplitude;
@@ -73,24 +22,6 @@ float SimplexNoise::octaveNoise(float octaves, float persistence, float scale, f
 	}
 
 	total = total / maxAmplitude;
-
-	//double a = 0.1;
-	//double b = 0.3;
-	//double c = 2.5;
-	////double a = 0.05;
-	////double b = 1.0;
-	////double c = 1.5;
-
-	//double width = 144.0;
-	//double height = 144.0;
-	//double nx = (width - x) / width;
-	//double ny = (height - y) / height;
-
-	//double d = 2.0 * std::fmax(std::abs(nx), std::abs(ny));
-	////double d = 2 * std::sqrt(nx * nx + ny * ny);
-
-	//total = (total + a) - (b * std::pow(d, c));
-	////total = (total + a) * (1.0 - b * std::pow(d, c));
 
 	return total;
 }

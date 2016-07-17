@@ -304,21 +304,15 @@ void Renderer::render(const std::vector<Renderable>& renderables)
 	flush();
 }
 
-//void Renderer::render(std::vector<std::unique_ptr<Entity>>& entities)
+//void Renderer::render(const std::vector<std::unique_ptr<Entity>>& entities)
 //{
 //	begin();
-//
-//	for (auto& entity : entities)
-//	{
-//		//submit(entity->getSprite());
-//		entity->getSprite().submit(*this);
-//	}
 //
 //	end();
 //	flush();
 //
 //}
-//
+
 
 glm::vec3 Renderer::multiply(const glm::mat4 & matrix, const glm::vec3 vector)
 {

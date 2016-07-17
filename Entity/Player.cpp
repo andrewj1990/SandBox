@@ -1,11 +1,5 @@
 #include "player.h"
 
-Player::Player()
-	: Entity(0, 0), m_Sword(0, 0), m_Gun(0, 0)
-{
-	init();
-}
-
 Player::Player(float x, float y)
 	: Entity(x, y), m_Sword(x + 2, y + 8), m_Gun(x + 2, y + 8)
 {
@@ -19,6 +13,80 @@ void Player::init()
 {
 	m_State = PlayerState::NORMAL;
 	m_CumulativeTime = 0.0f;
+	m_AttackSpeed = 0.3f;
+	m_AttackFrame = 0.0f;
+}
+
+bool Player::playerCollision(const std::unique_ptr<QuadTree>& quadTree)
+{
+	std::vector<Renderable*> enemies;
+	quadTree->retrieve(enemies, m_Sprite.getPosition().x, m_Sprite.getPosition().y, 10, 10);
+
+	for (auto enemy : enemies)
+	{
+		float ex = enemy->getPosition().x;
+		float ey = enemy->getPosition().y;
+		float ew = enemy->getSize().x;
+		float eh = enemy->getSize().y;
+
+		float px = m_Sprite.getPosition().x;
+		float py = m_Sprite.getPosition().y;
+		float pw = m_Sprite.getSize().x;
+		float ph = m_Sprite.getSize().y;
+
+		if (px > ex && px < ex + ew && py > ey && py < ey + eh)
+		{
+			return true;
+		}
+
+	}
+	return false;
+}
+
+void Player::move(const Terrain& terrain, float timeElapsed)
+{
+	Window& window = Window::Instance();
+
+	float dx = 0.0f;
+	float dy = 0.0f;
+	float vel = 96.0f;
+
+	if (window.isKeyPressed(GLFW_KEY_W)) dy += vel;
+	if (window.isKeyPressed(GLFW_KEY_A)) dx -= vel;
+	if (window.isKeyPressed(GLFW_KEY_S)) dy -= vel;
+	if (window.isKeyPressed(GLFW_KEY_D)) dx += vel;
+
+	if (!(terrain.isCollidable(m_Sprite.getPosition().x + dx * timeElapsed, m_Sprite.getPosition().y) ||
+		terrain.isCollidable(m_Sprite.getPosition().x + m_Sprite.getSize().x + dx * timeElapsed, m_Sprite.getPosition().y)))
+	{
+		move(dx * timeElapsed, 0);
+	}
+
+	if (!(terrain.isCollidable(m_Sprite.getPosition().x, m_Sprite.getPosition().y + dy * timeElapsed) ||
+		terrain.isCollidable(m_Sprite.getPosition().x, m_Sprite.getPosition().y + m_Sprite.getSize().y+ dy * timeElapsed)))
+	{
+		move(0, dy * timeElapsed);
+	}
+
+}
+
+void Player::shoot(float angle, float timeElapsed)
+{
+	m_AttackFrame += timeElapsed;
+
+	// fire projectile
+	if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_1) && m_AttackFrame > m_AttackSpeed)
+	{
+		m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle + glm::radians(30.0f));
+		m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle - glm::radians(30.0f));
+		m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle + glm::radians(20.0f));
+		m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle - glm::radians(20.0f));
+		m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle + glm::radians(10.0f));
+		m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle - glm::radians(10.0f));
+		m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle);
+
+		m_AttackFrame = 0.0f;
+	}
 }
 
 void Player::move(float dx, float dy)
@@ -54,35 +122,27 @@ void Player::dodge()
 	}
 }
 
-void Player::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
+void Player::update(const Terrain& terrain, const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 {
-	std::vector<Renderable*> enemies;
-	quadTree->retrieve(enemies, m_Sprite.getPosition().x, m_Sprite.getPosition().y, 10, 10);
+	Window& window = Window::Instance();
+	float mouseX = Window::Instance().mouseX();
+	float mouseY = Window::Instance().mouseY();
 
-	for (auto enemy : enemies)
+	float dx = mouseX - m_X;
+	float dy = mouseY - m_Y;
+	float angle = -std::atan2f(dy, dx);
+
+	if (playerCollision(quadTree))
 	{
-		//std::cout << enemy->getPosition().x << ", " << enemy->getPosition().y << "\n";
-		float ex = enemy->getPosition().x;
-		float ey = enemy->getPosition().y;
-		float ew = enemy->getSize().x;
-		float eh = enemy->getSize().y;
-
-		float px = m_Sprite.getPosition().x;
-		float py = m_Sprite.getPosition().y;
-		float pw = m_Sprite.getSize().x;
-		float ph = m_Sprite.getSize().y;
-
-		if (px > ex && px < ex + ew && py > ey && py < ey + eh)
-		{
-			//std::cout << "player collision\n";
-		}
-
+		//std::cout << "player collision\n";
 	}
 
 	update(timeElapsed);
+	move(terrain, timeElapsed);
+	shoot(angle, timeElapsed);
 
 	m_Sword.update(quadTree, timeElapsed);
-	m_Gun.update(timeElapsed);
+	m_Gun.update(quadTree, timeElapsed);
 }
 
 void Player::update(float timeElapsed)
@@ -97,17 +157,6 @@ void Player::update(float timeElapsed)
 
 	m_CumulativeTime += timeElapsed;
 
-	// fire projectile
-	if (window.isButtonPressed(GLFW_MOUSE_BUTTON_1))
-	{
-		m_Bullets.push_back(Bullet(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle));
-	}
-
-	for (Bullet& bullet : m_Bullets)
-	{
-		bullet.update(timeElapsed);
-	}
-
 	switch (m_State)
 	{
 	case (PlayerState::ATTACK) :
@@ -121,22 +170,7 @@ void Player::update(float timeElapsed)
 		if (window.isButtonPressed(GLFW_MOUSE_BUTTON_1)) m_Sword.setAttackParams(angle);
 
 		// movement
-		if (window.isKeyPressed(GLFW_KEY_W))
-		{
-			move(0, 1.0f);
-		}
-		if (window.isKeyPressed(GLFW_KEY_S))
-		{
-			move(0, -1.0f);
-		}
-		if (window.isKeyPressed(GLFW_KEY_A))
-		{
-			move(-1.0f, 0);
-		}
-		if (window.isKeyPressed(GLFW_KEY_D))
-		{
-			move(1.0f, 0);
-		}
+		
 		if (window.isKeyPressed(GLFW_KEY_SPACE))
 		{
 			m_State = PlayerState::DODGE;
@@ -155,11 +189,6 @@ void Player::update(float timeElapsed)
 
 void Player::render(Renderer& renderer)
 {
-	for (Bullet& bullet : m_Bullets)
-	{
-		bullet.render(renderer);
-	}
-
 	glm::mat4 transform;
 	transform = glm::translate(transform, glm::vec3(m_Sprite.getPosition().x + m_Sprite.getSize().x / 2.0f, m_Sprite.getPosition().y + m_Sprite.getSize().y / 2.0f, 0));
 	transform = glm::rotate(transform, m_Sprite.getAngle(), glm::vec3(0, 0, 1));

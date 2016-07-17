@@ -18,18 +18,21 @@ public:
 	Renderable(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color = glm::vec4(1, 1, 1, 1))
 		: m_Position(position), m_Size(size), m_Colour(color), m_Texture(nullptr)
 	{	
+		m_Solid = false;
 		setUVDefaults();
 	}
 
 	Renderable(const glm::vec3& position, const glm::vec2& size, Texture* texture)
 		: m_Position(position), m_Size(size), m_Colour(glm::vec4(1, 1, 1, 1)), m_Texture(texture)
 	{
+		m_Solid = false;
 		setUVDefaults();
 	}
 
 	Renderable(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3, const glm::vec4& color = glm::vec4(1, 1, 1, 1))
 		: m_Colour(color)
 	{
+		m_Solid = false;
 		setUVDefaults();
 	}
 
@@ -63,6 +66,8 @@ public:
 	inline const glm::vec3& getPosition() const { return m_Position; }
 	inline const glm::vec2& getSize() const { return m_Size; }
 	inline const glm::vec4& getColour() const { return m_Colour; }
+	inline void setSolid(bool solid) { m_Solid = solid; }
+	inline bool isSolid() const { return m_Solid; }
 	inline const std::vector<glm::vec2>& getUV() const { return m_UV; }
 	inline const unsigned int getTID() const { return m_Texture == nullptr ? 0 : m_Texture->getTID(); }
 
@@ -101,6 +106,7 @@ protected:
 	glm::vec2 m_Size;
 	glm::vec4 m_Colour;
 	std::vector<glm::vec2> m_UV;
+	bool m_Solid;
 
 	Texture* m_Texture;
 

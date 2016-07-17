@@ -7,12 +7,12 @@ Terrain::Terrain()
 
 void Terrain::init()
 {
-	int width = Window::Instance().width() / 32;
-	int height = Window::Instance().height() / 32;
+	m_Width = (Window::Instance().getWidth() / 32) + 2;
+	m_Height = (Window::Instance().getHeight() / 32) + 3;
 
-	for (int y = 0; y < height; y++)
+	for (int y = 0; y < m_Height; y++)
 	{
-		for (int x = 0; x < width; x++)
+		for (int x = 0; x < m_Width; x++)
 		{
 			float groundHeight = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, x / 32.0f, y / 32.0f);
 			m_Ground.push_back(getTile(x * 32, y * 32, groundHeight));
@@ -22,28 +22,32 @@ void Terrain::init()
 
 Renderable Terrain::getTile(float x, float y, float height)
 {
-	return Renderable(glm::vec3(x, y, 0), glm::vec2(32, 32), glm::vec4(getColor(height), 1));
+	return Renderable(glm::vec3(x, y, 0), glm::vec2(32, 32), getColor(height));
 }
 
-glm::vec3 Terrain::getColor(float height)
+glm::vec4 Terrain::getColor(float height)
 {
 	float r = 0.0f;
 	float g = 0.0f;
 	float b = 0.0f;
+	int solid = 0;
 
 	if (height < 0.3)
 	{
 		b = 0.5f;
+		solid = 1;
 	}
 	else if (height < 0.4)
 	{
 		b = 1.0f;
+		solid = 1;
 	}
 	else if (height < 0.42)
 	{
 		r = 0.0f;
-		b = 1.0f;
 		g = 0.5f;
+		b = 1.0f;
+		solid = 1;
 	}
 	else if (height < 0.45)
 	{
@@ -66,26 +70,45 @@ glm::vec3 Terrain::getColor(float height)
 		r = g = b = 1.0f;
 	}
 
-	return glm::vec3(r, g, b);
+	return glm::vec4(r, g, b, solid);
 }
 
-void Terrain::update(float x, float y, float timeElapsed)
+bool Terrain::isCollidable(float x, float y) const
 {
-	int width = Window::Instance().width() / 32;
-	int height = Window::Instance().height() / 32;
+	const glm::vec3& camPos = Window::Instance().getCamera().getPosition();
 
-	int xp = (int)x / 32 * 32;
-	int yp = (int)y / 32 * 32;
+	// offset the position 1 tile forward to take into account the initial offset
+	int xi = (x / 32) - (int)(camPos.x / 32) + 1;
+	int yi = (y / 32) - (int)(camPos.y / 32) + 1;
+	int index = xi + yi * m_Width;
 
-	for (int j = 0; j < height; j++)
+	if (index < 0 || index >= m_Ground.size()) return false;
+
+	const Renderable& tile = m_Ground[index];
+	const glm::vec4& colour = tile.getColour();
+
+	return tile.isSolid();
+}
+
+void Terrain::update(float timeElapsed)
+{
+	const glm::vec3& camPos = Window::Instance().getCamera().getPosition();
+
+	// offset the position 1 tile back so we dont have any blank spaces
+	int xp = (int)(camPos.x) / 32 * 32 - 32;
+	int yp = (int)(camPos.y) / 32 * 32 - 32;
+	
+	for (int j = 0; j < m_Height; j++)
 	{
-		for (int i = 0; i < width; i++)
+		for (int i = 0; i < m_Width; i++)
 		{
 			float groundHeight = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, (xp / 32 + i) / 32.0f, (yp / 32 + j) / 32.0f);
 
-			Renderable& terrain = m_Ground[i + j * width];
+			Renderable& terrain = m_Ground[i + j * m_Width];
 			terrain.setPosition(glm::vec3(xp + i * 32, yp + j * 32, 0));
-			terrain.setColor(getColor(groundHeight));
+			glm::vec4 colour = getColor(groundHeight);
+			terrain.setSolid(colour.w == 1);
+			terrain.setColor(glm::vec3(colour));
 		}
 	}
 }

@@ -11,6 +11,7 @@
 #include "Equipment\Gun.h"
 #include "Projectile\Bullet.h"
 #include "..\Utils\quadTree.h"
+#include "..\Level\Terrain.h"
 
 enum PlayerState
 {
@@ -22,18 +23,20 @@ enum PlayerState
 class Player : public Entity
 {
 public:
-	Player();
 	Player(float x, float y);
 
 	void move(float dx, float dy);
 	void dodge();
 
-	void update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed);
+	void update(const Terrain& terrain, const std::unique_ptr<QuadTree>& quadTree, float timeElapsed);
 	void update(float timeElapsed) override;
 	void render(Renderer& renderer) override;
 
 private:
 	void init();
+	bool playerCollision(const std::unique_ptr<QuadTree>& quadTree);
+	void move(const Terrain& terrain, float timeElapsed);
+	void shoot(float angle, float timeElapsed);
 
 	PlayerState m_State;
 
@@ -45,5 +48,7 @@ private:
 	Sword m_Sword;
 	Gun m_Gun;
 
-	std::vector<Bullet> m_Bullets;
+	float m_AttackSpeed;
+	float m_AttackFrame;
+
 };
