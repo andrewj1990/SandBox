@@ -7,8 +7,10 @@
 #include "..\Projectile\Bullet.h"
 #include "..\..\Utils\quadTree.h"
 #include "..\Particle.h"
+#include "..\GunParticle.h"
+#include "..\DamageCounter.h"
 
-class Gun
+class Gun : public Entity
 {
 public:
 	Gun(float x, float y);
@@ -20,11 +22,8 @@ public:
 	void render(Renderer& renderer);
 
 private:
-	float m_X;
-	float m_Y;
-	Sprite m_Sprite;
-
-	std::vector<std::unique_ptr<Entity>> m_Entities;
-	std::vector<Bullet> m_Bullets;
+	std::vector<std::unique_ptr<Renderable>> m_Entities;
+	std::vector<std::unique_ptr<Renderable>> m_Bullets;
+	std::vector<std::unique_ptr<DamageCounter>> m_DamageText;
 
 };

@@ -1,13 +1,29 @@
 #include "Entity.h"
 
 Entity::Entity()
-	: m_X(0), m_Y(0), m_Dx(0.0f), m_Dy(0.0f), m_Destroy(false), m_CumulativeTime(0.0f)
 {
+	init();
 }
 
 Entity::Entity(float x, float y)
-	: m_X(x), m_Y(y), m_Dx(0.0f), m_Dy(0.0f), m_Destroy(false), m_CumulativeTime(0.0f)
 {
+	init();
+}
+
+Entity::Entity(const glm::vec3& pos, const glm::vec2& size, Texture* texture)
+	: Sprite(pos, size, texture)
+{
+	init();
+	m_X = pos.x;
+	m_Y = pos.y;
+}
+
+Entity::Entity(const glm::vec3& pos, const glm::vec2& size, const glm::vec4& colour)
+	: Sprite(pos, size, colour)
+{
+	init();
+	m_X = pos.x;
+	m_Y = pos.y;
 }
 
 Entity::~Entity()
@@ -20,5 +36,16 @@ void Entity::update(float timeElapsed)
 
 void Entity::render(Renderer& renderer)
 {
-	renderer.render(m_Sprite);
+	renderer.render(*this);
+}
+
+void Entity::init()
+{
+	m_X = 0;
+	m_Y = 0;
+	m_Dx = 0.0f;
+	m_Dy = 0.0f;
+
+	m_Destroy = false;
+	m_CumulativeTime = 0.0f;
 }

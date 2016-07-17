@@ -11,8 +11,5 @@ public:
 	void render(Renderer& renderer);
 
 private:
-	float m_Dx;
-	float m_Dy;
-
 	float m_Duration;
 };

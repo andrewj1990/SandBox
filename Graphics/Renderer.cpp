@@ -304,6 +304,21 @@ void Renderer::render(const std::vector<Renderable>& renderables)
 	flush();
 }
 
+void Renderer::render(const std::vector<std::unique_ptr<Renderable>>& renderables)
+{
+	begin();
+
+	for (auto& renderable : renderables)
+	{
+		//submit(renderable);
+		renderable->submit(*this);
+	}
+
+	end();
+	flush();
+}
+
+
 //void Renderer::render(const std::vector<std::unique_ptr<Entity>>& entities)
 //{
 //	begin();

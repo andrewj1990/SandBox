@@ -24,11 +24,11 @@ void Level::init()
 
 void Level::update(float timeElapsed)
 {
-	m_QuadTree = std::unique_ptr<QuadTree>(new QuadTree(0, BoundingBox(m_Player.getSprite().getPosition().x - Window::Instance().getWidth() / 2 + 16.0f, m_Player.getSprite().getPosition().y - Window::Instance().getHeight() / 2 + 16.0f, Window::Instance().getWidth(), Window::Instance().getHeight())));
+	m_QuadTree = std::unique_ptr<QuadTree>(new QuadTree(0, BoundingBox(m_Player.getPosition().x - Window::Instance().getWidth() / 2 + 16.0f, m_Player.getPosition().y - Window::Instance().getHeight() / 2 + 16.0f, Window::Instance().getWidth(), Window::Instance().getHeight())));
 	for (const auto& enemy : m_Enemies)
 	{
 		enemy->update(timeElapsed);
-		m_QuadTree->insert(&enemy->getSprite());
+		m_QuadTree->insert(enemy.get());
 	}
 
 	m_Player.update(m_Terrain, m_QuadTree, timeElapsed);
@@ -55,10 +55,7 @@ void Level::render(Renderer& renderer)
 {
 	m_Terrain.render(renderer);
 
-	for (const auto& enemy : m_Enemies)
-	{
-		enemy->render(renderer);
-	}
+	renderer.render(m_Enemies);
 
 	m_Player.render(renderer);
 

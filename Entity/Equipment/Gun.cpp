@@ -1,20 +1,27 @@
 #include "Gun.h"
 
 Gun::Gun(float x, float y)
-	: m_Sprite(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/Gun.png"))
+	: Entity(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/Gun.png"))
 {
-	m_X = x;
-	m_Y = y;
 }
 
 void Gun::shoot(float x, float y, float angle)
 {
-	m_Bullets.push_back(Bullet(x, y, angle));
+
+	glm::mat4 transform;
+	transform = glm::translate(transform, glm::vec3(m_Position.x + 5, m_Position.y + 5, 0));
+	transform = glm::rotate(transform, getAngle(), glm::vec3(0, 0, 1));
+	transform = glm::translate(transform, glm::vec3(-m_Position.x - 5, -m_Position.y - 5, 0));
+	const glm::vec3& pos = glm::vec3(m_Position.x + m_Size.x * 0.75f, m_Position.y + m_Size.y * 0.75f, 0);
+	glm::vec4 gunPos = transform * glm::vec4(pos, 1.0f);
+
+	for (int i = 0; i < 15; i++) m_Entities.push_back(std::unique_ptr<GunParticle>(new GunParticle(gunPos.x, gunPos.y, angle)));
+	m_Bullets.push_back(std::unique_ptr<Bullet>(new Bullet(gunPos.x, gunPos.y, angle)));
 }
 
 void Gun::move(float x, float y)
 {
-	m_Sprite.addDirection(x, y);
+	addDirection(x, y);
 }
 
 void Gun::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
@@ -26,19 +33,19 @@ void Gun::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 	float dy = my - m_Y;
 	float angle = -std::atan2f(dy, dx) - glm::radians(45.0f);
 
-	m_Sprite.setAngle(angle);
+	setAngle(angle);
 
-	for (Bullet& bullet : m_Bullets)
+	for (auto& bullet : m_Bullets)
 	{
-		bullet.update(timeElapsed);
+		bullet->update(timeElapsed);
 	}
 
 	for (auto& bullet : m_Bullets)
 	{
 		std::vector<Renderable*> enemies;
 
-		const glm::vec3& pos = bullet.getSprite().getPosition();
-		const glm::vec2& size = bullet.getSprite().getSize();
+		const glm::vec3& pos = bullet->getPosition();
+		const glm::vec2& size = bullet->getSize();
 
 		quadTree->retrieve(enemies, pos.x, pos.y, size.x, size.y);
 
@@ -56,8 +63,14 @@ void Gun::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 
 			if (sx > ex && sx < ex + ew && sy > ey && sy < ey + eh)
 			{
-				for (int i = 0; i < 100; i++) m_Entities.push_back(std::unique_ptr<Particle>(new Particle(sx, sy)));
-				bullet.setDestroy(true);
+				float a = -std::atan2f(dy, dx);
+				for (int i = 0; i < 100; i++)
+				{
+					m_Entities.push_back(std::unique_ptr<Particle>(new Particle(sx, sy, a)));
+				}
+				m_DamageText.push_back(std::unique_ptr<DamageCounter>(new DamageCounter("1", sx, sy)));
+
+				bullet->setDestroy(true);
 			}
 
 		}
@@ -77,7 +90,7 @@ void Gun::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 
 	for (auto it = m_Bullets.begin(); it != m_Bullets.end(); )
 	{
-		if ((it)->shouldDestroy())
+		if ((*it)->shouldDestroy())
 		{
 			it = m_Bullets.erase(it);
 		}
@@ -85,6 +98,23 @@ void Gun::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 		{
 			++it;
 		}
+	}
+
+	for (auto it = m_DamageText.begin(); it != m_DamageText.end(); )
+	{
+		if ((*it)->shouldDestroy())
+		{
+			it = m_DamageText.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+
+	for (auto& text : m_DamageText)
+	{
+		text->update(timeElapsed);
 	}
 
 	for (auto& particle : m_Entities)
@@ -95,24 +125,23 @@ void Gun::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 
 void Gun::render(Renderer& renderer)
 {
-	for (Bullet& bullet : m_Bullets)
+	renderer.push(glm::mat4(), true);
+	renderer.render(m_Bullets);
+	renderer.render(m_Entities);
+
+	for (auto& text : m_DamageText)
 	{
-		bullet.render(renderer);
+		text->render(renderer);
 	}
 
-	renderer.push(glm::mat4(), true);
-	for (auto& particle : m_Entities)
-	{
-		particle->render(renderer);
-	}
 	renderer.pop();
 
 	glm::mat4 transform;
-	transform = glm::translate(transform, glm::vec3(m_Sprite.getPosition().x + 5, m_Sprite.getPosition().y + 5, 0));
-	transform = glm::rotate(transform, m_Sprite.getAngle(), glm::vec3(0, 0, 1));
-	transform = glm::translate(transform, glm::vec3(-m_Sprite.getPosition().x - 5, -m_Sprite.getPosition().y - 5, 0));
+	transform = glm::translate(transform, glm::vec3(getPosition().x + 5, getPosition().y + 5, 0));
+	transform = glm::rotate(transform, getAngle(), glm::vec3(0, 0, 1));
+	transform = glm::translate(transform, glm::vec3(-getPosition().x - 5, -getPosition().y - 5, 0));
 	
 	renderer.push(transform);
-	renderer.render(m_Sprite);
+	renderer.render(*this);
 	renderer.pop();
 }

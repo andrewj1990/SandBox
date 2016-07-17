@@ -57,6 +57,7 @@ public:
 
 	void render(const Renderable& renderable);
 	void render(const std::vector<Renderable>& renderables);
+	void render(const std::vector<std::unique_ptr<Renderable>>& renderables);
 	//void render(const std::vector<std::unique_ptr<Entity>>& entities);
 
 	void push(const glm::mat4& matrix, bool override = false)

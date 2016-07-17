@@ -2,23 +2,27 @@
 
 #include "..\Graphics\Sprite.h"
 
-class Entity {
+class Entity : public Sprite {
 public:
 	Entity();
 	Entity(float x, float y);
+	Entity(const glm::vec3& pos, const glm::vec2& size, Texture* texture);
+	Entity(const glm::vec3& pos, const glm::vec2& size, const glm::vec4& colour);
 	~Entity();
 
-	virtual void update(float timeElapsed);
-	virtual void render(Renderer& renderer);
+	virtual void update(float timeElapsed) override;
+	virtual void render(Renderer& renderer) override;
 
-	void setDestroy(bool flag) { m_Destroy = flag; }
-	bool shouldDestroy() const { return m_Destroy; }
-	Sprite& getSprite() { return m_Sprite; }
+	virtual void setDestroy(bool flag) { m_Destroy = flag; }
+	virtual bool shouldDestroy() const override { return m_Destroy; }
 
-	float getX() const { return m_Sprite.getPosition().x; }
-	float getY() const { return m_Sprite.getPosition().y; }
-	float getCenterX() const { return getX() + m_Sprite.getSize().x / 2.0f; }
-	float getCenterY() const { return getY() + m_Sprite.getSize().y / 2.0f; }
+	float getX() const { return getPosition().x; }
+	float getY() const { return getPosition().y; }
+	float getCenterX() const { return getX() + getSize().x / 2.0f; }
+	float getCenterY() const { return getY() + getSize().y / 2.0f; }
+
+private:
+	void init();
 
 protected:
 	float m_X;
@@ -30,5 +34,4 @@ protected:
 
 	float m_CumulativeTime;
 
-	Sprite m_Sprite;
 };

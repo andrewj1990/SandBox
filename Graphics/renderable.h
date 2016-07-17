@@ -71,6 +71,12 @@ public:
 	inline const std::vector<glm::vec2>& getUV() const { return m_UV; }
 	inline const unsigned int getTID() const { return m_Texture == nullptr ? 0 : m_Texture->getTID(); }
 
+	virtual void setDestroy(bool destroy) {}
+	virtual bool shouldDestroy() const { return false; }
+	virtual void update(float timeElapsed) {};
+	virtual void render(Renderer& renderer) {};
+protected:	
+
 private:
 	void setUVDefaults()
 	{
