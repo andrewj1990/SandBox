@@ -14,7 +14,7 @@ public:
 	Renderable getTile(float x, float y, float height);
 	glm::vec4 getColor(float height);
 
-	bool isCollidable(float x, float y) const;
+	bool isSolid(float x, float y) const;
 
 	void update(float timeElapsed);
 	void render(Renderer& renderer);

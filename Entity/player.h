@@ -26,7 +26,7 @@ public:
 	Player(float x, float y);
 
 	void move(float dx, float dy);
-	void dodge();
+	void dodge(const Terrain& terrain);
 
 	void update(const Terrain& terrain, const std::unique_ptr<QuadTree>& quadTree, float timeElapsed);
 	void update(float timeElapsed) override;
@@ -48,6 +48,7 @@ private:
 	Sword m_Sword;
 	Gun m_Gun;
 
+	float m_MoveSpeed;
 	float m_AttackSpeed;
 	float m_AttackFrame;
 

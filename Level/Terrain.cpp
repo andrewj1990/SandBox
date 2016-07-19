@@ -73,7 +73,7 @@ glm::vec4 Terrain::getColor(float height)
 	return glm::vec4(r, g, b, solid);
 }
 
-bool Terrain::isCollidable(float x, float y) const
+bool Terrain::isSolid(float x, float y) const
 {
 	const glm::vec3& camPos = Window::Instance().getCamera().getPosition();
 
@@ -85,7 +85,6 @@ bool Terrain::isCollidable(float x, float y) const
 	if (index < 0 || index >= m_Ground.size()) return false;
 
 	const Renderable& tile = m_Ground[index];
-	const glm::vec4& colour = tile.getColour();
 
 	return tile.isSolid();
 }

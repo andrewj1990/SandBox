@@ -13,6 +13,8 @@ void Player::init()
 {
 	m_State = PlayerState::NORMAL;
 	m_CumulativeTime = 0.0f;
+
+	m_MoveSpeed = 180.0f;
 	m_AttackSpeed = 0.2f;
 	m_AttackFrame = 0.0f;
 }
@@ -49,25 +51,29 @@ void Player::move(const Terrain& terrain, float timeElapsed)
 
 	float dx = 0.0f;
 	float dy = 0.0f;
-	float vel = 96.0f;
 
-	if (window.isKeyPressed(GLFW_KEY_W)) dy += vel;
-	if (window.isKeyPressed(GLFW_KEY_A)) dx -= vel;
-	if (window.isKeyPressed(GLFW_KEY_S)) dy -= vel;
-	if (window.isKeyPressed(GLFW_KEY_D)) dx += vel;
+	if (window.isKeyPressed(GLFW_KEY_W)) dy += m_MoveSpeed * timeElapsed;
+	if (window.isKeyPressed(GLFW_KEY_A)) dx -= m_MoveSpeed * timeElapsed;
+	if (window.isKeyPressed(GLFW_KEY_S)) dy -= m_MoveSpeed * timeElapsed;
+	if (window.isKeyPressed(GLFW_KEY_D)) dx += m_MoveSpeed * timeElapsed;
 
-	if (!(terrain.isCollidable(getPosition().x + dx * timeElapsed, getPosition().y) ||
-		terrain.isCollidable(getPosition().x + getSize().x + dx * timeElapsed, getPosition().y)))
+	if (terrain.isSolid(m_Position.x + dx, m_Position.y) ||
+		terrain.isSolid(m_Position.x + m_Size.x + dx, m_Position.y) ||
+		terrain.isSolid(m_Position.x + dx, m_Position.y + m_Size.y) ||
+		terrain.isSolid(m_Position.x + m_Size.x + dx, m_Position.y + m_Size.y))
 	{
-		move(dx * timeElapsed, 0);
+		dx = 0.0f;
 	}
 
-	if (!(terrain.isCollidable(getPosition().x, getPosition().y + dy * timeElapsed) ||
-		terrain.isCollidable(getPosition().x, getPosition().y + getSize().y+ dy * timeElapsed)))
+	if (terrain.isSolid(m_Position.x, m_Position.y + dy) ||
+		terrain.isSolid(m_Position.x, m_Position.y + m_Size.y + dy) ||
+		terrain.isSolid(m_Position.x + m_Size.x, m_Position.y + dy) ||
+		terrain.isSolid(m_Position.x + m_Size.x, m_Position.y + m_Size.y + dy))
 	{
-		move(0, dy * timeElapsed);
+		dy = 0.0f;
 	}
 
+	move(dx, dy);
 }
 
 void Player::shoot(float angle, float timeElapsed)
@@ -77,12 +83,11 @@ void Player::shoot(float angle, float timeElapsed)
 	// fire projectile
 	if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_1) && m_AttackFrame > m_AttackSpeed)
 	{
-		m_Gun.shoot(getPosition().x, getPosition().y, angle + glm::radians(30.0f));
-		m_Gun.shoot(getPosition().x, getPosition().y, angle - glm::radians(30.0f));
-		m_Gun.shoot(getPosition().x, getPosition().y, angle + glm::radians(20.0f));
-		m_Gun.shoot(getPosition().x, getPosition().y, angle - glm::radians(20.0f));
-		m_Gun.shoot(getPosition().x, getPosition().y, angle + glm::radians(10.0f));
-		m_Gun.shoot(getPosition().x, getPosition().y, angle - glm::radians(10.0f));
+		for (int i = 3; i > 0; i--)
+		{
+			m_Gun.shoot(getPosition().x, getPosition().y, angle + glm::radians(10.0f * i));
+			m_Gun.shoot(getPosition().x, getPosition().y, angle - glm::radians(10.0f * i));
+		}
 		m_Gun.shoot(getPosition().x, getPosition().y, angle);
 
 		m_AttackFrame = 0.0f;
@@ -102,7 +107,7 @@ void Player::move(float dx, float dy)
 
 }
 
-void Player::dodge()
+void Player::dodge(const Terrain& terrain)
 {
 	float dodgeDistance = 2.0f;
 	float dx = dodgeDistance * std::cosf(m_DodgeAngle);
@@ -112,7 +117,24 @@ void Player::dodge()
 	dx /= dodgeDuration;
 	dy /= dodgeDuration;
 
+	if (terrain.isSolid(m_Position.x + dx, m_Position.y) ||
+		terrain.isSolid(m_Position.x + m_Size.x + dx, m_Position.y) ||
+		terrain.isSolid(m_Position.x + dx, m_Position.y + m_Size.y) ||
+		terrain.isSolid(m_Position.x + m_Size.x + dx, m_Position.y + m_Size.y))
+	{
+		dx = 0.0f;
+	}
+
+	if (terrain.isSolid(m_Position.x, m_Position.y + dy) ||
+		terrain.isSolid(m_Position.x, m_Position.y + m_Size.y + dy) ||
+		terrain.isSolid(m_Position.x + m_Size.x, m_Position.y + dy) ||
+		terrain.isSolid(m_Position.x + m_Size.x, m_Position.y + m_Size.y + dy))
+	{
+		dy = 0.0f;
+	}
+
 	move(dx, dy);
+	
 	setAngle(getAngle() + glm::radians(-20.0f));
 
 	if (m_CumulativeTime >= dodgeDuration)
@@ -132,12 +154,42 @@ void Player::update(const Terrain& terrain, const std::unique_ptr<QuadTree>& qua
 	float dy = mouseY - m_Y;
 	float angle = -std::atan2f(dy, dx);
 
+	m_CumulativeTime += timeElapsed;
+
 	if (playerCollision(quadTree))
 	{
 		//std::cout << "player collision\n";
 	}
 
-	update(timeElapsed);
+	switch (m_State)
+	{
+	case (PlayerState::ATTACK) :
+		break;
+	case (PlayerState::NORMAL) :
+		// shield
+		m_Shield.setAngle(angle);
+		m_ShieldActive = window.isButtonPressed(GLFW_MOUSE_BUTTON_2);
+
+		// sword
+		if (window.isButtonPressed(GLFW_MOUSE_BUTTON_1)) m_Sword.setAttackParams(angle);
+
+		// movement
+
+		if (window.isKeyPressed(GLFW_KEY_SPACE))
+		{
+			m_State = PlayerState::DODGE;
+			m_CumulativeTime = 0.0f;
+			m_DodgeAngle = angle;
+		}
+		break;
+	case (PlayerState::DODGE) :
+		dodge(terrain);
+		break;
+	default:
+		break;
+	}
+
+	//update(timeElapsed);
 	move(terrain, timeElapsed);
 	shoot(angle, timeElapsed);
 
@@ -179,7 +231,7 @@ void Player::update(float timeElapsed)
 		}
 		break;
 	case (PlayerState::DODGE) :
-		dodge();
+		//dodge();
 		break;
 	default:
 		break;
