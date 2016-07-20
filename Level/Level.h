@@ -6,6 +6,7 @@
 #include "..\Entity\Mob\BasicMob.h"
 #include "..\Utils\quadTree.h"
 #include "Terrain.h"
+#include "..\Utils\Utils.h"
 
 class Level
 {
@@ -18,6 +19,9 @@ public:
 	void render(Renderer& renderer);
 
 	const std::unique_ptr<QuadTree>& getQuadTree() const { return m_QuadTree; }
+
+private:
+	void spawnItem(const glm::vec3& position);
 
 private:
 	Player m_Player;

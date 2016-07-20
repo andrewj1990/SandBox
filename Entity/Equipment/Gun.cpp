@@ -7,7 +7,6 @@ Gun::Gun(float x, float y)
 
 void Gun::shoot(float x, float y, float angle)
 {
-
 	glm::mat4 transform;
 	transform = glm::translate(transform, glm::vec3(m_Position.x + 5, m_Position.y + 5, 0));
 	transform = glm::rotate(transform, getAngle(), glm::vec3(0, 0, 1));
@@ -49,7 +48,7 @@ void Gun::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 
 		quadTree->retrieve(enemies, pos.x, pos.y, size.x, size.y);
 
-		for (const auto& enemy : enemies)
+		for (auto& enemy : enemies)
 		{
 			float ex = enemy->getPosition().x;
 			float ey = enemy->getPosition().y;
@@ -63,12 +62,12 @@ void Gun::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 
 			if (sx > ex && sx < ex + ew && sy > ey && sy < ey + eh)
 			{
-				float a = -std::atan2f(dy, dx);
 				for (int i = 0; i < 100; i++)
 				{
-					m_Entities.push_back(std::unique_ptr<Particle>(new Particle(sx, sy, a)));
+					m_Entities.push_back(std::unique_ptr<Particle>(new Particle(sx, sy, bullet->getAngle())));
 				}
-				m_DamageText.push_back(std::unique_ptr<DamageCounter>(new DamageCounter("1", sx, sy)));
+				enemy->damage(10);
+				//m_DamageText.push_back(std::unique_ptr<DamageCounter>(new DamageCounter("1", sx, sy)));
 
 				bullet->setDestroy(true);
 			}

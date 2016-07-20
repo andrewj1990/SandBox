@@ -1,5 +1,6 @@
 #pragma once
 
+#include "..\Utils\Utils.h"
 #include "Entity.h"
 
 class Particle : public Entity

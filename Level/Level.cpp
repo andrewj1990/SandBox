@@ -25,30 +25,37 @@ void Level::init()
 void Level::update(float timeElapsed)
 {
 	m_QuadTree = std::unique_ptr<QuadTree>(new QuadTree(0, BoundingBox(m_Player.getPosition().x - Window::Instance().getWidth() / 2 + 16.0f, m_Player.getPosition().y - Window::Instance().getHeight() / 2 + 16.0f, Window::Instance().getWidth(), Window::Instance().getHeight())));
-	for (const auto& enemy : m_Enemies)
+	
+	for (auto it = m_Enemies.begin(); it != m_Enemies.end(); )
 	{
-		enemy->update(timeElapsed);
-		m_QuadTree->insert(enemy.get());
+		if ((*it)->shouldDestroy())
+		{
+			spawnItem((*it)->getPosition());
+			it = m_Enemies.erase(it);
+		}
+		else
+		{
+			(*it)->update(m_Terrain, timeElapsed);
+			m_QuadTree->insert((*it).get());
+			++it;
+		}
+	}
+
+	if (m_Enemies.size() < 10)
+	{
+		float wx = Window::Instance().getCamera().getPosition().x;
+		float wy = Window::Instance().getCamera().getPosition().y;
+		float ww = Window::Instance().getWidth();
+		float wh = Window::Instance().getHeight();
+
+		float sx = Utils::random(wx, wx + ww);
+		float sy = Utils::random(wy, wy + wh);
+		m_Enemies.push_back(std::unique_ptr<BasicMob>(new BasicMob(sx, sy)));
 	}
 
 	m_Player.update(m_Terrain, m_QuadTree, timeElapsed);
 
 	m_Terrain.update(timeElapsed);
-
-	std::vector<BoundingBox> bbox;
-	m_QuadTree->getBounds(bbox);
-
-	//std::cout << "bbox size : " << bbox.size() << "\n";
-
-	float size = 2.0f;
-	quads = std::vector<Renderable>();
-	for (auto& box : bbox)
-	{
-		quads.push_back(Sprite(glm::vec3(box.x, box.y, 0.0f), glm::vec2(box.width, size), glm::vec4(1, 1, 0, 1)));
-		quads.push_back(Sprite(glm::vec3(box.x, box.y + box.height, 0.0f), glm::vec2(box.width, size), glm::vec4(1, 1, 0, 1)));
-		quads.push_back(Sprite(glm::vec3(box.x, box.y, 0.0f), glm::vec2(size, box.height), glm::vec4(1, 1, 0, 1)));
-		quads.push_back(Sprite(glm::vec3(box.x + box.width, box.y, 0.0f), glm::vec2(size, box.height), glm::vec4(1, 1, 0, 1)));
-	}
 }
 
 void Level::render(Renderer& renderer)
@@ -58,6 +65,13 @@ void Level::render(Renderer& renderer)
 	renderer.render(m_Enemies);
 
 	m_Player.render(renderer);
+}
 
-	//if (quads.size() > 0) renderer.render(quads);
+void Level::spawnItem(const glm::vec3 & position)
+{
+	int randomNum = Utils::random(0, 100);
+
+	if (randomNum < 50)
+	{
+	}
 }

@@ -29,6 +29,7 @@ protected:
 	float m_Y;
 	float m_Dx;
 	float m_Dy;
+	float m_Angle;
 
 	bool m_Destroy;
 

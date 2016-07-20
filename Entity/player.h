@@ -28,6 +28,8 @@ public:
 	void move(float dx, float dy);
 	void dodge(const Terrain& terrain);
 
+	void addBuff();
+
 	void update(const Terrain& terrain, const std::unique_ptr<QuadTree>& quadTree, float timeElapsed);
 	void update(float timeElapsed) override;
 	void render(Renderer& renderer) override;
@@ -38,6 +40,7 @@ private:
 	void move(const Terrain& terrain, float timeElapsed);
 	void shoot(float angle, float timeElapsed);
 
+private:
 	PlayerState m_State;
 
 	float m_CumulativeTime;

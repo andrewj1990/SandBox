@@ -1,4 +1,5 @@
 #include "Renderer.h"
+#include "..\Entity\Entity.h"
 
 Renderer::Renderer()
 	: m_IndexCount(0)
@@ -319,14 +320,18 @@ void Renderer::render(const std::vector<std::unique_ptr<Renderable>>& renderable
 }
 
 
-//void Renderer::render(const std::vector<std::unique_ptr<Entity>>& entities)
-//{
-//	begin();
-//
-//	end();
-//	flush();
-//
-//}
+void Renderer::render(const std::vector<std::unique_ptr<Entity>>& entities)
+{
+	begin();
+
+	for (auto& entity : entities)
+	{
+		entity->submit(*this);
+	}
+
+	end();
+	flush();
+}
 
 
 glm::vec3 Renderer::multiply(const glm::mat4 & matrix, const glm::vec3 vector)

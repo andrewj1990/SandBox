@@ -3,11 +3,18 @@
 Bullet::Bullet(float x, float y, float angle)
 	: Entity(glm::vec3(x - 16, y - 16, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/Bullet.png"))
 {
+	m_Angle = angle;
+
 	float velocity = 1000;
 	m_Dx = std::cosf(angle) * velocity;
 	m_Dy = std::sinf(angle) * velocity;
 
 	m_Duration = 2.0f;
+}
+
+float Bullet::getAngle()
+{
+	return m_Angle;
 }
 
 void Bullet::update(float timeElapsed)

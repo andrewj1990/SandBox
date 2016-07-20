@@ -1,26 +1,94 @@
 #include "BasicMob.h"
+#include "..\..\Level\Terrain.h"
 
 BasicMob::BasicMob(float x, float y)
 	: Entity(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/PlayerSpritesheet10.png"))
 {
+	m_Life = 10;
 }
 
 BasicMob::~BasicMob()
 {
 }
 
-void BasicMob::update(float timeElapsed)
+void BasicMob::damage(int amount)
 {
+	std::cout << "damaged : " << amount << "\n";
+	m_Life -= amount;
+}
+
+void BasicMob::update(const Terrain& terrain, float timeElapsed)
+{
+	if (m_Life <= 0)
+	{
+		m_Destroy = true;
+	}
+
 	m_CumulativeTime += timeElapsed;
 	if (m_CumulativeTime > 1.0f)
 	{
 		m_CumulativeTime = 0;
-		m_Dx = 1.0f - (rand() % 1000 / 500.0f);
-		m_Dy = 1.0f - (rand() % 1000 / 500.0f);
+		m_Dx = Utils::random(-1.0f, 1.0f);
+		m_Dy = Utils::random(-1.0f, 1.0f);
 	}
 
-	addDirection(m_Dx, m_Dy);
+	float dx = m_Dx;
+	float dy = m_Dy;
 
+	if (terrain.isSolid(m_Position.x + dx, m_Position.y) ||
+		terrain.isSolid(m_Position.x + m_Size.x + dx, m_Position.y) ||
+		terrain.isSolid(m_Position.x + dx, m_Position.y + m_Size.y) ||
+		terrain.isSolid(m_Position.x + m_Size.x + dx, m_Position.y + m_Size.y))
+	{
+		dx = 0.0f;
+	}
+
+	if (terrain.isSolid(m_Position.x, m_Position.y + dy) ||
+		terrain.isSolid(m_Position.x, m_Position.y + m_Size.y + dy) ||
+		terrain.isSolid(m_Position.x + m_Size.x, m_Position.y + dy) ||
+		terrain.isSolid(m_Position.x + m_Size.x, m_Position.y + m_Size.y + dy))
+	{
+		dy = 0.0f;
+	}
+
+	addDirection(dx, dy);
+}
+
+void BasicMob::update(float timeElapsed)
+{
+	if (m_Life <= 0)
+	{
+		m_Destroy = true;
+	}
+
+	m_CumulativeTime += timeElapsed;
+	if (m_CumulativeTime > 1.0f)
+	{
+		m_CumulativeTime = 0;
+		m_Dx = Utils::random(-1.0f, 1.0f);
+		m_Dy = Utils::random(-1.0f, 1.0f);
+	}
+
+	float dx = m_Dx;
+	float dy = m_Dy;
+
+	//if (terrain.isSolid(m_Position.x + dx, m_Position.y) ||
+	//	terrain.isSolid(m_Position.x + m_Size.x + dx, m_Position.y) ||
+	//	terrain.isSolid(m_Position.x + dx, m_Position.y + m_Size.y) ||
+	//	terrain.isSolid(m_Position.x + m_Size.x + dx, m_Position.y + m_Size.y))
+	//{
+	//	dx = 0.0f;
+	//}
+
+	//if (terrain.isSolid(m_Position.x, m_Position.y + dy) ||
+	//	terrain.isSolid(m_Position.x, m_Position.y + m_Size.y + dy) ||
+	//	terrain.isSolid(m_Position.x + m_Size.x, m_Position.y + dy) ||
+	//	terrain.isSolid(m_Position.x + m_Size.x, m_Position.y + m_Size.y + dy))
+	//{
+	//	dy = 0.0f;
+	//}
+
+	addDirection(dx, dy);
 }
 
 void BasicMob::render(Renderer& renderer)
