@@ -7,7 +7,7 @@ class Bullet : public Entity
 public:
 	Bullet(float x, float y, float angle);
 
-	virtual float getAngle() override;
+	virtual float getAngle() const override;
 
 	void update(float timeElapsed);
 	void render(Renderer& renderer);

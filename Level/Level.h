@@ -27,7 +27,7 @@ private:
 	Player m_Player;
 	Terrain m_Terrain;
 
-	std::vector<std::unique_ptr<Renderable>> m_Enemies;
+	std::vector<std::unique_ptr<Entity>> m_Enemies;
 	std::vector<Renderable> m_Platforms;
 
 	SimplexNoise m_Noise;

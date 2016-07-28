@@ -11,7 +11,7 @@ Entity::Entity(float x, float y)
 }
 
 Entity::Entity(const glm::vec3& pos, const glm::vec2& size, Texture* texture)
-	: Sprite(pos, size, texture)
+	: m_Sprite(pos, size, texture)
 {
 	init();
 	m_X = pos.x;
@@ -19,7 +19,7 @@ Entity::Entity(const glm::vec3& pos, const glm::vec2& size, Texture* texture)
 }
 
 Entity::Entity(const glm::vec3& pos, const glm::vec2& size, const glm::vec4& colour)
-	: Sprite(pos, size, colour)
+	: m_Sprite(pos, size, colour)
 {
 	init();
 	m_X = pos.x;

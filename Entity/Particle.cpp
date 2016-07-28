@@ -29,7 +29,7 @@ Particle::Particle(float x, float y, float angle)
 
 void Particle::update(float timeElapsed)
 {
-	addDirection(m_Dx * timeElapsed, m_Dy * timeElapsed);
+	m_Sprite.addDirection(m_Dx * timeElapsed, m_Dy * timeElapsed);
 
 	m_Duration -= timeElapsed;
 

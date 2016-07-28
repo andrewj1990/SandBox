@@ -12,7 +12,7 @@ Bullet::Bullet(float x, float y, float angle)
 	m_Duration = 2.0f;
 }
 
-float Bullet::getAngle()
+float Bullet::getAngle() const
 {
 	return m_Angle;
 }
@@ -21,7 +21,7 @@ void Bullet::update(float timeElapsed)
 {
 	m_Duration -= timeElapsed;
 
-	addDirection(m_Dx * timeElapsed, m_Dy * timeElapsed);
+	m_Sprite.addDirection(m_Dx * timeElapsed, m_Dy * timeElapsed);
 
 	if (m_Duration <= 0)
 	{

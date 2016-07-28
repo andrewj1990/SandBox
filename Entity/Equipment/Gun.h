@@ -22,8 +22,8 @@ public:
 	void render(Renderer& renderer);
 
 private:
-	std::vector<std::unique_ptr<Renderable>> m_Entities;
-	std::vector<std::unique_ptr<Renderable>> m_Bullets;
+	std::vector<std::unique_ptr<Entity>> m_Entities;
+	std::vector<std::unique_ptr<Entity>> m_Bullets;
 	std::vector<std::unique_ptr<DamageCounter>> m_DamageText;
 
 };

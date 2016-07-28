@@ -319,6 +319,16 @@ void Renderer::render(const std::vector<std::unique_ptr<Renderable>>& renderable
 	flush();
 }
 
+void Renderer::render(Entity& entity)
+{
+	begin();
+
+	entity.getSprite().submit(*this);
+
+	end();
+	flush();
+}
+
 
 void Renderer::render(const std::vector<std::unique_ptr<Entity>>& entities)
 {
@@ -326,7 +336,7 @@ void Renderer::render(const std::vector<std::unique_ptr<Entity>>& entities)
 
 	for (auto& entity : entities)
 	{
-		entity->submit(*this);
+		entity->getSprite().submit(*this);
 	}
 
 	end();

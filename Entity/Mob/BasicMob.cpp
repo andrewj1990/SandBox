@@ -13,7 +13,7 @@ BasicMob::~BasicMob()
 
 void BasicMob::damage(int amount)
 {
-	std::cout << "damaged : " << amount << "\n";
+	//std::cout << "damaged : " << amount << "\n";
 	m_Life -= amount;
 }
 
@@ -35,23 +35,23 @@ void BasicMob::update(const Terrain& terrain, float timeElapsed)
 	float dx = m_Dx;
 	float dy = m_Dy;
 
-	if (terrain.isSolid(m_Position.x + dx, m_Position.y) ||
-		terrain.isSolid(m_Position.x + m_Size.x + dx, m_Position.y) ||
-		terrain.isSolid(m_Position.x + dx, m_Position.y + m_Size.y) ||
-		terrain.isSolid(m_Position.x + m_Size.x + dx, m_Position.y + m_Size.y))
+	if (terrain.isSolid(m_Sprite.getPosition().x + dx, m_Sprite.getPosition().y) ||
+		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x + dx, m_Sprite.getPosition().y) ||
+		terrain.isSolid(m_Sprite.getPosition().x + dx, m_Sprite.getPosition().y + m_Sprite.getSize().y) ||
+		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x + dx, m_Sprite.getPosition().y + m_Sprite.getSize().y))
 	{
 		dx = 0.0f;
 	}
 
-	if (terrain.isSolid(m_Position.x, m_Position.y + dy) ||
-		terrain.isSolid(m_Position.x, m_Position.y + m_Size.y + dy) ||
-		terrain.isSolid(m_Position.x + m_Size.x, m_Position.y + dy) ||
-		terrain.isSolid(m_Position.x + m_Size.x, m_Position.y + m_Size.y + dy))
+	if (terrain.isSolid(m_Sprite.getPosition().x, m_Sprite.getPosition().y + dy) ||
+		terrain.isSolid(m_Sprite.getPosition().x, m_Sprite.getPosition().y + m_Sprite.getSize().y + dy) ||
+		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x, m_Sprite.getPosition().y + dy) ||
+		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x, m_Sprite.getPosition().y + m_Sprite.getSize().y + dy))
 	{
 		dy = 0.0f;
 	}
 
-	addDirection(dx, dy);
+	m_Sprite.addDirection(dx, dy);
 }
 
 void BasicMob::update(float timeElapsed)
@@ -88,7 +88,7 @@ void BasicMob::update(float timeElapsed)
 	//	dy = 0.0f;
 	//}
 
-	addDirection(dx, dy);
+	m_Sprite.addDirection(dx, dy);
 }
 
 void BasicMob::render(Renderer& renderer)

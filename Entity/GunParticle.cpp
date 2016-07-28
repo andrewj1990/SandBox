@@ -6,7 +6,7 @@ GunParticle::GunParticle(float x, float y, float angle)
 	float angleOffset = Utils::random(-10.0f, 10.0f);
 
 	glm::vec4 colour = glm::vec4(1, 0.5f + (rand() % 1000 / 2000.0f), 0, rand() % 1000 / 1000.0f);
-	m_Colour = colour;
+	m_Sprite.setColor(colour);
 
 	float vel = Utils::random(100.0f, 200.0f);
 	float a = angle + glm::radians(angleOffset);

@@ -8,10 +8,10 @@ Gun::Gun(float x, float y)
 void Gun::shoot(float x, float y, float angle)
 {
 	glm::mat4 transform;
-	transform = glm::translate(transform, glm::vec3(m_Position.x + 5, m_Position.y + 5, 0));
-	transform = glm::rotate(transform, getAngle(), glm::vec3(0, 0, 1));
-	transform = glm::translate(transform, glm::vec3(-m_Position.x - 5, -m_Position.y - 5, 0));
-	const glm::vec3& pos = glm::vec3(m_Position.x + m_Size.x * 0.75f, m_Position.y + m_Size.y * 0.75f, 0);
+	transform = glm::translate(transform, glm::vec3(m_Sprite.getPosition().x + 5, m_Sprite.getPosition().y + 5, 0));
+	transform = glm::rotate(transform, m_Sprite.getAngle(), glm::vec3(0, 0, 1));
+	transform = glm::translate(transform, glm::vec3(-m_Sprite.getPosition().x - 5, -m_Sprite.getPosition().y - 5, 0));
+	const glm::vec3& pos = glm::vec3(m_Sprite.getPosition().x + m_Sprite.getSize().x * 0.75f, m_Sprite.getPosition().y + m_Sprite.getSize().y * 0.75f, 0);
 	glm::vec4 gunPos = transform * glm::vec4(pos, 1.0f);
 
 	for (int i = 0; i < 15; i++) m_Entities.push_back(std::unique_ptr<GunParticle>(new GunParticle(gunPos.x, gunPos.y, angle)));
@@ -20,7 +20,7 @@ void Gun::shoot(float x, float y, float angle)
 
 void Gun::move(float x, float y)
 {
-	addDirection(x, y);
+	m_Sprite.addDirection(x, y);
 }
 
 void Gun::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
@@ -32,7 +32,7 @@ void Gun::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 	float dy = my - m_Y;
 	float angle = -std::atan2f(dy, dx) - glm::radians(45.0f);
 
-	setAngle(angle);
+	m_Sprite.setAngle(angle);
 
 	for (auto& bullet : m_Bullets)
 	{
@@ -41,19 +41,19 @@ void Gun::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 
 	for (auto& bullet : m_Bullets)
 	{
-		std::vector<Renderable*> enemies;
+		std::vector<Entity*> enemies;
 
-		const glm::vec3& pos = bullet->getPosition();
-		const glm::vec2& size = bullet->getSize();
+		const glm::vec3& pos = bullet->getSprite().getPosition();
+		const glm::vec2& size = bullet->getSprite().getSize();
 
 		quadTree->retrieve(enemies, pos.x, pos.y, size.x, size.y);
 
 		for (auto& enemy : enemies)
 		{
-			float ex = enemy->getPosition().x;
-			float ey = enemy->getPosition().y;
-			float ew = enemy->getSize().x;
-			float eh = enemy->getSize().y;
+			float ex = enemy->getSprite().getPosition().x;
+			float ey = enemy->getSprite().getPosition().y;
+			float ew = enemy->getSprite().getSize().x;
+			float eh = enemy->getSprite().getSize().y;
 
 			float sx = pos.x;
 			float sy = pos.y;
@@ -136,9 +136,9 @@ void Gun::render(Renderer& renderer)
 	renderer.pop();
 
 	glm::mat4 transform;
-	transform = glm::translate(transform, glm::vec3(getPosition().x + 5, getPosition().y + 5, 0));
-	transform = glm::rotate(transform, getAngle(), glm::vec3(0, 0, 1));
-	transform = glm::translate(transform, glm::vec3(-getPosition().x - 5, -getPosition().y - 5, 0));
+	transform = glm::translate(transform, glm::vec3(m_Sprite.getPosition().x + 5, m_Sprite.getPosition().y + 5, 0));
+	transform = glm::rotate(transform, m_Sprite.getAngle(), glm::vec3(0, 0, 1));
+	transform = glm::translate(transform, glm::vec3(-m_Sprite.getPosition().x - 5, -m_Sprite.getPosition().y - 5, 0));
 	
 	renderer.push(transform);
 	renderer.render(*this);

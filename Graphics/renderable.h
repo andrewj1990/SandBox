@@ -56,6 +56,11 @@ public:
 		m_Colour = glm::vec4(color, 1);
 	}
 
+	void setColor(const glm::vec4& colour)
+	{
+		m_Colour = colour;
+	}
+
 	void addDirection(float dx, float dy)
 	{
 		m_Position.x += dx;
@@ -72,16 +77,7 @@ public:
 	inline void setSolid(bool solid) { m_Solid = solid; }
 	inline bool isSolid() const { return m_Solid; }
 	inline const std::vector<glm::vec2>& getUV() const { return m_UV; }
-	inline const unsigned int getTID() const { return m_Texture == nullptr ? 0 : m_Texture->getTID(); }
-
-	virtual float getAngle() { return 0; }
-	virtual void damage(int amount) {}
-	virtual void setDestroy(bool destroy) {}
-	virtual bool shouldDestroy() const { return false; }
-
-	virtual void update(const Terrain& terrain, float timeElapsed) {}
-	virtual void update(float timeElapsed) {}
-	virtual void render(Renderer& renderer) {}
+	inline unsigned int getTID() const { return m_Texture == nullptr ? 0 : m_Texture->getTID(); }
 
 protected:	
 

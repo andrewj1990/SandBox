@@ -38,10 +38,15 @@ public:
 
 	void split();
 
-	void retrieve(std::vector<Renderable*>& list, Renderable* range);
+	void retrieve(std::vector<Renderable*>& data, Renderable* range);
 	void retrieve(std::vector<Renderable*>& data, float x, float y, float w, float h);
+	void retrieve(std::vector<Entity*>& data, Renderable* range);
+	void retrieve(std::vector<Entity*>& data, float x, float y, float w, float h);
+
 	void insert(Renderable* data);
+	void insert(Entity* data);
 	int getIndex(Renderable* data);
+	int getIndex(Entity* data);
 	int getIndex(float x, float y, float w, float h);
 
 	void printObjects();
@@ -54,6 +59,7 @@ private:
 
 	int m_Level;
 	std::vector<Renderable*> m_Objects;
+	std::vector<Entity*> m_Entities;
 	
 	BoundingBox m_Bounds;
 	std::unique_ptr<QuadTree> ne;

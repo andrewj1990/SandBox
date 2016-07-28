@@ -82,7 +82,7 @@ bool Terrain::isSolid(float x, float y) const
 	int yi = (y / 32) - (int)(camPos.y / 32) + 1;
 	int index = xi + yi * m_Width;
 
-	if (index < 0 || index >= m_Ground.size()) return false;
+	if (index < 0 || index >= m_Ground.size()) return true;
 
 	const Renderable& tile = m_Ground[index];
 

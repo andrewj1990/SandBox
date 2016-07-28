@@ -24,13 +24,13 @@ void Level::init()
 
 void Level::update(float timeElapsed)
 {
-	m_QuadTree = std::unique_ptr<QuadTree>(new QuadTree(0, BoundingBox(m_Player.getPosition().x - Window::Instance().getWidth() / 2 + 16.0f, m_Player.getPosition().y - Window::Instance().getHeight() / 2 + 16.0f, Window::Instance().getWidth(), Window::Instance().getHeight())));
+	m_QuadTree = std::unique_ptr<QuadTree>(new QuadTree(0, BoundingBox(m_Player.getSprite().getPosition().x - Window::Instance().getWidth() / 2 + 16.0f, m_Player.getSprite().getPosition().y - Window::Instance().getHeight() / 2 + 16.0f, Window::Instance().getWidth(), Window::Instance().getHeight())));
 	
 	for (auto it = m_Enemies.begin(); it != m_Enemies.end(); )
 	{
 		if ((*it)->shouldDestroy())
 		{
-			spawnItem((*it)->getPosition());
+			spawnItem((*it)->getSprite().getPosition());
 			it = m_Enemies.erase(it);
 		}
 		else
@@ -41,7 +41,7 @@ void Level::update(float timeElapsed)
 		}
 	}
 
-	if (m_Enemies.size() < 10)
+	if (m_Enemies.size() < 1000)
 	{
 		float wx = Window::Instance().getCamera().getPosition().x;
 		float wy = Window::Instance().getCamera().getPosition().y;
@@ -50,7 +50,10 @@ void Level::update(float timeElapsed)
 
 		float sx = Utils::random(wx, wx + ww);
 		float sy = Utils::random(wy, wy + wh);
-		m_Enemies.push_back(std::unique_ptr<BasicMob>(new BasicMob(sx, sy)));
+		if (!m_Terrain.isSolid(sx, sy))
+		{
+			m_Enemies.push_back(std::unique_ptr<BasicMob>(new BasicMob(sx, sy)));
+		}
 	}
 
 	m_Player.update(m_Terrain, m_QuadTree, timeElapsed);

@@ -15,14 +15,14 @@ void Player::init()
 	m_CumulativeTime = 0.0f;
 
 	m_MoveSpeed = 180.0f;
-	m_AttackSpeed = 0.2f;
+	m_AttackSpeed = 0.0f;
 	m_AttackFrame = 0.0f;
 }
 
 bool Player::playerCollision(const std::unique_ptr<QuadTree>& quadTree)
 {
 	std::vector<Renderable*> enemies;
-	quadTree->retrieve(enemies, getPosition().x, getPosition().y, 10, 10);
+	quadTree->retrieve(enemies, m_Sprite.getPosition().x, m_Sprite.getPosition().y, 10, 10);
 
 	for (auto enemy : enemies)
 	{
@@ -31,10 +31,10 @@ bool Player::playerCollision(const std::unique_ptr<QuadTree>& quadTree)
 		float ew = enemy->getSize().x;
 		float eh = enemy->getSize().y;
 
-		float px = getPosition().x;
-		float py = getPosition().y;
-		float pw = getSize().x;
-		float ph = getSize().y;
+		float px = m_Sprite.getPosition().x;
+		float py = m_Sprite.getPosition().y;
+		float pw = m_Sprite.getSize().x;
+		float ph = m_Sprite.getSize().y;
 
 		if (px > ex && px < ex + ew && py > ey && py < ey + eh)
 		{
@@ -57,18 +57,18 @@ void Player::move(const Terrain& terrain, float timeElapsed)
 	if (window.isKeyPressed(GLFW_KEY_S)) dy -= m_MoveSpeed * timeElapsed;
 	if (window.isKeyPressed(GLFW_KEY_D)) dx += m_MoveSpeed * timeElapsed;
 
-	if (terrain.isSolid(m_Position.x + dx, m_Position.y) ||
-		terrain.isSolid(m_Position.x + m_Size.x + dx, m_Position.y) ||
-		terrain.isSolid(m_Position.x + dx, m_Position.y + m_Size.y) ||
-		terrain.isSolid(m_Position.x + m_Size.x + dx, m_Position.y + m_Size.y))
+	if (terrain.isSolid(m_Sprite.getPosition().x + dx, m_Sprite.getPosition().y) ||
+		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x + dx, m_Sprite.getPosition().y) ||
+		terrain.isSolid(m_Sprite.getPosition().x + dx, m_Sprite.getPosition().y + m_Sprite.getSize().y) ||
+		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x + dx, m_Sprite.getPosition().y + m_Sprite.getSize().y))
 	{
 		dx = 0.0f;
 	}
 
-	if (terrain.isSolid(m_Position.x, m_Position.y + dy) ||
-		terrain.isSolid(m_Position.x, m_Position.y + m_Size.y + dy) ||
-		terrain.isSolid(m_Position.x + m_Size.x, m_Position.y + dy) ||
-		terrain.isSolid(m_Position.x + m_Size.x, m_Position.y + m_Size.y + dy))
+	if (terrain.isSolid(m_Sprite.getPosition().x, m_Sprite.getPosition().y + dy) ||
+		terrain.isSolid(m_Sprite.getPosition().x, m_Sprite.getPosition().y + m_Sprite.getSize().y + dy) ||
+		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x, m_Sprite.getPosition().y + dy) ||
+		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x, m_Sprite.getPosition().y + m_Sprite.getSize().y + dy))
 	{
 		dy = 0.0f;
 	}
@@ -85,10 +85,10 @@ void Player::shoot(float angle, float timeElapsed)
 	{
 		for (int i = 3; i > 0; i--)
 		{
-			m_Gun.shoot(getPosition().x, getPosition().y, angle + glm::radians(10.0f * i));
-			m_Gun.shoot(getPosition().x, getPosition().y, angle - glm::radians(10.0f * i));
+			m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle + glm::radians(10.0f * i));
+			m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle - glm::radians(10.0f * i));
 		}
-		m_Gun.shoot(getPosition().x, getPosition().y, angle);
+		m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle);
 
 		m_AttackFrame = 0.0f;
 	}
@@ -96,7 +96,7 @@ void Player::shoot(float angle, float timeElapsed)
 
 void Player::move(float dx, float dy)
 {
-	addDirection(dx, dy);
+	m_Sprite.addDirection(dx, dy);
 	m_Shield.addDirection(dx, dy);
 	m_Sword.move(dx, dy);
 	m_Gun.move(dx, dy);
@@ -117,30 +117,30 @@ void Player::dodge(const Terrain& terrain)
 	dx /= dodgeDuration;
 	dy /= dodgeDuration;
 
-	if (terrain.isSolid(m_Position.x + dx, m_Position.y) ||
-		terrain.isSolid(m_Position.x + m_Size.x + dx, m_Position.y) ||
-		terrain.isSolid(m_Position.x + dx, m_Position.y + m_Size.y) ||
-		terrain.isSolid(m_Position.x + m_Size.x + dx, m_Position.y + m_Size.y))
+	if (terrain.isSolid(m_Sprite.getPosition().x + dx, m_Sprite.getPosition().y) ||
+		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x + dx, m_Sprite.getPosition().y) ||
+		terrain.isSolid(m_Sprite.getPosition().x + dx, m_Sprite.getPosition().y + m_Sprite.getSize().y) ||
+		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x + dx, m_Sprite.getPosition().y + m_Sprite.getSize().y))
 	{
 		dx = 0.0f;
 	}
 
-	if (terrain.isSolid(m_Position.x, m_Position.y + dy) ||
-		terrain.isSolid(m_Position.x, m_Position.y + m_Size.y + dy) ||
-		terrain.isSolid(m_Position.x + m_Size.x, m_Position.y + dy) ||
-		terrain.isSolid(m_Position.x + m_Size.x, m_Position.y + m_Size.y + dy))
+	if (terrain.isSolid(m_Sprite.getPosition().x, m_Sprite.getPosition().y + dy) ||
+		terrain.isSolid(m_Sprite.getPosition().x, m_Sprite.getPosition().y + m_Sprite.getSize().y + dy) ||
+		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x, m_Sprite.getPosition().y + dy) ||
+		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x, m_Sprite.getPosition().y + m_Sprite.getSize().y + dy))
 	{
 		dy = 0.0f;
 	}
 
 	move(dx, dy);
 	
-	setAngle(getAngle() + glm::radians(-20.0f));
+	m_Sprite.setAngle(m_Sprite.getAngle() + glm::radians(-20.0f));
 
 	if (m_CumulativeTime >= dodgeDuration)
 	{
 		m_State = PlayerState::NORMAL;
-		setAngle(0.0f);
+		m_Sprite.setAngle(0.0f);
 	}
 }
 
@@ -242,9 +242,9 @@ void Player::update(float timeElapsed)
 void Player::render(Renderer& renderer)
 {
 	glm::mat4 transform;
-	transform = glm::translate(transform, glm::vec3(getPosition().x + getSize().x / 2.0f, getPosition().y + getSize().y / 2.0f, 0));
-	transform = glm::rotate(transform, getAngle(), glm::vec3(0, 0, 1));
-	transform = glm::translate(transform, glm::vec3(-getPosition().x - getSize().x / 2.0f, -getPosition().y - getSize().y / 2.0f, 0));
+	transform = glm::translate(transform, glm::vec3(m_Sprite.getPosition().x + m_Sprite.getSize().x / 2.0f, m_Sprite.getPosition().y + m_Sprite.getSize().y / 2.0f, 0));
+	transform = glm::rotate(transform, m_Sprite.getAngle(), glm::vec3(0, 0, 1));
+	transform = glm::translate(transform, glm::vec3(-m_Sprite.getPosition().x - m_Sprite.getSize().x / 2.0f, -m_Sprite.getPosition().y - m_Sprite.getSize().y / 2.0f, 0));
 	renderer.push(transform);
 	renderer.render(*this);
 	//m_Sword.render(renderer);
