@@ -13,7 +13,6 @@ BasicMob::~BasicMob()
 
 void BasicMob::damage(int amount)
 {
-	//std::cout << "damaged : " << amount << "\n";
 	m_Life -= amount;
 }
 
@@ -71,22 +70,6 @@ void BasicMob::update(float timeElapsed)
 
 	float dx = m_Dx;
 	float dy = m_Dy;
-
-	//if (terrain.isSolid(m_Position.x + dx, m_Position.y) ||
-	//	terrain.isSolid(m_Position.x + m_Size.x + dx, m_Position.y) ||
-	//	terrain.isSolid(m_Position.x + dx, m_Position.y + m_Size.y) ||
-	//	terrain.isSolid(m_Position.x + m_Size.x + dx, m_Position.y + m_Size.y))
-	//{
-	//	dx = 0.0f;
-	//}
-
-	//if (terrain.isSolid(m_Position.x, m_Position.y + dy) ||
-	//	terrain.isSolid(m_Position.x, m_Position.y + m_Size.y + dy) ||
-	//	terrain.isSolid(m_Position.x + m_Size.x, m_Position.y + dy) ||
-	//	terrain.isSolid(m_Position.x + m_Size.x, m_Position.y + m_Size.y + dy))
-	//{
-	//	dy = 0.0f;
-	//}
 
 	m_Sprite.addDirection(dx, dy);
 }

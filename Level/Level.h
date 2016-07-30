@@ -4,6 +4,7 @@
 #include "..\Utils\simplexNoise.h"
 #include "..\Entity\player.h"
 #include "..\Entity\Mob\BasicMob.h"
+#include "..\Entity\Mob\Boss.h"
 #include "..\Utils\quadTree.h"
 #include "Terrain.h"
 #include "..\Utils\Utils.h"
@@ -19,6 +20,7 @@ public:
 	void render(Renderer& renderer);
 
 	const std::unique_ptr<QuadTree>& getQuadTree() const { return m_QuadTree; }
+	const Player& getPlayer() const { return m_Player; }
 
 private:
 	void spawnItem(const glm::vec3& position);

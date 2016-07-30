@@ -22,6 +22,8 @@ public:
 private:
 	SimplexNoise m_Noise;
 
+	float m_FireRadius;
+
 	int m_Width;
 	int m_Height;
 

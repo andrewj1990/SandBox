@@ -7,6 +7,8 @@ Terrain::Terrain()
 
 void Terrain::init()
 {
+	m_FireRadius = 100;
+
 	m_Width = (Window::Instance().getWidth() / 32) + 2;
 	m_Height = (Window::Instance().getHeight() / 32) + 3;
 
@@ -91,21 +93,26 @@ bool Terrain::isSolid(float x, float y) const
 
 void Terrain::update(float timeElapsed)
 {
+	m_FireRadius += timeElapsed * 10;
+
 	const glm::vec3& camPos = Window::Instance().getCamera().getPosition();
 
 	// offset the position 1 tile back so we dont have any blank spaces
 	int xp = (int)(camPos.x) / 32 * 32 - 32;
 	int yp = (int)(camPos.y) / 32 * 32 - 32;
-	
+
 	for (int j = 0; j < m_Height; j++)
 	{
 		for (int i = 0; i < m_Width; i++)
 		{
+			float r = std::sqrtf((xp + i * 32) * (xp + i * 32) + (yp + j * 32) * (yp + j * 32));
+
 			float groundHeight = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, (xp / 32 + i) / 32.0f, (yp / 32 + j) / 32.0f);
 
 			Renderable& terrain = m_Ground[i + j * m_Width];
 			terrain.setPosition(glm::vec3(xp + i * 32, yp + j * 32, 0));
-			glm::vec4 colour = getColor(groundHeight);
+
+			glm::vec4 colour = r < m_FireRadius ? glm::vec4(0.2, 0.1, 0.1, 0) : getColor(groundHeight);
 			terrain.setSolid(colour.w == 1);
 			terrain.setColor(glm::vec3(colour));
 		}

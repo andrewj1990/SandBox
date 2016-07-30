@@ -189,12 +189,11 @@ void Player::update(const Terrain& terrain, const std::unique_ptr<QuadTree>& qua
 		break;
 	}
 
-	//update(timeElapsed);
 	move(terrain, timeElapsed);
-	shoot(angle, timeElapsed);
+	//shoot(angle, timeElapsed);
 
 	m_Sword.update(quadTree, timeElapsed);
-	m_Gun.update(quadTree, timeElapsed);
+	//m_Gun.update(quadTree, timeElapsed);
 }
 
 void Player::update(float timeElapsed)
@@ -247,8 +246,8 @@ void Player::render(Renderer& renderer)
 	transform = glm::translate(transform, glm::vec3(-m_Sprite.getPosition().x - m_Sprite.getSize().x / 2.0f, -m_Sprite.getPosition().y - m_Sprite.getSize().y / 2.0f, 0));
 	renderer.push(transform);
 	renderer.render(*this);
-	//m_Sword.render(renderer);
-	m_Gun.render(renderer);
+	m_Sword.render(renderer);
+	//m_Gun.render(renderer);
 	renderer.pop();
 
 

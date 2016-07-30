@@ -15,11 +15,11 @@ void Level::init()
 		m_Platforms.push_back(Renderable(glm::vec3(x * 32, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Level/Terrain.png")));
 	}
 
-	m_Enemies.push_back(std::unique_ptr<BasicMob>(new BasicMob(600, 400)));
-	for (int i = 0; i < 11; i++)
-	{
-		m_Enemies.push_back(std::unique_ptr<BasicMob>(new BasicMob(600, 400)));
-	}
+	m_Enemies.push_back(std::unique_ptr<Boss>(new Boss(600, 400)));
+	//for (int i = 0; i < 11; i++)
+	//{
+	//	m_Enemies.push_back(std::unique_ptr<BasicMob>(new BasicMob(600, 400)));
+	//}
 }
 
 void Level::update(float timeElapsed)
@@ -41,20 +41,20 @@ void Level::update(float timeElapsed)
 		}
 	}
 
-	if (m_Enemies.size() < 1000)
-	{
-		float wx = Window::Instance().getCamera().getPosition().x;
-		float wy = Window::Instance().getCamera().getPosition().y;
-		float ww = Window::Instance().getWidth();
-		float wh = Window::Instance().getHeight();
+	//if (m_Enemies.size() < 1000)
+	//{
+	//	float wx = Window::Instance().getCamera().getPosition().x;
+	//	float wy = Window::Instance().getCamera().getPosition().y;
+	//	float ww = Window::Instance().getWidth();
+	//	float wh = Window::Instance().getHeight();
 
-		float sx = Utils::random(wx, wx + ww);
-		float sy = Utils::random(wy, wy + wh);
-		if (!m_Terrain.isSolid(sx, sy))
-		{
-			m_Enemies.push_back(std::unique_ptr<BasicMob>(new BasicMob(sx, sy)));
-		}
-	}
+	//	float sx = Utils::random(wx, wx + ww);
+	//	float sy = Utils::random(wy, wy + wh);
+	//	if (!m_Terrain.isSolid(sx, sy))
+	//	{
+	//		m_Enemies.push_back(std::unique_ptr<BasicMob>(new BasicMob(sx, sy)));
+	//	}
+	//}
 
 	m_Player.update(m_Terrain, m_QuadTree, timeElapsed);
 

@@ -19,4 +19,19 @@ float Utils::random(float lowerBound, float upperBound)
 	return r;
 }
 
+std::unique_ptr<Action> Utils::getRandomAction()
+{
+	ActionType type = static_cast<ActionType>(rand() % static_cast<int>(ActionType::END));
+
+	switch (type)
+	{
+	case ActionType::MOVE:
+		return std::unique_ptr<MoveAction>(new MoveAction());
+	case ActionType::ATTACK:
+		return std::unique_ptr<MoveAction>(new MoveAction());
+	default:
+		return std::unique_ptr<MoveAction>(new MoveAction());
+	}
+}
+
 

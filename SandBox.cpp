@@ -10,6 +10,7 @@
 #include "SkeletalAnimation\Skeleton.h"
 #include "Entity\player.h"
 #include "Level\Level.h"
+#include "UI\PlayerUI.h"
 
 #include "Graphics\label.h"
 #include "Utils\timer.h"
@@ -42,6 +43,7 @@ int main()
 	ResourceManager::getInstance().shader("basic_shader")->setUniform("textures", 32, texID);
 
 	Level level;
+	PlayerUI playerUI(level.getPlayer());
 
 	Renderable background(glm::vec3(0,0,0), glm::vec2(700, 700), glm::vec4(1,1,1,1));
 	std::vector<Renderable> sprites;
@@ -84,6 +86,7 @@ int main()
 		while (accumulator >= dt)
 		{
 			level.update(dt);
+			playerUI.update(dt);
 			++updates;
 			updateTimer += tick;
 
@@ -92,6 +95,7 @@ int main()
 		}
 
 		level.render(batchrenderer);
+		playerUI.render(batchrenderer);
 
 		batchrenderer.render(label);
 

@@ -56,7 +56,7 @@ void Sword::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 
 		for (const auto& swordHitBox : m_HitBoxes)
 		{
-			std::vector<Renderable*> enemies;
+			std::vector<Entity*> enemies;
 
 			glm::mat4 transform;
 			transform = glm::translate(transform, glm::vec3(m_Sprite.getPosition().x + 5, m_Sprite.getPosition().y + 5, 0));
@@ -69,10 +69,10 @@ void Sword::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 
 			for (const auto& enemy : enemies)
 			{
-				float ex = enemy->getPosition().x;
-				float ey = enemy->getPosition().y;
-				float ew = enemy->getSize().x;
-				float eh = enemy->getSize().y;
+				float ex = enemy->getSprite().getPosition().x;
+				float ey = enemy->getSprite().getPosition().y;
+				float ew = enemy->getSprite().getSize().x;
+				float eh = enemy->getSprite().getSize().y;
 
 				float sx = swordPos.x;
 				float sy = swordPos.y;
@@ -82,6 +82,7 @@ void Sword::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 				if (sx > ex && sx < ex + ew && sy > ey && sy < ey + eh)
 				{
 					m_Entities.push_back(std::unique_ptr<Particle>(new Particle(sx, sy)));
+					enemy->damage(10);
 					//m_Entities.push_back(std::unique_ptr<DamageCounter>(new DamageCounter("1", sx, sy)));
 					//std::cout << "player collision\n";
 				}
