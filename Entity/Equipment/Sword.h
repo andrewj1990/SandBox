@@ -22,7 +22,7 @@ public:
 private:
 	Sprite m_Sprite;
 
-	std::vector<Renderable> m_HitBoxes;
+	std::vector<Entity> m_HitBoxes;
 	std::vector<std::unique_ptr<Entity>> m_Entities;
 
 	bool m_Animating;

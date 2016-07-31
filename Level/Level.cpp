@@ -15,7 +15,7 @@ void Level::init()
 		m_Platforms.push_back(Renderable(glm::vec3(x * 32, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Level/Terrain.png")));
 	}
 
-	m_Enemies.push_back(std::unique_ptr<Boss>(new Boss(600, 400)));
+	m_Enemies.push_back(std::unique_ptr<Boss>(new Boss(m_Player, 600, 400)));
 	//for (int i = 0; i < 11; i++)
 	//{
 	//	m_Enemies.push_back(std::unique_ptr<BasicMob>(new BasicMob(600, 400)));
@@ -65,7 +65,12 @@ void Level::render(Renderer& renderer)
 {
 	m_Terrain.render(renderer);
 
-	renderer.render(m_Enemies);
+	//renderer.render(m_Enemies);
+
+	for (auto& enemy : m_Enemies)
+	{
+		enemy->render(renderer);
+	}
 
 	m_Player.render(renderer);
 }

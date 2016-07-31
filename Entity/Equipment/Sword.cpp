@@ -12,7 +12,7 @@ Sword::Sword(float x, float y)
 
 	for (int i = 2; i < 6; i++)
 	{
-		m_HitBoxes.push_back(Sprite(glm::vec3(x + i * 5, y + i * 5, 0), glm::vec2(5, 5), glm::vec4(1, 1, 1, 0.5)));
+		m_HitBoxes.push_back(Entity(glm::vec3(x + i * 5, y + i * 5, 0), glm::vec2(5, 5), glm::vec4(1, 1, 1, 0.5)));
 	}
 }
 
@@ -20,9 +20,9 @@ void Sword::move(float x, float y)
 {
 	m_Sprite.addDirection(x, y);
 
-	for (Renderable& hitBoxes : m_HitBoxes)
+	for (Entity& hitBoxes : m_HitBoxes)
 	{
-		hitBoxes.addDirection(x, y);
+		hitBoxes.getSprite().addDirection(x, y);
 	}
 }
 
@@ -62,12 +62,12 @@ void Sword::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 			transform = glm::translate(transform, glm::vec3(m_Sprite.getPosition().x + 5, m_Sprite.getPosition().y + 5, 0));
 			transform = glm::rotate(transform, m_Sprite.getAngle(), glm::vec3(0, 0, 1));
 			transform = glm::translate(transform, glm::vec3(-m_Sprite.getPosition().x - 5, -m_Sprite.getPosition().y - 5, 0));
-			const glm::vec3& pos = swordHitBox.getPosition();
+			const glm::vec3& pos = swordHitBox.getSprite().getPosition();
 			glm::vec4 swordPos = transform * glm::vec4(pos, 1.0f);
 
-			quadTree->retrieve(enemies, swordPos.x, swordPos.y, swordHitBox.getSize().x, swordHitBox.getSize().y);
+			quadTree->retrieve(enemies, swordPos.x, swordPos.y, swordHitBox.getWidth(), swordHitBox.getHeight());
 
-			for (const auto& enemy : enemies)
+			for (Entity* enemy : enemies)
 			{
 				float ex = enemy->getSprite().getPosition().x;
 				float ey = enemy->getSprite().getPosition().y;
@@ -76,15 +76,18 @@ void Sword::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 
 				float sx = swordPos.x;
 				float sy = swordPos.y;
-				float sw = swordHitBox.getSize().x;
-				float sh = swordHitBox.getSize().y;
+				float sw = swordHitBox.getWidth();
+				float sh = swordHitBox.getHeight();
 
-				if (sx > ex && sx < ex + ew && sy > ey && sy < ey + eh)
+				if (Utils::quadCollision(sx, sy, sw, sh, ex, ey, ew, eh))
 				{
 					m_Entities.push_back(std::unique_ptr<Particle>(new Particle(sx, sy)));
 					enemy->damage(10);
+				}
+
+				if (sx > ex && sx < ex + ew && sy > ey && sy < ey + eh)
+				{
 					//m_Entities.push_back(std::unique_ptr<DamageCounter>(new DamageCounter("1", sx, sy)));
-					//std::cout << "player collision\n";
 				}
 
 			}

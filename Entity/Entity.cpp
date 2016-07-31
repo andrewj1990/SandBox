@@ -39,6 +39,39 @@ void Entity::render(Renderer& renderer)
 	renderer.render(*this);
 }
 
+bool Entity::collide(const Entity& entity) const
+{
+	float x = getX();
+	float y = getY();
+	float w = getWidth();
+	float h = getHeight();
+
+	float ex = entity.getX();
+	float ey = entity.getY();
+	float ew = entity.getWidth();
+	float eh = entity.getHeight();
+
+	if (Utils::quadCollision(x, y, w, h, ex, ey, ew, eh))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+float Entity::getAngle(const Entity& entity)
+{
+	float x = getCenterX();
+	float y = getCenterY();
+	float ex = entity.getCenterX();
+	float ey = entity.getCenterY();
+
+	float dx = ex - x;
+	float dy = ey - y;
+
+	return std::atan2f(dy, dx);
+}
+
 void Entity::init()
 {
 	m_X = 0;
