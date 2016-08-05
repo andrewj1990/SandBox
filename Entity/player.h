@@ -30,8 +30,8 @@ public:
 
 	void addBuff();
 
-	void update(const Terrain& terrain, const std::unique_ptr<QuadTree>& quadTree, float timeElapsed);
 	void update(float timeElapsed) override;
+	void update(const Terrain& terrain, const std::unique_ptr<QuadTree>& quadTree, float timeElapsed) override;
 	void render(Renderer& renderer) override;
 
 private:

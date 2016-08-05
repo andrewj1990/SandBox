@@ -32,6 +32,8 @@ int main()
 {
 	Window::Instance().setParams("SandBox", 1280, 720);
 
+	ResourceManager::getInstance().addShader("outline_shader", "Shaders/outline.vs", "Shaders/outline.frag");
+
 	ResourceManager::getInstance().shader("basic_shader")->use();
 	Renderer batchrenderer;
 	
@@ -54,7 +56,9 @@ int main()
 	//glEnable(GL_DEPTH_TEST);
 
 	glm::mat4 projection = glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f, -1.0f, 1.0f);
+	//glm::mat4 projection = glm::ortho(520.0f, 760.0f, 240.0f, 480.0f, -1.0f, 1.0f);
 	ResourceManager::getInstance().shader("basic_shader")->setUniform("projection", projection);
+	ResourceManager::getInstance().shader("outline_shader")->setUniform("projection", projection);
 
 	Timer time;
 	int frames = 0;

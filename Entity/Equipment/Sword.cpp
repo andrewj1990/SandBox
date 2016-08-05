@@ -125,10 +125,7 @@ void Sword::render(Renderer & renderer)
 	renderer.pop();
 
 	renderer.push(glm::mat4(), true);
-	for (auto& particle : m_Entities)
-	{
-		particle->render(renderer);
-	}
+	renderer.render(m_Entities);
 	renderer.pop();
 
 }

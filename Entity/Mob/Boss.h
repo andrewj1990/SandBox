@@ -4,6 +4,7 @@
 #include "Actions\Action.h"
 #include "Actions\MoveAction.h"
 #include "..\player.h"
+#include "..\..\Utils\astar.h"
 
 class Boss : public Entity
 {

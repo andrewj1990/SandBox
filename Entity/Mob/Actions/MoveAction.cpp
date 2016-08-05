@@ -9,7 +9,7 @@ MoveAction::MoveAction()
 void MoveAction::init()
 {
 	m_CumulativeTime = 0.0f;
-	m_MoveDuration = 1.0f;
+	m_Duration = 1.0f;
 	m_Complete = false;
 }
 
@@ -17,23 +17,15 @@ void MoveAction::play(Entity& mob, Entity& player, float timeElapsed)
 {
 	m_CumulativeTime += timeElapsed;
 
-	if (m_CumulativeTime > m_MoveDuration)
+	if (m_CumulativeTime > m_Duration)
 	{
 		m_Complete = true;
 		return;
 	}
 
-	Window& window = Window::Instance();
-	float playerX = window.getCamera().getPosition().x + window.getWidth() / 2;
-	float playerY = window.getCamera().getPosition().y + window.getHeight() / 2;
+	float angle = mob.getAngle(player);
 
-	float mobX = mob.getCenterX();
-	float mobY = mob.getCenterY();
-
-	float dx = playerX - mobX;
-	float dy = playerY - mobY;
-
-	float angle = std::atan2f(dy, dx);
+	//float angle = std::atan2f(dy, dx);
 
 	// if collides with player then set action as complete
 	if (mob.collide(player))

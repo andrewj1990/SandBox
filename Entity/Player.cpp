@@ -1,7 +1,7 @@
 #include "player.h"
 
 Player::Player(float x, float y)
-	: Entity(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/PlayerSpritesheet10.png")), 
+	: Entity(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/Player2.png")), 
 	m_Sword(x + 2, y + 8), m_Gun(x + 2, y + 8)
 {
 	m_Shield = Sprite(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/Shield.png"));
@@ -15,7 +15,7 @@ void Player::init()
 	m_CumulativeTime = 0.0f;
 
 	m_MoveSpeed = 180.0f;
-	m_AttackSpeed = 0.0f;
+	m_AttackSpeed = 0.5f;
 	m_AttackFrame = 0.0f;
 }
 
@@ -103,6 +103,7 @@ void Player::move(float dx, float dy)
 
 	Camera& camera = Window::Instance().getCamera();
 	camera.moveCamera(dx, dy);
+	ResourceManager::getInstance().shader("outline_shader")->setUniform("view", camera.GetViewMatrix());
 	ResourceManager::getInstance().shader("basic_shader")->setUniform("view", camera.GetViewMatrix());
 
 }
@@ -150,8 +151,8 @@ void Player::update(const Terrain& terrain, const std::unique_ptr<QuadTree>& qua
 	float mouseX = Window::Instance().mouseX();
 	float mouseY = Window::Instance().mouseY();
 
-	float dx = mouseX - m_X;
-	float dy = mouseY - m_Y;
+	float dx = mouseX - window.getWidth() / 2 - 16.0f;
+	float dy = mouseY - window.getHeight() / 2 - 16.0f;
 	float angle = -std::atan2f(dy, dx);
 
 	m_CumulativeTime += timeElapsed;
@@ -190,10 +191,10 @@ void Player::update(const Terrain& terrain, const std::unique_ptr<QuadTree>& qua
 	}
 
 	move(terrain, timeElapsed);
-	//shoot(angle, timeElapsed);
+	shoot(angle, timeElapsed);
 
-	m_Sword.update(quadTree, timeElapsed);
-	//m_Gun.update(quadTree, timeElapsed);
+	//m_Sword.update(quadTree, timeElapsed);
+	m_Gun.update(quadTree, timeElapsed);
 }
 
 void Player::update(float timeElapsed)
@@ -240,14 +241,24 @@ void Player::update(float timeElapsed)
 
 void Player::render(Renderer& renderer)
 {
+	float scale = 1.1f;
 	glm::mat4 transform;
+	glm::mat4 outline;
+	outline = glm::translate(outline, glm::vec3(m_Sprite.getPosition().x + m_Sprite.getSize().x / 2.0f, m_Sprite.getPosition().y + m_Sprite.getSize().y / 2.0f, 0));
+	outline = glm::scale(outline, glm::vec3(scale, scale, scale));
+	outline = glm::rotate(outline, m_Sprite.getAngle(), glm::vec3(0, 0, 1));
+	outline = glm::translate(outline, glm::vec3(-m_Sprite.getPosition().x - m_Sprite.getSize().x / 2.0f, -m_Sprite.getPosition().y - m_Sprite.getSize().y / 2.0f, 0));
+
 	transform = glm::translate(transform, glm::vec3(m_Sprite.getPosition().x + m_Sprite.getSize().x / 2.0f, m_Sprite.getPosition().y + m_Sprite.getSize().y / 2.0f, 0));
 	transform = glm::rotate(transform, m_Sprite.getAngle(), glm::vec3(0, 0, 1));
 	transform = glm::translate(transform, glm::vec3(-m_Sprite.getPosition().x - m_Sprite.getSize().x / 2.0f, -m_Sprite.getPosition().y - m_Sprite.getSize().y / 2.0f, 0));
+
 	renderer.push(transform);
 	renderer.render(*this);
-	m_Sword.render(renderer);
-	//m_Gun.render(renderer);
+	renderer.pop();
+
+	//m_Sword.render(renderer);
+	m_Gun.render(renderer);
 	renderer.pop();
 
 

@@ -17,6 +17,7 @@ public:
 	void operator=(ResourceManager const&) = delete;
 
 	std::shared_ptr<Shader> shader(const std::string& name);
+	void addShader(const std::string& name, const std::string& vertShader, const std::string& fragShader);
 
 private:
 	ResourceManager() {}

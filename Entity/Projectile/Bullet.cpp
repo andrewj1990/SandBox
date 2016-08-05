@@ -1,7 +1,7 @@
 #include "Bullet.h"
 
 Bullet::Bullet(float x, float y, float angle)
-	: Entity(glm::vec3(x - 16, y - 16, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/Bullet.png"))
+	: Entity(glm::vec3(x - 16, y - 16, 0), glm::vec2(8, 8), TextureManager::get("Textures/Bullet2.png"))
 {
 	m_Angle = angle;
 

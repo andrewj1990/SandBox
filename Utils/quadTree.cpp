@@ -4,7 +4,7 @@
 QuadTree::QuadTree(int level, BoundingBox bounds)
 	: m_Level(level), m_Bounds(bounds), ne(nullptr), se(nullptr), sw(nullptr), nw(nullptr)
 {
-	max_objects = 20;
+	max_objects = 40;
 	max_levels = 5;
 
 }

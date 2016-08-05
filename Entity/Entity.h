@@ -1,6 +1,7 @@
 #pragma once
 
 #include "..\Graphics\Sprite.h"
+#include "..\Utils\quadTree.h"
 
 class Entity {
 public:
@@ -11,6 +12,7 @@ public:
 	~Entity();
 
 	virtual void update(const Terrain& terrain, float timeElapsed) {}
+	virtual void update(const Terrain& terrain, const std::unique_ptr<QuadTree>& quadTree, float timeElapsed) {}
 	virtual void update(float timeElapsed);
 	virtual void render(Renderer& renderer);
 
@@ -33,6 +35,11 @@ public:
 
 	Sprite& getSprite() { return m_Sprite; }
 	const Sprite& getSprite() const { return m_Sprite; }
+
+	bool operator<(const Entity& other) const
+	{
+		return getCenterY() <= other.getCenterY();
+	}
 
 private:
 	void init();

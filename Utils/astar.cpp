@@ -1,5 +1,5 @@
 #include "astar.h"
-#include <algorithm>
+#include "..\Entity\Entity.h"
 
 int AStar::heuristic(const Node& a, const Node& b)
 {
@@ -55,7 +55,7 @@ int AStar::cost(Node& node, const std::unique_ptr<QuadTree>& qt)
 	//return (rand() % 10);
 }
 
-std::unordered_map<int, Node> AStar::bfsSearch(int x, int y, glm::vec2 end)
+std::unordered_map<int, Node> AStar::bfsSearch(int x, int y, const glm::vec2& end)
 {
 	Node node(x, y);
 	std::queue<Node> frontier;
@@ -90,7 +90,7 @@ std::unordered_map<int, Node> AStar::bfsSearch(int x, int y, glm::vec2 end)
 
 }
 
-std::unordered_map<int, Node> AStar::aStarSearch(int x, int y, glm::vec2 end, const std::unique_ptr<QuadTree>& qt)
+std::unordered_map<int, Node> AStar::aStarSearch(int x, int y, const glm::vec2& end, const std::unique_ptr<QuadTree>& qt)
 {
 	Node node(x, y);
 	typedef std::pair<int, Node> PQElement;
@@ -130,4 +130,36 @@ std::unordered_map<int, Node> AStar::aStarSearch(int x, int y, glm::vec2 end, co
 
 	return came_from;
 
+}
+
+glm::vec2 AStar::aStarSearchDirection(const Entity& start, const Entity& end, const std::unique_ptr<QuadTree>& qt)
+{
+//	std::cout << (int)start.getCenterX() / 16 * 16 << ", " << (int)start.getCenterY() / 16 * 16 << " | " << end.getCenterX() / 16 * 16 << ", " << end.getCenterY() / 16 * 16 << "\n";
+	
+	std::unordered_map<int, Node> path = aStarSearch((int)start.getCenterX() / 16 * 16, (int)start.getCenterY() / 16 * 16, glm::vec2((int)end.getCenterX() / 16 * 16, (int)end.getCenterY() / 16 * 16), qt);
+
+	Node c((int)end.getCenterX() / 16 * 16, (int)end.getCenterY() / 16 * 16);
+	Node s((int)start.getCenterX() / 16 * 16, (int)start.getCenterY() / 16 * 16);
+
+	std::vector<Node> p;
+	p.push_back(c);
+	while (c.getInt() != s.getInt())
+	{
+		c = path[c.getInt()];
+		p.push_back(c);
+	}
+
+	float dx = 0.0f;
+	float dy = 0.0f;
+
+	if (p.size() > 1)
+	{
+		p.pop_back();
+		Node first = p.back();
+
+		dx = first.x - s.x;
+		dy = first.y - s.y;
+	}
+
+	return glm::vec2(dx, dy);
 }

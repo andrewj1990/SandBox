@@ -5,6 +5,7 @@
 #include "..\..\Utils\quadTree.h"
 #include "..\Particle.h"
 #include "..\DamageCounter.h"
+#include "..\..\Utils\ResourceManager.h"
 
 class Sword
 {

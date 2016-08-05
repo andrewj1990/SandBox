@@ -14,6 +14,4 @@ public:
 
 private:
 	float m_CumulativeTime;
-	float m_MoveDuration;
-
 };

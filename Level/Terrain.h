@@ -4,6 +4,7 @@
 #include "..\Utils\simplexNoise.h"
 #include "..\Graphics\renderable.h"
 #include "..\Graphics\Window.h"
+#include "..\Utils\quadTree.h"
 
 class Terrain
 {
@@ -19,6 +20,8 @@ public:
 	void update(float timeElapsed);
 	void render(Renderer& renderer);
 
+	const std::unique_ptr<QuadTree>& getQuadTree() const { return m_QuadTree; }
+
 private:
 	SimplexNoise m_Noise;
 
@@ -27,6 +30,10 @@ private:
 	int m_Width;
 	int m_Height;
 
+	int m_TileSize;
+	float m_NoiseSize;
+
 	std::vector<Renderable> m_Ground;
+	std::unique_ptr<QuadTree> m_QuadTree;
 
 };

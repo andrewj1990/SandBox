@@ -343,6 +343,26 @@ void Renderer::render(const std::vector<std::unique_ptr<Entity>>& entities)
 	flush();
 }
 
+void Renderer::render(const std::unique_ptr<Entity>& entity)
+{
+	begin();
+
+	entity->getSprite().submit(*this);
+
+	end();
+	flush();
+}
+
+void Renderer::render(const std::shared_ptr<Entity>& entity)
+{
+	begin();
+
+	entity->getSprite().submit(*this);
+
+	end();
+	flush();
+}
+
 
 glm::vec3 Renderer::multiply(const glm::mat4 & matrix, const glm::vec3 vector)
 {

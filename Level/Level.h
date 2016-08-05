@@ -29,7 +29,12 @@ private:
 	Player m_Player;
 	Terrain m_Terrain;
 
+	Sprite treeSprite;
+
+	std::shared_ptr<Player> m_PlayerPtr;
+
 	std::vector<std::unique_ptr<Entity>> m_Enemies;
+	std::vector<std::shared_ptr<Entity>> m_Entities;
 	std::vector<Renderable> m_Platforms;
 
 	SimplexNoise m_Noise;

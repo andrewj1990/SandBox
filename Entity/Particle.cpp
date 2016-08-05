@@ -1,8 +1,9 @@
 #include "Particle.h"
 
 Particle::Particle(float x, float y)
-	: Entity(glm::vec3(x, y, 0.0f), glm::vec2(5, 5), glm::vec4(1, 0, 0, rand() % 1000 / 1000.0f))
+	: Entity(glm::vec3(x, y, 0.0f), glm::vec2(5, 5), TextureManager::get("Textures/Player/Particle.png"))
 {
+	m_Sprite.setColor(glm::vec4(1, 1, 1, Utils::random(0.0f, 1.0f)));
 	m_Dx = Utils::random(-1.0f, 1.0f);
 	m_Dy = Utils::random(-1.0f, 1.0f);
 

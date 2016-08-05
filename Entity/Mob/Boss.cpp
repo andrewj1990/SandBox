@@ -1,7 +1,7 @@
 #include "Boss.h"
 
 Boss::Boss(Player& player, float x, float y)
-	: Entity(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/PlayerSpritesheet10.png")), m_Player(player)
+	: Entity(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/Player2.png")), m_Player(player)
 {
 	m_ActionIndex = -1;
 
@@ -24,7 +24,7 @@ void Boss::update(const Terrain& terrain, float timeElapsed)
 	{
 		if (!m_Actions[m_ActionIndex]->isComplete())
 		{
-			m_Actions[m_ActionIndex]->play(*this, m_Player, timeElapsed);
+			//m_Actions[m_ActionIndex]->play(*this, m_Player, timeElapsed);
 		}
 		else
 		{
@@ -46,6 +46,10 @@ void Boss::update(const Terrain& terrain, float timeElapsed)
 		}
 	}
 
+	//const std::unique_ptr<QuadTree>& qt = terrain.getQuadTree();
+
+	//glm::vec2 dir = AStar::aStarSearchDirection(*this, m_Player, qt);
+	//m_Sprite.addDirection(dir.x * 2 * timeElapsed, dir.y * 2 * timeElapsed);
 
 }
 

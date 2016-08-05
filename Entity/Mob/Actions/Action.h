@@ -15,4 +15,6 @@ public:
 
 protected:
 	bool m_Complete;
+
+	float m_Duration;
 };
