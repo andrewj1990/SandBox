@@ -11,9 +11,12 @@ public:
 	Entity(const glm::vec3& pos, const glm::vec2& size, const glm::vec4& colour);
 	~Entity();
 
+	void init(const glm::vec3& pos, const glm::vec2& size, Texture* texture);
+
 	virtual void update(const Terrain& terrain, float timeElapsed) {}
 	virtual void update(const Terrain& terrain, const std::unique_ptr<QuadTree>& quadTree, float timeElapsed) {}
 	virtual void update(float timeElapsed);
+	virtual void submit(Renderer& renderer);
 	virtual void render(Renderer& renderer);
 
 	virtual bool collide(const Entity& entity) const;
@@ -35,11 +38,6 @@ public:
 
 	Sprite& getSprite() { return m_Sprite; }
 	const Sprite& getSprite() const { return m_Sprite; }
-
-	bool operator<(const Entity& other) const
-	{
-		return getCenterY() <= other.getCenterY();
-	}
 
 private:
 	void init();

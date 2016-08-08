@@ -12,11 +12,14 @@ Player::Player(float x, float y)
 void Player::init()
 {
 	m_State = PlayerState::NORMAL;
+	m_Row = 0;
 	m_CumulativeTime = 0.0f;
 
 	m_MoveSpeed = 180.0f;
 	m_AttackSpeed = 0.5f;
 	m_AttackFrame = 0.0f;
+
+	m_Sprite.setUV(1, 0, 10, 10);
 }
 
 bool Player::playerCollision(const std::unique_ptr<QuadTree>& quadTree)
@@ -49,13 +52,38 @@ void Player::move(const Terrain& terrain, float timeElapsed)
 {
 	Window& window = Window::Instance();
 
+	m_Anim += timeElapsed * 10.0f;
+
 	float dx = 0.0f;
 	float dy = 0.0f;
 
-	if (window.isKeyPressed(GLFW_KEY_W)) dy += m_MoveSpeed * timeElapsed;
-	if (window.isKeyPressed(GLFW_KEY_A)) dx -= m_MoveSpeed * timeElapsed;
-	if (window.isKeyPressed(GLFW_KEY_S)) dy -= m_MoveSpeed * timeElapsed;
-	if (window.isKeyPressed(GLFW_KEY_D)) dx += m_MoveSpeed * timeElapsed;
+	if (window.isKeyPressed(GLFW_KEY_W))
+	{
+		m_Row = 3;
+		m_Sprite.setUV((int)m_Anim % 3, m_Row, 10, 10);
+		dy += m_MoveSpeed * timeElapsed;
+	}
+
+	if (window.isKeyPressed(GLFW_KEY_A))
+	{
+		m_Row = 2;
+		m_Sprite.setUV((int)m_Anim % 3, m_Row, 10, 10);
+		dx -= m_MoveSpeed * timeElapsed;
+	}
+
+	if (window.isKeyPressed(GLFW_KEY_S))
+	{
+		m_Row = 0;
+		m_Sprite.setUV((int)m_Anim % 3, m_Row, 10, 10);
+		dy -= m_MoveSpeed * timeElapsed;
+	}
+
+	if (window.isKeyPressed(GLFW_KEY_D))
+	{
+		m_Row = 1;
+		m_Sprite.setUV((int)m_Anim % 3, m_Row, 10, 10);
+		dx += m_MoveSpeed * timeElapsed;
+	}
 
 	if (terrain.isSolid(m_Sprite.getPosition().x + dx, m_Sprite.getPosition().y) ||
 		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x + dx, m_Sprite.getPosition().y) ||
@@ -239,6 +267,44 @@ void Player::update(float timeElapsed)
 
 }
 
+void Player::submit(Renderer& renderer)
+{
+	glm::mat4 transform;
+	transform = glm::translate(transform, glm::vec3(m_Sprite.getPosition().x + m_Sprite.getSize().x / 2.0f, m_Sprite.getPosition().y + m_Sprite.getSize().y / 2.0f, 0));
+	transform = glm::rotate(transform, m_Sprite.getAngle(), glm::vec3(0, 0, 1));
+	transform = glm::translate(transform, glm::vec3(-m_Sprite.getPosition().x - m_Sprite.getSize().x / 2.0f, -m_Sprite.getPosition().y - m_Sprite.getSize().y / 2.0f, 0));
+
+	if (m_Row == 3)
+	{
+		m_Gun.submit(renderer);
+	}
+
+	renderer.push(transform);
+	renderer.end();
+	renderer.flush();
+	ResourceManager::getInstance().shader("basic_shader")->setUniform("step_size", glm::vec2(0.3f / m_Sprite.getTextureWidth(), 0.2f / m_Sprite.getTextureHeight()));
+	renderer.render(m_Sprite);
+	ResourceManager::getInstance().shader("basic_shader")->setUniform("step_size", glm::vec2(1.0f / 32.0f, 1.0f / 32.0f));
+	renderer.pop();
+	renderer.begin();
+
+	if (m_Row != 3)
+	{
+		m_Gun.submit(renderer);
+	}
+
+	if (m_ShieldActive)
+	{
+		transform = glm::mat4();
+		transform = glm::translate(transform, glm::vec3(m_Shield.getPosition().x + m_Shield.getSize().x / 2.0f, m_Shield.getPosition().y + m_Shield.getSize().y / 2.0f, 0));
+		transform = glm::rotate(transform, m_Shield.getAngle(), glm::vec3(0, 0, 1));
+		transform = glm::translate(transform, glm::vec3(-m_Shield.getPosition().x - m_Shield.getSize().x / 2.0f, -m_Shield.getPosition().y - m_Shield.getSize().y / 2.0f, 0));
+		renderer.push(transform);
+		renderer.render(m_Shield);
+		renderer.pop();
+	}
+}
+
 void Player::render(Renderer& renderer)
 {
 	float scale = 1.1f;
@@ -253,14 +319,22 @@ void Player::render(Renderer& renderer)
 	transform = glm::rotate(transform, m_Sprite.getAngle(), glm::vec3(0, 0, 1));
 	transform = glm::translate(transform, glm::vec3(-m_Sprite.getPosition().x - m_Sprite.getSize().x / 2.0f, -m_Sprite.getPosition().y - m_Sprite.getSize().y / 2.0f, 0));
 
+	if (m_Row == 3)
+	{
+		m_Gun.render(renderer);
+	}
+
 	renderer.push(transform);
-	renderer.render(*this);
+	ResourceManager::getInstance().shader("outline_shader")->setUniform("step_size", glm::vec2(0.3f / m_Sprite.getTextureWidth(), 0.2f / m_Sprite.getTextureHeight()));
+	renderer.render(m_Sprite);
+	ResourceManager::getInstance().shader("outline_shader")->setUniform("step_size", glm::vec2(1.0f / 32.0f, 1.0f / 32.0f));
 	renderer.pop();
 
 	//m_Sword.render(renderer);
-	m_Gun.render(renderer);
-	renderer.pop();
-
+	if (m_Row != 3)
+	{
+		m_Gun.render(renderer);
+	}
 
 	if (m_ShieldActive)
 	{

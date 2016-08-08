@@ -6,6 +6,8 @@ Boss::Boss(Player& player, float x, float y)
 	m_ActionIndex = -1;
 
 	m_Actions = Utils::getRandomActionList(3);
+
+	m_Sprite.setUV(0, 0, 10, 10);
 }
 
 void Boss::damage(int amount)

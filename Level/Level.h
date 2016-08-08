@@ -8,6 +8,7 @@
 #include "..\Utils\quadTree.h"
 #include "Terrain.h"
 #include "..\Utils\Utils.h"
+#include "..\Utils\ObjectPool.h"
 
 class Level
 {
@@ -39,6 +40,8 @@ private:
 
 	SimplexNoise m_Noise;
 	std::unique_ptr<QuadTree> m_QuadTree;
+	
+	ObjectPool<Entity> TestPool;
 
 	std::vector<Renderable> quads;
 };

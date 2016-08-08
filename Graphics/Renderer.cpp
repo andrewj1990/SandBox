@@ -71,6 +71,13 @@ void Renderer::begin()
 
 void Renderer::submit(const Renderable& renderable)
 {
+	if (m_IndexCount + 6 > RENDERER_INDICES_SIZE)
+	{
+		end();
+		flush();
+		begin();
+	}
+
 	const glm::vec3& position = renderable.getPosition();
 	const glm::vec2& size = renderable.getSize();
 	const glm::vec4& colour = renderable.getColour();
@@ -337,6 +344,32 @@ void Renderer::render(const std::vector<std::unique_ptr<Entity>>& entities)
 	for (auto& entity : entities)
 	{
 		entity->getSprite().submit(*this);
+	}
+
+	end();
+	flush();
+}
+
+void Renderer::render(const std::vector<std::shared_ptr<Entity>>& entities)
+{
+	begin();
+
+	for (auto& entity : entities)
+	{
+		entity->getSprite().submit(*this);
+	}
+
+	end();
+	flush();
+}
+
+void Renderer::render(const std::vector<std::shared_ptr<Renderable>>& entities)
+{
+	begin();
+
+	for (auto& entity : entities)
+	{
+		entity->submit(*this);
 	}
 
 	end();

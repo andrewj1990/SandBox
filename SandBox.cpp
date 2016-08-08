@@ -43,6 +43,7 @@ int main()
 		texID[i] = i;
 	}
 	ResourceManager::getInstance().shader("basic_shader")->setUniform("textures", 32, texID);
+	ResourceManager::getInstance().shader("basic_shader")->setUniform("step_size", glm::vec2(1 / 32.0f, 1 / 32.0f));
 
 	Level level;
 	PlayerUI playerUI(level.getPlayer());
@@ -52,7 +53,7 @@ int main()
 
 	FontManager::add(new Font("Arial", "arial.ttf", 30));
 	Label label("Altitude : ", 0, 0, FontManager::get("Arial"), glm::vec4(1, 1, 1, 1));
-
+	
 	//glEnable(GL_DEPTH_TEST);
 
 	glm::mat4 projection = glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f, -1.0f, 1.0f);

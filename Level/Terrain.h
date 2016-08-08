@@ -5,6 +5,7 @@
 #include "..\Graphics\renderable.h"
 #include "..\Graphics\Window.h"
 #include "..\Utils\quadTree.h"
+#include "Tiles\Tile.h"
 
 class Terrain
 {
@@ -12,6 +13,8 @@ public:
 	Terrain();
 
 	void init();
+	void addPlayerPtr();
+
 	Renderable getTile(float x, float y, float height);
 	glm::vec4 getColor(float height);
 
@@ -20,7 +23,7 @@ public:
 	void update(float timeElapsed);
 	void render(Renderer& renderer);
 
-	const std::unique_ptr<QuadTree>& getQuadTree() const { return m_QuadTree; }
+	std::vector<std::shared_ptr<Entity>>& getObjects() { return m_Objects; }
 
 private:
 	SimplexNoise m_Noise;
@@ -33,7 +36,6 @@ private:
 	int m_TileSize;
 	float m_NoiseSize;
 
-	std::vector<Renderable> m_Ground;
-	std::unique_ptr<QuadTree> m_QuadTree;
-
+	std::vector<std::unique_ptr<Renderable>> m_Tiles;
+	std::vector<std::shared_ptr<Entity>> m_Objects;
 };

@@ -20,7 +20,7 @@ struct VertexData
 	unsigned int colour;
 };
 
-const int RENDERER_MAX_SPRITES = 100000;
+const int RENDERER_MAX_SPRITES = 10000;
 const int RENDERER_VERTEX_SIZE = sizeof(VertexData);
 const int RENDERER_SPRITE_SIZE = RENDERER_VERTEX_SIZE * 4;
 const int RENDERER_BUFFER_SIZE = RENDERER_SPRITE_SIZE * RENDERER_MAX_SPRITES;
@@ -61,6 +61,8 @@ public:
 	void render(const std::vector<std::unique_ptr<Renderable>>& renderables);
 	void render(Entity& entity);
 	void render(const std::vector<std::unique_ptr<Entity>>& entities);
+	void render(const std::vector<std::shared_ptr<Entity>>& entities);
+	void render(const std::vector<std::shared_ptr<Renderable>>& entities);
 	void render(const std::unique_ptr<Entity>& entity);
 	void render(const std::shared_ptr<Entity>& entity);
 

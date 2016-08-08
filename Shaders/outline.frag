@@ -4,6 +4,7 @@ layout (location = 0) out vec4 color;
 
 uniform vec4 colour;
 uniform vec2 light_pos;
+uniform vec2 step_size;
 
 in DATA
 {
@@ -25,26 +26,18 @@ void main()
 		int tid = int(fs_in.tid - 0.5);
 
 		alpha = 8 * texture(textures[tid], fs_in.uv).a;
-		alpha -= texture(textures[tid], fs_in.uv + vec2(stepSize, 0.0f)).a;
-		alpha -= texture(textures[tid], fs_in.uv + vec2(-stepSize, 0.0f)).a;
-		alpha -= texture(textures[tid], fs_in.uv + vec2(0.0f, stepSize)).a;
-		alpha -= texture(textures[tid], fs_in.uv + vec2(0.0f, -stepSize)).a;
+		alpha -= texture(textures[tid], fs_in.uv + vec2(step_size.x, 0.0f)).a;
+		alpha -= texture(textures[tid], fs_in.uv + vec2(-step_size.x, 0.0f)).a;
+		alpha -= texture(textures[tid], fs_in.uv + vec2(0.0f, step_size.y)).a;
+		alpha -= texture(textures[tid], fs_in.uv + vec2(0.0f, -step_size.y)).a;
 		
-		alpha -= texture(textures[tid], fs_in.uv + vec2(-stepSize, -stepSize)).a;
-		alpha -= texture(textures[tid], fs_in.uv + vec2(stepSize, -stepSize)).a;
-		alpha -= texture(textures[tid], fs_in.uv + vec2(-stepSize, stepSize)).a;
-		alpha -= texture(textures[tid], fs_in.uv + vec2(stepSize, stepSize)).a;
+		alpha -= texture(textures[tid], fs_in.uv + vec2(-step_size.x, -step_size.y)).a;
+		alpha -= texture(textures[tid], fs_in.uv + vec2(step_size.x, -step_size.y)).a;
+		alpha -= texture(textures[tid], fs_in.uv + vec2(-step_size.x, step_size.y)).a;
+		alpha -= texture(textures[tid], fs_in.uv + vec2(step_size.x, step_size.y)).a;
 
 		texColor = texture(textures[tid], fs_in.uv);
 	}
-
-	//if (texColor.rgb == vec3(1,0,1))
-	//{
-	//	discard;
-	//}
-
-	color = texColor;// * vec4(0, 0, 0, texColor.a);
-	//color = fs_in.color;
 
 	color = vec4(0, 0, 0, alpha);
 }

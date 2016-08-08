@@ -4,6 +4,7 @@ layout (location = 0) out vec4 color;
 
 uniform vec4 colour;
 uniform vec2 light_pos;
+uniform vec2 step_size;
 
 in DATA
 {
@@ -17,44 +18,26 @@ uniform sampler2D textures[32];
 
 void main()
 {
-	// as the distance increases from light_pos, the length increases
-	// causing intensity to become smaller
-	float intensity = 1000.0 / length(fs_in.position.xy - light_pos);
-	
 	vec4 texColor = fs_in.color;
+	float alpha = 0.0f;
+	float stepSize = 1.0f / 32.0f;
 	if (fs_in.tid > 0.0)
 	{
 		int tid = int(fs_in.tid - 0.5);
-		texColor = fs_in.color * texture(textures[tid], fs_in.uv);
+
+		alpha = 8 * texture(textures[tid], fs_in.uv).a;
+		alpha -= texture(textures[tid], fs_in.uv + vec2(step_size.x, 0.0f)).a;
+		alpha -= texture(textures[tid], fs_in.uv + vec2(-step_size.x, 0.0f)).a;
+		alpha -= texture(textures[tid], fs_in.uv + vec2(0.0f, step_size.y)).a;
+		alpha -= texture(textures[tid], fs_in.uv + vec2(0.0f, -step_size.y)).a;
+		
+		alpha -= texture(textures[tid], fs_in.uv + vec2(-step_size.x, -step_size.y)).a;
+		alpha -= texture(textures[tid], fs_in.uv + vec2(step_size.x, -step_size.y)).a;
+		alpha -= texture(textures[tid], fs_in.uv + vec2(-step_size.x, step_size.y)).a;
+		alpha -= texture(textures[tid], fs_in.uv + vec2(step_size.x, step_size.y)).a;
+
+		texColor = texture(textures[tid], fs_in.uv);
 	}
 
-	//if (texColor.rgb == vec3(1,0,1))
-	//{
-	//	discard;
-	//}
-
-	color = texColor;// * intensity;
-	//color = fs_in.color;
+	color = alpha > 0 ? vec4(0, 0, 0, alpha) : texColor;
 }
-
-
-/*
-#version 330 core
-
-out vec4 color;
-
-in DATA
-{
-	vec3 normal;
-	vec2 tc;
-} fs_in;
-
-//in vec3 fColor;
-
-void main()
-{
-	//color = vec4(1.0);
-	color = vec4(fs_in.normal, 1.0);
-}
-
-*/

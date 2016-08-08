@@ -30,8 +30,22 @@ Entity::~Entity()
 {
 }
 
+void Entity::init(const glm::vec3& pos, const glm::vec2& size, Texture* texture)
+{
+	m_Sprite = Sprite(pos, size, texture);
+
+	init();
+	m_X = pos.x;
+	m_Y = pos.y;
+}
+
 void Entity::update(float timeElapsed)
 {
+}
+
+void Entity::submit(Renderer& renderer)
+{
+	m_Sprite.submit(renderer);
 }
 
 void Entity::render(Renderer& renderer)

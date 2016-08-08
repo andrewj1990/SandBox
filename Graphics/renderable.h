@@ -13,6 +13,7 @@ class Renderable
 {
 protected:
 	Renderable()
+		: m_Position(glm::vec3(0, 0, 0)), m_Size(32, 32), m_Colour(glm::vec4(1, 1, 1, 1)), m_Texture(nullptr)
 	{
 		setUVDefaults();
 	}
@@ -38,6 +39,8 @@ public:
 		m_Solid = false;
 		setUVDefaults();
 	}
+
+	virtual void init(float x, float y, const glm::vec4& colour, bool solid, bool treeTile) {}
 
 	virtual void submit(Renderer& renderer) const
 	{
@@ -66,16 +69,48 @@ public:
 		m_Position.x += dx;
 		m_Position.y += dy;
 	}
+	
+	void setUV(float x, float y, float width, float height)
+	{
+		if (m_Texture == nullptr) return;
 
+		float sw = m_Texture->getWidth();
+		float sh = m_Texture->getHeight();
+
+		float inverseRow = (sh / height) - y - 1;
+
+		float tx = (x * width) / sw;
+		float ty = (inverseRow * height) / sh;
+		float tw = (width / sw);
+		float th = (height / sh);
+
+		
+		m_UV[0] = glm::vec2(tx, ty);
+		m_UV[1] = glm::vec2(tx, ty + th);
+		m_UV[2] = glm::vec2(tx + tw, ty + th);
+		m_UV[3] = glm::vec2(tx + tw, ty);
+	}
+
+	float getTextureWidth() const
+	{
+		return m_Texture == nullptr ? 0.0f : m_Texture->getWidth();
+	}
+
+	float getTextureHeight() const
+	{
+		return m_Texture == nullptr ? 0.0f : m_Texture->getHeight();
+	}
 
 	void setTexture(Texture* texture) { m_Texture = texture; m_UV = m_Texture->getUVs(); }
 
+	virtual std::shared_ptr<Entity> getTree() { return nullptr; }
 	void setPosition(const glm::vec3& position) { m_Position = position; }
 	inline const glm::vec3& getPosition() const { return m_Position; }
 	inline const glm::vec2& getSize() const { return m_Size; }
 	inline const glm::vec4& getColour() const { return m_Colour; }
 	inline void setSolid(bool solid) { m_Solid = solid; }
 	inline bool isSolid() const { return m_Solid; }
+	virtual bool isTreeTile() const { return false; }
 	inline const std::vector<glm::vec2>& getUV() const { return m_UV; }
 	inline unsigned int getTID() const { return m_Texture == nullptr ? 0 : m_Texture->getTID(); }
 

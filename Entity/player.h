@@ -32,6 +32,7 @@ public:
 
 	void update(float timeElapsed) override;
 	void update(const Terrain& terrain, const std::unique_ptr<QuadTree>& quadTree, float timeElapsed) override;
+	void submit(Renderer& renderer) override;
 	void render(Renderer& renderer) override;
 
 private:
@@ -42,6 +43,9 @@ private:
 
 private:
 	PlayerState m_State;
+
+	float m_Anim;
+	int m_Row;
 
 	float m_CumulativeTime;
 	float m_DodgeAngle;

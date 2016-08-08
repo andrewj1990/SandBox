@@ -19,7 +19,8 @@ public:
 	void move(float x, float y);
 
 	void update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed);
-	void render(Renderer& renderer);
+	void submit(Renderer& renderer) override;
+	void render(Renderer& renderer) override;
 
 private:
 	std::vector<std::unique_ptr<Entity>> m_Entities;

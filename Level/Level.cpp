@@ -8,10 +8,11 @@ Level::Level()
 	m_PlayerPtr = std::shared_ptr<Player>(new Player(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f));
 	m_Entities.push_back(m_PlayerPtr);
 	//m_Entities.push_back(std::unique_ptr<Player>(new Player(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f)));
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 1000; i++)
 	{
-		m_Entities.push_back(std::unique_ptr<Entity>(new Entity(glm::vec3(Utils::random(400, 1000), Utils::random(0, 1000), 0), glm::vec2(64, 64), TextureManager::get("Textures/Tree.png"))));
+		m_Entities.push_back(std::unique_ptr<Entity>(new Entity(glm::vec3(Utils::random(400, 10000), Utils::random(0, 10000), 0), glm::vec2(64, 64), TextureManager::get("Textures/Tree.png"))));
 	}
+
 	init();
 }
 
@@ -64,65 +65,36 @@ void Level::update(float timeElapsed)
 		}
 	}
 
-	std::sort(m_Entities.begin(), m_Entities.end(), [](const auto& a, const auto& b) { return a->getY() > b->getY(); });
-
-	//if (m_Enemies.size() < 1000)
-	//{
-	//	float wx = Window::Instance().getCamera().getPosition().x;
-	//	float wy = Window::Instance().getCamera().getPosition().y;
-	//	float ww = Window::Instance().getWidth();
-	//	float wh = Window::Instance().getHeight();
-
-	//	float sx = Utils::random(wx, wx + ww);
-	//	float sy = Utils::random(wy, wy + wh);
-	//	if (!m_Terrain.isSolid(sx, sy))
-	//	{
-	//		m_Enemies.push_back(std::unique_ptr<BasicMob>(new BasicMob(sx, sy)));
-	//	}
-	//}
-
-	//m_Player.update(m_Terrain, m_QuadTree, timeElapsed);
-
 	m_Terrain.update(timeElapsed);
+	auto& objects = m_Terrain.getObjects();
+	objects.push_back(m_PlayerPtr);
+	std::sort(objects.begin(), objects.end(), [](const auto& a, const auto& b) { return a->getY() > b->getY(); });
+
 }
 
 void Level::render(Renderer& renderer)
 {
+	ResourceManager::getInstance().shader("basic_shader")->use();
 	m_Terrain.render(renderer);
-
-	//renderer.render(m_Enemies);
 
 	for (auto& enemy : m_Enemies)
 	{
 		enemy->render(renderer);
 	}
 
-	for (auto& entity : m_Entities)
-	{
-		ResourceManager::getInstance().shader("basic_shader")->use();
-		entity->render(renderer);
-		ResourceManager::getInstance().shader("outline_shader")->use();
-		entity->render(renderer);
-	}
+	auto& objects = m_Terrain.getObjects();
 
-	//m_Player.render(renderer);
+	renderer.begin();
+	for (auto& entity : objects)
+	{
+		entity->submit(renderer);
+	}
+	renderer.end();
+	renderer.flush();
+	//renderer.render(m_Entities);
 
 	ResourceManager::getInstance().shader("outline_shader")->use();
-	m_Terrain.render(renderer);
-
-	//renderer.render(m_Enemies);
-
-	for (auto& enemy : m_Enemies)
-	{
-		enemy->render(renderer);
-	}
-
-	//renderer.render(m_PlayerPtr);
-
 	m_PlayerPtr->render(renderer);
-
-	//m_Player.render(renderer);
-
 	ResourceManager::getInstance().shader("basic_shader")->use();
 
 }
