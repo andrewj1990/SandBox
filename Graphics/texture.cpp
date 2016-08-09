@@ -16,10 +16,10 @@ Texture::Texture(SpriteSheet& spritesheet, const std::string& filename, int xInd
 
 void Texture::setDefaultUV()
 {
-	m_UV.push_back(glm::vec2(0, 0));
-	m_UV.push_back(glm::vec2(0, 1));
-	m_UV.push_back(glm::vec2(1, 1));
-	m_UV.push_back(glm::vec2(1, 0));
+	m_UV.push_back(glm::vec4(0, 0, 0, 0));
+	m_UV.push_back(glm::vec4(0, 1, 0, 0));
+	m_UV.push_back(glm::vec4(1, 1, 0, 0));
+	m_UV.push_back(glm::vec4(1, 0, 0, 0));
 }
 
 void Texture::setUV(float ix, float iy, float w, float h, float sw, float sh)
@@ -29,10 +29,10 @@ void Texture::setUV(float ix, float iy, float w, float h, float sw, float sh)
 	float tw = (w / sw);
 	float th = (h / sh);
 
-	m_UV.push_back(glm::vec2(tx, ty));
-	m_UV.push_back(glm::vec2(tx, ty + th));
-	m_UV.push_back(glm::vec2(tx + tw, ty + th));
-	m_UV.push_back(glm::vec2(tx + tw, ty));
+	m_UV.push_back(glm::vec4(tx, ty, w, h));
+	m_UV.push_back(glm::vec4(tx, ty + th, w, h));
+	m_UV.push_back(glm::vec4(tx + tw, ty + th, w, h));
+	m_UV.push_back(glm::vec4(tx + tw, ty, w, h));
 }
 
 Texture::~Texture()

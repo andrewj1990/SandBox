@@ -12,8 +12,16 @@ void Gun::shoot(float x, float y, float angle)
 	transform = glm::translate(transform, glm::vec3(m_Sprite.getPosition().x + 5, m_Sprite.getPosition().y + 5, 0));
 	transform = glm::rotate(transform, m_Sprite.getAngle(), glm::vec3(0, 0, 1));
 	transform = glm::translate(transform, glm::vec3(-m_Sprite.getPosition().x - 5, -m_Sprite.getPosition().y - 5, 0));
-	const glm::vec3& pos = glm::vec3(m_Sprite.getPosition().x + m_Sprite.getSize().x /** 0.75f*/, m_Sprite.getPosition().y + m_Sprite.getSize().y * 0.75f, 0);
+	const glm::vec3& pos = glm::vec3(m_Sprite.getPosition().x + m_Sprite.getSize().x + 5, m_Sprite.getPosition().y + m_Sprite.getSize().y - 5, 0);
 	glm::vec4 gunPos = transform * glm::vec4(pos, 1.0f);
+
+	float mx = Window::Instance().mouseX() + Window::Instance().getCamera().getPosition().x;
+	float my = Window::Instance().mouseY() + Window::Instance().getCamera().getPosition().y;
+
+	float dx = mx - gunPos.x;
+	float dy = my - gunPos.y;
+
+	float a = -std::atan2f(dy, dx);
 
 	for (int i = 0; i < 15; i++) m_Entities.push_back(std::unique_ptr<GunParticle>(new GunParticle(gunPos.x, gunPos.y, angle)));
 	m_Bullets.push_back(std::unique_ptr<Bullet>(new Bullet(gunPos.x, gunPos.y, angle)));
@@ -135,8 +143,6 @@ void Gun::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 void Gun::submit(Renderer& renderer)
 {
 	renderer.push(glm::mat4(), true);
-	//renderer.end();
-	//renderer.flush();
 	for (auto& bullet : m_Bullets) bullet->submit(renderer);
 	for (auto& entity : m_Entities) entity->submit(renderer);
 
@@ -154,7 +160,6 @@ void Gun::submit(Renderer& renderer)
 
 	renderer.push(transform);
 	renderer.submit(m_Sprite);
-	//renderer.begin();
 	renderer.pop();
 }
 

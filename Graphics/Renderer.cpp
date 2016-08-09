@@ -29,7 +29,7 @@ void Renderer::init()
 	glEnableVertexAttribArray(SHADER_COLOUR_INDEX);
 
 	glVertexAttribPointer(SHADER_VERTEX_INDEX, 4, GL_FLOAT, GL_FALSE, RENDERER_VERTEX_SIZE, (const GLvoid*)0);
-	glVertexAttribPointer(SHADER_UV_INDEX, 2, GL_FLOAT, GL_FALSE, RENDERER_VERTEX_SIZE, (const GLvoid*)(offsetof(VertexData, VertexData::uv)));
+	glVertexAttribPointer(SHADER_UV_INDEX, 4, GL_FLOAT, GL_FALSE, RENDERER_VERTEX_SIZE, (const GLvoid*)(offsetof(VertexData, VertexData::uv)));
 	glVertexAttribPointer(SHADER_TID_INDEX, 1, GL_FLOAT, GL_FALSE, RENDERER_VERTEX_SIZE, (const GLvoid*)(offsetof(VertexData, VertexData::tid)));
 	glVertexAttribPointer(SHADER_COLOUR_INDEX, 4, GL_UNSIGNED_BYTE, GL_TRUE, RENDERER_VERTEX_SIZE, (const GLvoid*)(offsetof(VertexData, VertexData::colour)));
 
@@ -81,7 +81,7 @@ void Renderer::submit(const Renderable& renderable)
 	const glm::vec3& position = renderable.getPosition();
 	const glm::vec2& size = renderable.getSize();
 	const glm::vec4& colour = renderable.getColour();
-	const std::vector<glm::vec2>& uv = renderable.getUV();
+	const std::vector<glm::vec4>& uv = renderable.getUV();
 	const unsigned int tid = renderable.getTID();
 
 	unsigned int color = 0;
@@ -220,25 +220,25 @@ void Renderer::drawString(const Font& font, const std::string& text, const glm::
 			float v1 = glyph->t1;
 
 			m_Buffer->vertex = glm::vec4(x0, y0, 0.0f, 1.0f);
-			m_Buffer->uv = glm::vec2(u0, v0);
+			m_Buffer->uv = glm::vec4(u0, v0, 0, 0);
 			m_Buffer->tid = ts;
 			m_Buffer->colour = color;
 			++m_Buffer;
 
 			m_Buffer->vertex = glm::vec4(x0, y1, 0.0f, 1.0f);
-			m_Buffer->uv = glm::vec2(u0, v1);
+			m_Buffer->uv = glm::vec4(u0, v1, 0, 0);
 			m_Buffer->tid = ts;
 			m_Buffer->colour = color;
 			++m_Buffer;
 
 			m_Buffer->vertex = glm::vec4(x1, y1, 0.0f, 1.0f);
-			m_Buffer->uv = glm::vec2(u1, v1);
+			m_Buffer->uv = glm::vec4(u1, v1, 0, 0);
 			m_Buffer->tid = ts;
 			m_Buffer->colour = color;
 			++m_Buffer;
 
 			m_Buffer->vertex = glm::vec4(x1, y0, 0.0f, 1.0f);
-			m_Buffer->uv = glm::vec2(u1, v0);
+			m_Buffer->uv = glm::vec4(u1, v0, 0, 0);
 			m_Buffer->tid = ts;
 			m_Buffer->colour = color;
 			++m_Buffer;

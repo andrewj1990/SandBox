@@ -23,7 +23,7 @@ public:
 	inline const GLuint& getTID() const { return m_TID; }
 	
 	void setUV(float ix, float iy, float w, float h, float sw, float sh);
-	inline const std::vector<glm::vec2> getUVs() { return m_UV; }
+	inline const std::vector<glm::vec4> getUVs() { return m_UV; }
 	const int& getWidth() { return m_Width; }
 	const int& getHeight() { return m_Height; }
 	const int& getIndexX() { return m_xIndex; }
@@ -40,7 +40,7 @@ private:
 	GLuint m_TID;
 	unsigned int m_Width;
 	unsigned int m_Height;
-	std::vector<glm::vec2> m_UV;
+	std::vector<glm::vec4> m_UV;
 
 	int m_xIndex;
 	int m_yIndex;

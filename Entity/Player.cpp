@@ -111,11 +111,11 @@ void Player::shoot(float angle, float timeElapsed)
 	// fire projectile
 	if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_1) && m_AttackFrame > m_AttackSpeed)
 	{
-		for (int i = 3; i > 0; i--)
-		{
-			m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle + glm::radians(10.0f * i));
-			m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle - glm::radians(10.0f * i));
-		}
+		//for (int i = 3; i > 0; i--)
+		//{
+		//	m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle + glm::radians(10.0f * i));
+		//	m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle - glm::radians(10.0f * i));
+		//}
 		m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle);
 
 		m_AttackFrame = 0.0f;
@@ -179,8 +179,8 @@ void Player::update(const Terrain& terrain, const std::unique_ptr<QuadTree>& qua
 	float mouseX = Window::Instance().mouseX();
 	float mouseY = Window::Instance().mouseY();
 
-	float dx = mouseX - window.getWidth() / 2 - 16.0f;
-	float dy = mouseY - window.getHeight() / 2 - 16.0f;
+	float dx = mouseX - (window.getWidth() / 2 - 16.0f);
+	float dy = mouseY - (window.getHeight() / 2 - 16.0f);
 	float angle = -std::atan2f(dy, dx);
 
 	m_CumulativeTime += timeElapsed;
@@ -282,9 +282,7 @@ void Player::submit(Renderer& renderer)
 	renderer.push(transform);
 	renderer.end();
 	renderer.flush();
-	ResourceManager::getInstance().shader("basic_shader")->setUniform("step_size", glm::vec2(0.3f / m_Sprite.getTextureWidth(), 0.2f / m_Sprite.getTextureHeight()));
 	renderer.render(m_Sprite);
-	ResourceManager::getInstance().shader("basic_shader")->setUniform("step_size", glm::vec2(1.0f / 32.0f, 1.0f / 32.0f));
 	renderer.pop();
 	renderer.begin();
 
@@ -293,16 +291,17 @@ void Player::submit(Renderer& renderer)
 		m_Gun.submit(renderer);
 	}
 
-	if (m_ShieldActive)
-	{
-		transform = glm::mat4();
-		transform = glm::translate(transform, glm::vec3(m_Shield.getPosition().x + m_Shield.getSize().x / 2.0f, m_Shield.getPosition().y + m_Shield.getSize().y / 2.0f, 0));
-		transform = glm::rotate(transform, m_Shield.getAngle(), glm::vec3(0, 0, 1));
-		transform = glm::translate(transform, glm::vec3(-m_Shield.getPosition().x - m_Shield.getSize().x / 2.0f, -m_Shield.getPosition().y - m_Shield.getSize().y / 2.0f, 0));
-		renderer.push(transform);
-		renderer.render(m_Shield);
-		renderer.pop();
-	}
+	//if (m_ShieldActive)
+	//{
+	//	transform = glm::mat4();
+	//	transform = glm::translate(transform, glm::vec3(m_Shield.getPosition().x + m_Shield.getSize().x / 2.0f, m_Shield.getPosition().y + m_Shield.getSize().y / 2.0f, 0));
+	//	transform = glm::rotate(transform, m_Shield.getAngle(), glm::vec3(0, 0, 1));
+	//	transform = glm::translate(transform, glm::vec3(-m_Shield.getPosition().x - m_Shield.getSize().x / 2.0f, -m_Shield.getPosition().y - m_Shield.getSize().y / 2.0f, 0));
+	//	renderer.push(transform);
+	//	renderer.render(m_Shield);
+	//	renderer.pop();
+	//}
+
 }
 
 void Player::render(Renderer& renderer)
@@ -325,9 +324,7 @@ void Player::render(Renderer& renderer)
 	}
 
 	renderer.push(transform);
-	ResourceManager::getInstance().shader("outline_shader")->setUniform("step_size", glm::vec2(0.3f / m_Sprite.getTextureWidth(), 0.2f / m_Sprite.getTextureHeight()));
 	renderer.render(m_Sprite);
-	ResourceManager::getInstance().shader("outline_shader")->setUniform("step_size", glm::vec2(1.0f / 32.0f, 1.0f / 32.0f));
 	renderer.pop();
 
 	//m_Sword.render(renderer);
@@ -336,15 +333,17 @@ void Player::render(Renderer& renderer)
 		m_Gun.render(renderer);
 	}
 
-	if (m_ShieldActive)
-	{
-		transform = glm::mat4();
-		transform = glm::translate(transform, glm::vec3(m_Shield.getPosition().x + m_Shield.getSize().x / 2.0f, m_Shield.getPosition().y + m_Shield.getSize().y / 2.0f, 0));
-		transform = glm::rotate(transform, m_Shield.getAngle(), glm::vec3(0, 0, 1));
-		transform = glm::translate(transform, glm::vec3(-m_Shield.getPosition().x - m_Shield.getSize().x / 2.0f, -m_Shield.getPosition().y - m_Shield.getSize().y / 2.0f, 0));
-		renderer.push(transform);
-		renderer.render(m_Shield);
-		renderer.pop();
-	}
+	//if (m_ShieldActive)
+	//{
+	//	transform = glm::mat4();
+	//	transform = glm::translate(transform, glm::vec3(m_Shield.getPosition().x + m_Shield.getSize().x / 2.0f, m_Shield.getPosition().y + m_Shield.getSize().y / 2.0f, 0));
+	//	transform = glm::rotate(transform, m_Shield.getAngle(), glm::vec3(0, 0, 1));
+	//	transform = glm::translate(transform, glm::vec3(-m_Shield.getPosition().x - m_Shield.getSize().x / 2.0f, -m_Shield.getPosition().y - m_Shield.getSize().y / 2.0f, 0));
+	//	renderer.push(transform);
+	//	renderer.render(m_Shield);
+	//	renderer.pop();
+	//}
+
+	ResourceManager::getInstance().shader("basic_shader")->use();
 
 }

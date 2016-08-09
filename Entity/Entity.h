@@ -2,6 +2,7 @@
 
 #include "..\Graphics\Sprite.h"
 #include "..\Utils\quadTree.h"
+#include "..\Utils\ResourceManager.h"
 
 class Entity {
 public:

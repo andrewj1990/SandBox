@@ -4,6 +4,7 @@ Tile::Tile()
 	: Renderable()
 {
 	m_Tree = std::shared_ptr<Entity>(new Entity(glm::vec3(0, 0, 0), glm::vec2(64, 64), TextureManager::get("Textures/Tree.png")));
+	m_Tree->getSprite().setUV(0, 0, 10, 10);
 	m_TreeTile = true;
 }
 

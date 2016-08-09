@@ -84,11 +84,13 @@ public:
 		float tw = (width / sw);
 		float th = (height / sh);
 
+		float sx = 0.2f / sw;
+		float sy = 0.3f / sh;
 		
-		m_UV[0] = glm::vec2(tx, ty);
-		m_UV[1] = glm::vec2(tx, ty + th);
-		m_UV[2] = glm::vec2(tx + tw, ty + th);
-		m_UV[3] = glm::vec2(tx + tw, ty);
+		m_UV[0] = glm::vec4(tx, ty, sx, sy);
+		m_UV[1] = glm::vec4(tx, ty + th, sx, sy);
+		m_UV[2] = glm::vec4(tx + tw, ty + th, sx, sy);
+		m_UV[3] = glm::vec4(tx + tw, ty, sx, sy);
 	}
 
 	float getTextureWidth() const
@@ -111,7 +113,7 @@ public:
 	inline void setSolid(bool solid) { m_Solid = solid; }
 	inline bool isSolid() const { return m_Solid; }
 	virtual bool isTreeTile() const { return false; }
-	inline const std::vector<glm::vec2>& getUV() const { return m_UV; }
+	inline const std::vector<glm::vec4>& getUV() const { return m_UV; }
 	inline unsigned int getTID() const { return m_Texture == nullptr ? 0 : m_Texture->getTID(); }
 
 protected:	
@@ -121,10 +123,10 @@ private:
 	{
 		float s = 0.0f;
 		float r = 1.0f;
-		m_UV.push_back(glm::vec2(s, s));
-		m_UV.push_back(glm::vec2(s, r));
-		m_UV.push_back(glm::vec2(r, r));
-		m_UV.push_back(glm::vec2(r, s));
+		m_UV.push_back(glm::vec4(s, s, 0, 0));
+		m_UV.push_back(glm::vec4(s, r, 0, 0));
+		m_UV.push_back(glm::vec4(r, r, 0, 0));
+		m_UV.push_back(glm::vec4(r, s, 0, 0));
 	}
 
 	void setUV()
@@ -140,17 +142,17 @@ private:
 		float tw = (size / totalSize);
 		float th = (size / totalSize);
 
-		m_UV.push_back(glm::vec2(tx, ty));
-		m_UV.push_back(glm::vec2(tx, ty + th));
-		m_UV.push_back(glm::vec2(tx + tw, ty + th));
-		m_UV.push_back(glm::vec2(tx + tw, ty));
+		m_UV.push_back(glm::vec4(tx, ty, 0, 0));
+		m_UV.push_back(glm::vec4(tx, ty + th, 0, 0));
+		m_UV.push_back(glm::vec4(tx + tw, ty + th, 0, 0));
+		m_UV.push_back(glm::vec4(tx + tw, ty, 0, 0));
 	}
 
 protected:
 	glm::vec3 m_Position;
 	glm::vec2 m_Size;
 	glm::vec4 m_Colour;
-	std::vector<glm::vec2> m_UV;
+	std::vector<glm::vec4> m_UV;
 	bool m_Solid;
 
 	Texture* m_Texture;

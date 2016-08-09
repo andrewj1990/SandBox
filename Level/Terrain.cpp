@@ -10,9 +10,11 @@ Terrain::Terrain()
 void Terrain::init()
 {
 	m_FireRadius = 100;
+	m_WidthOffset = 4;
+	m_HeightOffset = 4;
 
-	m_Width = (Window::Instance().getWidth() / m_TileSize) + 2;
-	m_Height = (Window::Instance().getHeight() / m_TileSize) + 3;
+	m_Width = (Window::Instance().getWidth() / m_TileSize) + m_WidthOffset;
+	m_Height = (Window::Instance().getHeight() / m_TileSize) + m_HeightOffset;
 
 	for (int y = 0; y < m_Height; y++)
 	{
@@ -85,8 +87,8 @@ bool Terrain::isSolid(float x, float y) const
 	const glm::vec3& camPos = Window::Instance().getCamera().getPosition();
 
 	// offset the position 1 tile forward to take into account the initial offset
-	int xi = (x / m_TileSize) - (int)(camPos.x / m_TileSize) + 1;
-	int yi = (y / m_TileSize) - (int)(camPos.y / m_TileSize) + 1;
+	int xi = (x / m_TileSize) - (int)(camPos.x / m_TileSize) + (m_WidthOffset / 2);
+	int yi = (y / m_TileSize) - (int)(camPos.y / m_TileSize) + (m_HeightOffset / 2);
 	int index = xi + yi * m_Width;
 
 	if (index < 0 || index >= m_Tiles.size()) return true;
@@ -103,8 +105,8 @@ void Terrain::update(float timeElapsed)
 	const glm::vec3& camPos = Window::Instance().getCamera().getPosition();
 
 	// offset the position 1 tile back so we dont have any blank spaces
-	int xp = (int)(camPos.x) / m_TileSize * m_TileSize - m_TileSize;
-	int yp = (int)(camPos.y) / m_TileSize * m_TileSize - m_TileSize;
+	int xp = (int)(camPos.x) / m_TileSize * m_TileSize - (m_WidthOffset / 2) * m_TileSize;
+	int yp = (int)(camPos.y) / m_TileSize * m_TileSize - (m_HeightOffset / 2) * m_TileSize;
 
 	m_Objects = std::vector<std::shared_ptr<Entity>>();
 
@@ -115,7 +117,6 @@ void Terrain::update(float timeElapsed)
 			float r = std::sqrtf((xp + i * m_TileSize) * (xp + i * m_TileSize) + (yp + j * m_TileSize) * (yp + j * m_TileSize));
 
 			float groundHeight = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, (xp / m_TileSize + i) / m_NoiseSize, (yp / m_TileSize + j) / m_NoiseSize);
-
 
 			glm::vec4 colour = r < m_FireRadius ? glm::vec4(0.2, 0.1, 0.1, 0) : getColor(groundHeight);
 			bool isSolid = colour.w == 1;

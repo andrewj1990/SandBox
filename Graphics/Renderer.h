@@ -15,7 +15,7 @@ class Entity;
 struct VertexData
 {
 	glm::vec4 vertex;
-	glm::vec2 uv;
+	glm::vec4 uv;
 	float tid;
 	unsigned int colour;
 };

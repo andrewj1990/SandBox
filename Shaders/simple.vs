@@ -1,7 +1,7 @@
 #version 330 core
 
 layout(location = 0) in vec4 position;
-layout(location = 1) in vec2 uv;
+layout(location = 1) in vec4 uv;
 layout(location = 2) in float tid;
 layout(location = 3) in vec4 color;
 
@@ -13,7 +13,7 @@ uniform vec2 mouse_pos;
 out DATA
 {
 	vec4 position;
-	vec2 uv;
+	vec4 uv;
 	float tid;
 	vec4 color;
 } vs_out;

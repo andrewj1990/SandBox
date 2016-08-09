@@ -69,7 +69,6 @@ void Level::update(float timeElapsed)
 	auto& objects = m_Terrain.getObjects();
 	objects.push_back(m_PlayerPtr);
 	std::sort(objects.begin(), objects.end(), [](const auto& a, const auto& b) { return a->getY() > b->getY(); });
-
 }
 
 void Level::render(Renderer& renderer)

@@ -43,7 +43,6 @@ int main()
 		texID[i] = i;
 	}
 	ResourceManager::getInstance().shader("basic_shader")->setUniform("textures", 32, texID);
-	ResourceManager::getInstance().shader("basic_shader")->setUniform("step_size", glm::vec2(1 / 32.0f, 1 / 32.0f));
 
 	Level level;
 	PlayerUI playerUI(level.getPlayer());

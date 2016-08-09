@@ -33,6 +33,10 @@ private:
 	int m_Width;
 	int m_Height;
 
+	// buffer offsets to render tiles outside view
+	int m_WidthOffset;
+	int m_HeightOffset;
+
 	int m_TileSize;
 	float m_NoiseSize;
 
