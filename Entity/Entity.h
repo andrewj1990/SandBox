@@ -20,6 +20,8 @@ public:
 	virtual void submit(Renderer& renderer);
 	virtual void render(Renderer& renderer);
 
+	virtual void renderLight(Renderer& renderer) {}
+
 	virtual bool collide(const Entity& entity) const;
 
 	virtual void setDestroy(bool flag) { m_Destroy = flag; }

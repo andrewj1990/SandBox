@@ -3,6 +3,7 @@
 
 #include "Graphics\Window.h"
 #include "Graphics\Renderer.h"
+#include "Graphics\Buffers\framebuffer.h"
 
 #include "Utils\Shader.h"
 #include "Utils\ResourceManager.h"
@@ -33,6 +34,8 @@ int main()
 	Window::Instance().setParams("SandBox", 1280, 720);
 
 	ResourceManager::getInstance().addShader("outline_shader", "Shaders/outline.vs", "Shaders/outline.frag");
+	ResourceManager::getInstance().addShader("screen", "Shaders/screen.vs", "Shaders/screen.frag");
+	ResourceManager::getInstance().addShader("light", "Shaders/light.vs", "Shaders/light.frag");
 
 	ResourceManager::getInstance().shader("basic_shader")->use();
 	Renderer batchrenderer;
@@ -43,6 +46,8 @@ int main()
 		texID[i] = i;
 	}
 	ResourceManager::getInstance().shader("basic_shader")->setUniform("textures", 32, texID);
+	ResourceManager::getInstance().shader("light")->setUniform("screenTexture", 0);
+	ResourceManager::getInstance().shader("light")->setUniform("lightMap", 1);
 
 	Level level;
 	PlayerUI playerUI(level.getPlayer());
@@ -59,6 +64,12 @@ int main()
 	//glm::mat4 projection = glm::ortho(520.0f, 760.0f, 240.0f, 480.0f, -1.0f, 1.0f);
 	ResourceManager::getInstance().shader("basic_shader")->setUniform("projection", projection);
 	ResourceManager::getInstance().shader("outline_shader")->setUniform("projection", projection);
+
+	Sprite light(glm::vec3(100, 100, 0), glm::vec2(256, 256), TextureManager::get("Textures/light.png"));
+	Sprite light2(glm::vec3(800, 100, 0), glm::vec2(256, 256), TextureManager::get("Textures/light.png"));
+
+	FrameBuffer fbo;
+	FrameBuffer lightFBO;
 
 	Timer time;
 	int frames = 0;
@@ -96,13 +107,39 @@ int main()
 
 			t += dt;
 			accumulator -= dt;
+
+			light.setPosition(level.getPlayerPtr()->getCenterX() - light.getSize().x / 2, level.getPlayerPtr()->getCenterY() - light.getSize().y / 2);
 		}
 
+		fbo.bind();
 		level.render(batchrenderer);
-		playerUI.render(batchrenderer);
 
 		batchrenderer.render(label);
+		fbo.unbind();
 
+		//fbo.render();
+
+		lightFBO.bind();
+		level.renderLights(batchrenderer);
+		//batchrenderer.render(light);
+		//batchrenderer.render(light2);
+		lightFBO.unbind();
+
+		//lightFBO.render();
+
+		ResourceManager::getInstance().shader("light")->use();
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, fbo.getTID());
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, lightFBO.getTID());
+
+		glBindVertexArray(fbo.getVAO());
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glBindVertexArray(0);
+
+		ResourceManager::getInstance().shader("basic_shader")->use();
+		playerUI.render(batchrenderer);
 		Window::Instance().update();
 
 		++frames;

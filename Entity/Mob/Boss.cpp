@@ -8,6 +8,7 @@ Boss::Boss(Player& player, float x, float y)
 	m_Actions = Utils::getRandomActionList(3);
 
 	m_Sprite.setUV(0, 0, 10, 10);
+	m_Light = Sprite(glm::vec3(x, y, 0), glm::vec2(256, 256), TextureManager::get("Textures/light.png"));
 }
 
 void Boss::damage(int amount)
@@ -48,6 +49,8 @@ void Boss::update(const Terrain& terrain, float timeElapsed)
 		}
 	}
 
+	m_Light.setPosition(getCenterX() - m_Light.getSize().x / 2, getCenterY() - m_Light.getSize().y / 2);
+
 	//const std::unique_ptr<QuadTree>& qt = terrain.getQuadTree();
 
 	//glm::vec2 dir = AStar::aStarSearchDirection(*this, m_Player, qt);
@@ -64,6 +67,11 @@ void Boss::render(Renderer& renderer)
 	renderer.render(m_Bullets);
 
 	renderer.render(m_Sprite);
+}
+
+void Boss::renderLight(Renderer& renderer)
+{
+	renderer.submit(m_Light);
 }
 
 void Boss::shoot(float angle)

@@ -19,9 +19,11 @@ public:
 
 	void update(float timeElapsed);
 	void render(Renderer& renderer);
+	void renderLights(Renderer& renderer);
 
 	const std::unique_ptr<QuadTree>& getQuadTree() const { return m_QuadTree; }
 	const Player& getPlayer() const { return m_Player; }
+	std::shared_ptr<Player> getPlayerPtr() { return m_PlayerPtr; }
 
 private:
 	void spawnItem(const glm::vec3& position);

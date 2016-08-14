@@ -4,6 +4,7 @@ Player::Player(float x, float y)
 	: Entity(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/Player2.png")), 
 	m_Sword(x + 2, y + 8), m_Gun(x + 2, y + 8)
 {
+	m_Light = Sprite(glm::vec3(0, 0, 0), glm::vec2(256, 256), TextureManager::get("Textures/light2.png"));
 	m_Shield = Sprite(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/Shield.png"));
 
 	init();
@@ -102,6 +103,8 @@ void Player::move(const Terrain& terrain, float timeElapsed)
 	}
 
 	move(dx, dy);
+
+	m_Light.setPosition(getCenterX() - m_Light.getSize().x / 2, getCenterY() - m_Light.getSize().y / 2);
 }
 
 void Player::shoot(float angle, float timeElapsed)
@@ -345,5 +348,13 @@ void Player::render(Renderer& renderer)
 	//}
 
 	ResourceManager::getInstance().shader("basic_shader")->use();
+
+}
+
+void Player::renderLight(Renderer& renderer)
+{
+	renderer.submit(m_Light);
+
+	m_Gun.renderLight(renderer);
 
 }

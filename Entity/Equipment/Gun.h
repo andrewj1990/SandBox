@@ -22,6 +22,8 @@ public:
 	void submit(Renderer& renderer) override;
 	void render(Renderer& renderer) override;
 
+	void renderLight(Renderer& renderer) override;
+
 private:
 	std::vector<std::unique_ptr<Entity>> m_Entities;
 	std::vector<std::unique_ptr<Entity>> m_Bullets;

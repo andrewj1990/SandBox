@@ -10,6 +10,8 @@ Bullet::Bullet(float x, float y, float angle)
 	m_Dy = std::sinf(angle) * velocity;
 
 	m_Duration = 2.0f;
+
+	m_Light = Sprite(glm::vec3(0, 0, 0), glm::vec2(32, 32), TextureManager::get("Textures/light2.png"));
 }
 
 float Bullet::getAngle() const
@@ -28,9 +30,15 @@ void Bullet::update(float timeElapsed)
 		m_Destroy = true;
 	}
 
+	m_Light.setPosition(getCenterX() - m_Light.getSize().x / 2, getCenterY() - m_Light.getSize().y / 2);
 }
 
 void Bullet::render(Renderer& renderer)
 {
 	renderer.render(*this);
+}
+
+void Bullet::renderLight(Renderer& renderer)
+{
+	renderer.submit(m_Light);
 }

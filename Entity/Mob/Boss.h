@@ -17,6 +17,8 @@ public:
 	void update(float timeElapsed) override;
 	void render(Renderer& renderer) override;
 
+	void renderLight(Renderer& renderer) override;
+
 	void shoot(float angle) override;
 
 private:
@@ -28,4 +30,5 @@ private:
 	std::vector<std::unique_ptr<Entity>> m_Bullets;
 
 	Player& m_Player;
+	Sprite m_Light;
 };

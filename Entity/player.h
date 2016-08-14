@@ -35,6 +35,8 @@ public:
 	void submit(Renderer& renderer) override;
 	void render(Renderer& renderer) override;
 
+	void renderLight(Renderer& renderer) override;
+
 private:
 	void init();
 	bool playerCollision(const std::unique_ptr<QuadTree>& quadTree);
@@ -54,6 +56,8 @@ private:
 	Sprite m_Shield;
 	Sword m_Sword;
 	Gun m_Gun;
+
+	Sprite m_Light;
 
 	float m_MoveSpeed;
 	float m_AttackSpeed;

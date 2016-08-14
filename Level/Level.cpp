@@ -98,6 +98,25 @@ void Level::render(Renderer& renderer)
 
 }
 
+void Level::renderLights(Renderer& renderer)
+{
+
+	renderer.begin();
+	for (auto& enemy : m_Enemies)
+	{
+		enemy->renderLight(renderer);
+	}
+
+	auto& objects = m_Terrain.getObjects();
+	for (auto& entity : objects)
+	{
+		entity->renderLight(renderer);
+	}
+
+	renderer.end();
+	renderer.flush(GL_ONE);
+}
+
 void Level::spawnItem(const glm::vec3 & position)
 {
 	int randomNum = Utils::random(0, 100);

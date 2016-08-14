@@ -143,8 +143,14 @@ void Gun::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 void Gun::submit(Renderer& renderer)
 {
 	renderer.push(glm::mat4(), true);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 	for (auto& bullet : m_Bullets) bullet->submit(renderer);
 	for (auto& entity : m_Entities) entity->submit(renderer);
+	//renderer.end();
+	//renderer.flush();
+	//renderer.begin();
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	for (auto& text : m_DamageText)
 	{
@@ -185,4 +191,12 @@ void Gun::render(Renderer& renderer)
 	renderer.push(transform);
 	renderer.render(*this);
 	renderer.pop();
+}
+
+void Gun::renderLight(Renderer& renderer)
+{
+	for (auto& bullet : m_Bullets)
+	{
+		bullet->renderLight(renderer);
+	}
 }

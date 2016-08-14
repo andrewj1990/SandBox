@@ -12,6 +12,10 @@ public:
 	void update(float timeElapsed);
 	void render(Renderer& renderer);
 
+	void renderLight(Renderer& renderer) override;
+
 private:
 	float m_Duration;
+
+	Sprite m_Light;
 };

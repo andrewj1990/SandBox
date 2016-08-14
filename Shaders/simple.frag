@@ -4,6 +4,7 @@ layout (location = 0) out vec4 color;
 
 uniform vec4 colour;
 uniform vec2 light_pos;
+//uniform float light_intensity;
 
 in DATA
 {
@@ -39,5 +40,8 @@ void main()
 		texColor = texture(textures[tid], fs_in.uv.xy);
 	}
 
-	color = alpha > 0 ? vec4(0, 0, 0, alpha) : texColor;
+	float light_intensity = 1.0f;
+	vec3 light = vec3(0.3f, 0.3f, 0.7f) * light_intensity;
+
+	color = alpha > 0 ? vec4(0, 0, 0, alpha) : texColor;// * vec4(light, 1.0f);
 }

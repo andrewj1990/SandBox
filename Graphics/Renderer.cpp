@@ -258,7 +258,7 @@ void Renderer::end()
 }
 
 // draw the quads in the buffer
-void Renderer::flush()
+void Renderer::flush(GLenum blendFactor)
 {
 	//glEnable(GL_TEXTURE_2D);
 	for (int i = 0; i < m_TextureSlots.size(); ++i)
@@ -271,9 +271,9 @@ void Renderer::flush()
 	m_IBO->bind();
 
 	glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE);	// additive blending
 	//glBlendFunc(GL_ONE, GL_ONE);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc(GL_SRC_ALPHA, blendFactor);
 
 	glDrawElements(GL_TRIANGLES, m_IndexCount, GL_UNSIGNED_INT, NULL);
 
