@@ -1,6 +1,6 @@
 #include "PlayerUI.h"
 
-PlayerUI::PlayerUI(const Player& player)
+PlayerUI::PlayerUI(std::shared_ptr<Player> player)
 	: m_Player(player)
 {
 	m_PlayerHealth = Sprite(glm::vec3(100, 100, 0), glm::vec2(200, 20), glm::vec4(1, 0, 0, 1));

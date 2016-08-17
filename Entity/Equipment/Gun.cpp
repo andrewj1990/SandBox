@@ -55,10 +55,6 @@ void Gun::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 	for (auto& bullet : m_Bullets)
 	{
 		bullet->update(timeElapsed);
-	}
-
-	for (auto& bullet : m_Bullets)
-	{
 		std::vector<Entity*> enemies;
 
 		const glm::vec3& pos = bullet->getSprite().getPosition();
@@ -89,7 +85,6 @@ void Gun::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 
 				bullet->setDestroy(true);
 			}
-
 		}
 	}
 

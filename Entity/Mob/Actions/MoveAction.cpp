@@ -11,6 +11,8 @@ void MoveAction::init()
 	m_CumulativeTime = 0.0f;
 	m_Duration = 1.0f;
 	m_Complete = false;
+
+	m_Angle = glm::radians(Utils::random(0.0f, 360.0f));
 }
 
 void MoveAction::play(Entity& mob, Entity& player, float timeElapsed)
@@ -23,7 +25,7 @@ void MoveAction::play(Entity& mob, Entity& player, float timeElapsed)
 		return;
 	}
 
-	float angle = mob.getAngle(player);
+	//float angle = mob.getAngle(player);
 
 	//float angle = std::atan2f(dy, dx);
 
@@ -34,7 +36,7 @@ void MoveAction::play(Entity& mob, Entity& player, float timeElapsed)
 	}
 	else
 	{
-		mob.getSprite().addDirection(std::cosf(angle), std::sinf(angle));
+		mob.getSprite().addDirection(std::cosf(m_Angle), std::sinf(m_Angle));
 	}
 
 }

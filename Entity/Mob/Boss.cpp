@@ -1,6 +1,6 @@
 #include "Boss.h"
 
-Boss::Boss(Player& player, float x, float y)
+Boss::Boss(std::shared_ptr<Player> player, float x, float y)
 	: Entity(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/Player2.png")), m_Player(player)
 {
 	m_ActionIndex = -1;
@@ -27,7 +27,7 @@ void Boss::update(const Terrain& terrain, float timeElapsed)
 	{
 		if (!m_Actions[m_ActionIndex]->isComplete())
 		{
-			//m_Actions[m_ActionIndex]->play(*this, m_Player, timeElapsed);
+			m_Actions[m_ActionIndex]->play(*this, *m_Player, timeElapsed);
 		}
 		else
 		{
@@ -41,6 +41,27 @@ void Boss::update(const Terrain& terrain, float timeElapsed)
 		if ((*it)->shouldDestroy())
 		{
 			it = m_Bullets.erase(it);
+		}
+		else
+		{
+			(*it)->update(timeElapsed);
+			
+			if ((*it)->collide(*m_Player))
+			{
+				(*it)->setDestroy(true);
+
+				m_Entities.push_back(std::unique_ptr<Particle>(new Particle(m_Player->getCenterX(), m_Player->getCenterY())));
+			}
+
+			++it;
+		}
+	}
+
+	for (auto it = m_Entities.begin(); it != m_Entities.end(); )
+	{
+		if ((*it)->shouldDestroy())
+		{
+			it = m_Entities.erase(it);
 		}
 		else
 		{
@@ -67,14 +88,20 @@ void Boss::render(Renderer& renderer)
 	renderer.render(m_Bullets);
 
 	renderer.render(m_Sprite);
+	renderer.render(m_Entities);
 }
 
 void Boss::renderLight(Renderer& renderer)
 {
 	renderer.submit(m_Light);
+
+	for (auto& bullet : m_Bullets)
+	{
+		bullet->renderLight(renderer);
+	}
 }
 
 void Boss::shoot(float angle)
 {
-	m_Bullets.push_back(std::unique_ptr<Bullet>(new Bullet(getCenterX(), getCenterY(), angle)));
+	//m_Bullets.push_back(std::unique_ptr<Bullet>(new Bullet(getCenterX(), getCenterY(), angle)));
 }

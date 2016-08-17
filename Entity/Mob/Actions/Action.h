@@ -17,4 +17,5 @@ protected:
 	bool m_Complete;
 
 	float m_Duration;
+	float m_CumulativeTime;
 };

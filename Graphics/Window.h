@@ -39,6 +39,8 @@ public:
 	inline int getHeight() const { return m_Height; }
 	inline float mouseX() const { return m_MousePosX; }
 	inline float mouseY() const { return m_MousePosY; }
+	inline bool isWindowResized() { return m_WindowResized; }
+	inline void setWindowResized(bool flag) { m_WindowResized = flag; }
 	Camera& getCamera() { return m_Camera; }
 
 private:
@@ -63,4 +65,5 @@ private:
 	GLFWwindow* m_Window;
 	Camera m_Camera;
 
+	bool m_WindowResized;
 };

@@ -8,6 +8,7 @@ class FrameBuffer
 {
 public:
 	FrameBuffer();
+	~FrameBuffer();
 
 	void bind();
 	void unbind();

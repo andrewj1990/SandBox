@@ -19,10 +19,6 @@ Sprite::Sprite(const glm::vec3 & position, const glm::vec2 size, Texture* textur
 	m_Texture = texture;
 }
 
-Sprite::~Sprite()
-{
-}
-
 void Sprite::setPosition(float x, float y)
 {
 	m_Position.x = x;

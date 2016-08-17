@@ -9,16 +9,28 @@ AttackAction::AttackAction()
 void AttackAction::init()
 {
 	m_Complete = false;
-	m_Duration = 1.0f;
+	m_Duration = 0.5f;
+	m_AttackSpeed = 0.0f;
+	m_AttackFrame = 0.0f;
+	m_CumulativeTime = 0.0f;
 }
 
 void AttackAction::play(Entity& mob, Entity& player, float timeElapsed)
 {	
 	float angle = mob.getAngle(player);
+	m_AttackFrame += timeElapsed;
 
-	mob.shoot(angle);
+	if (m_AttackFrame >= m_AttackSpeed)
+	{
+		mob.shoot(angle);
+		m_AttackFrame = 0.0f;
+	}
 
-	m_Complete = true;
+	m_Duration -= timeElapsed;
+	if (m_Duration < 0)
+	{
+		m_Complete = true;
+	}
 }
 
 AOEAttackAction::AOEAttackAction()
@@ -29,7 +41,10 @@ AOEAttackAction::AOEAttackAction()
 void AOEAttackAction::init()
 {
 	m_Complete = false;
-	m_Duration = 1.0f;
+	m_Duration = 0.5f;
+	m_AttackSpeed = 0.0f;
+	m_AttackFrame = 0.0f;
+	m_CumulativeTime = 0.0f;
 }
 
 void AOEAttackAction::play(Entity& mob, Entity& player, float timeElapsed)
@@ -41,5 +56,9 @@ void AOEAttackAction::play(Entity& mob, Entity& player, float timeElapsed)
 		mob.shoot(glm::radians(angle + (float)i));
 	}
 
-	m_Complete = true;
+	m_Duration -= timeElapsed;
+	if (m_Duration < 0)
+	{
+		m_Complete = true;
+	}
 }

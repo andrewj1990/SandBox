@@ -58,6 +58,7 @@ std::unique_ptr<Action> Utils::getAction(ActionType actionType)
 	case ActionType::ATTACK:
 		return std::unique_ptr<AttackAction>(new AttackAction());
 	case ActionType::AOEATTACK:
+		//return std::unique_ptr<AttackAction>(new AttackAction());
 		return std::unique_ptr<AOEAttackAction>(new AOEAttackAction());
 	default:
 		return std::unique_ptr<MoveAction>(new MoveAction());

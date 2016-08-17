@@ -37,7 +37,7 @@ void Texture::setUV(float ix, float iy, float w, float h, float sw, float sh)
 
 Texture::~Texture()
 {
-
+	glDeleteTextures(1, &m_TID);
 }
 
 GLuint Texture::load()

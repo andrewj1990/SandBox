@@ -21,6 +21,9 @@ void Player::init()
 	m_AttackFrame = 0.0f;
 
 	m_Sprite.setUV(1, 0, 10, 10);
+
+	Camera& camera = Window::Instance().getCamera();
+	camera.Position = glm::vec3(0, 0, 0);
 }
 
 bool Player::playerCollision(const std::unique_ptr<QuadTree>& quadTree)
@@ -123,6 +126,13 @@ void Player::shoot(float angle, float timeElapsed)
 
 		m_AttackFrame = 0.0f;
 	}
+
+	//for (int i = 15; i > 0; i--)
+	//{
+	//	m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle + glm::radians(10.0f * i));
+	//	m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle - glm::radians(10.0f * i));
+	//}
+	//m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle);
 }
 
 void Player::move(float dx, float dy)

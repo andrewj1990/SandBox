@@ -1,7 +1,6 @@
 #include "Level.h"
 
 Level::Level()
-	: m_Player(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f)
 {
 	treeSprite = Sprite(glm::vec3(600, 400, 0), glm::vec2(64, 64), TextureManager::get("Textures/Tree.png"));
 
@@ -25,16 +24,16 @@ void Level::init()
 		m_Platforms.push_back(Renderable(glm::vec3(x * 32, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Level/Terrain.png")));
 	}
 
-	m_Enemies.push_back(std::unique_ptr<Boss>(new Boss(m_Player, 600, 600)));
-	//for (int i = 0; i < 11; i++)
-	//{
-	//	m_Enemies.push_back(std::unique_ptr<BasicMob>(new BasicMob(600, 400)));
-	//}
+	for (int i = 0; i < 11; i++)
+	{
+		m_Enemies.push_back(std::unique_ptr<Boss>(new Boss(m_PlayerPtr, 600, 600)));
+		//m_Enemies.push_back(std::unique_ptr<BasicMob>(new BasicMob(600, 400)));
+	}
 }
 
 void Level::update(float timeElapsed)
 {
-	m_QuadTree = std::unique_ptr<QuadTree>(new QuadTree(0, BoundingBox(m_Player.getSprite().getPosition().x - Window::Instance().getWidth() / 2 + 16.0f, m_Player.getSprite().getPosition().y - Window::Instance().getHeight() / 2 + 16.0f, Window::Instance().getWidth(), Window::Instance().getHeight())));
+	m_QuadTree = std::unique_ptr<QuadTree>(new QuadTree(0, BoundingBox(m_PlayerPtr->getSprite().getPosition().x - Window::Instance().getWidth() / 2 + 16.0f, m_PlayerPtr->getSprite().getPosition().y - Window::Instance().getHeight() / 2 + 16.0f, Window::Instance().getWidth(), Window::Instance().getHeight())));
 	
 	for (auto it = m_Enemies.begin(); it != m_Enemies.end(); )
 	{

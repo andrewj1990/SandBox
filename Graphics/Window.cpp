@@ -10,6 +10,7 @@ void Window::setParams(std::string name, int width, int height)
 	m_Width = width;
 	m_Height = height;
 	m_Camera = Camera();
+	m_WindowResized = false;
 
 	init();
 }
@@ -128,6 +129,8 @@ void window_resize(GLFWwindow* window, int width, int height)
 	Window* win = (Window*)glfwGetWindowUserPointer(window);
 	win->m_Width = width;
 	win->m_Height = height;
+
+	win->m_WindowResized = true;
 }
 
 void mouse_callback(GLFWwindow* window, double x, double y)

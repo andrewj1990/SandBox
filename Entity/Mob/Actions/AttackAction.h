@@ -13,6 +13,8 @@ public:
 
 
 private:
+	float m_AttackSpeed;
+	float m_AttackFrame;
 
 };
 
@@ -23,5 +25,9 @@ public:
 
 	void init() override;
 	void play(Entity& mob, Entity& player, float timeElapsed) override;
+
+private:
+	float m_AttackSpeed;
+	float m_AttackFrame;
 
 };

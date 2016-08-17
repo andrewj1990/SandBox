@@ -9,7 +9,7 @@
 class Boss : public Entity
 {
 public:
-	Boss(Player& player, float x, float y);
+	Boss(std::shared_ptr<Player> player, float x, float y);
 
 	void damage(int amount) override;
 
@@ -28,7 +28,8 @@ private:
 	std::vector<std::unique_ptr<Action>> m_Actions;
 
 	std::vector<std::unique_ptr<Entity>> m_Bullets;
+	std::vector<std::unique_ptr<Entity>> m_Entities;
 
-	Player& m_Player;
+	std::shared_ptr<Player> m_Player;
 	Sprite m_Light;
 };

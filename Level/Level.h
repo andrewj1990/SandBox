@@ -22,14 +22,14 @@ public:
 	void renderLights(Renderer& renderer);
 
 	const std::unique_ptr<QuadTree>& getQuadTree() const { return m_QuadTree; }
-	const Player& getPlayer() const { return m_Player; }
+	//const Player& getPlayer() const { return m_Player; }
 	std::shared_ptr<Player> getPlayerPtr() { return m_PlayerPtr; }
 
 private:
 	void spawnItem(const glm::vec3& position);
 
 private:
-	Player m_Player;
+	//Player m_Player;
 	Terrain m_Terrain;
 
 	Sprite treeSprite;

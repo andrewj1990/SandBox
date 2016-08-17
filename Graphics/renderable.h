@@ -40,6 +40,12 @@ public:
 		setUVDefaults();
 	}
 
+	~Renderable()
+	{
+		//m_Texture = nullptr;
+		//delete m_Texture;
+	}
+
 	virtual void init(float x, float y, const glm::vec4& colour, bool solid, bool treeTile) {}
 
 	virtual void submit(Renderer& renderer) const
@@ -156,5 +162,6 @@ protected:
 	bool m_Solid;
 
 	Texture* m_Texture;
+	//std::shared_ptr<Texture> m_Texture;
 
 };

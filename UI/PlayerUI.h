@@ -6,13 +6,13 @@
 class PlayerUI
 {
 public:
-	PlayerUI(const Player& player);
+	PlayerUI(std::shared_ptr<Player> player);
 
 	void update(float timeElapsed);
 	void render(Renderer& renderer);
 
 private:
-	const Player& m_Player;
+	std::shared_ptr<Player> m_Player;
 
 	Sprite m_PlayerHealth;
 	Sprite m_Stamina;

@@ -30,6 +30,15 @@ FrameBuffer::FrameBuffer()
 	glBindVertexArray(0);
 }
 
+FrameBuffer::~FrameBuffer()
+{
+	glDeleteVertexArrays(1, &m_VAO);
+	glDeleteBuffers(1, &m_VBO);
+	glDeleteTextures(1, &m_Texture);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glDeleteFramebuffers(1, &m_FBO);
+}
+
 void FrameBuffer::bind()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);

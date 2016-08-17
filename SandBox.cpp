@@ -49,8 +49,8 @@ int main()
 	ResourceManager::getInstance().shader("light")->setUniform("screenTexture", 0);
 	ResourceManager::getInstance().shader("light")->setUniform("lightMap", 1);
 
-	Level level;
-	PlayerUI playerUI(level.getPlayer());
+	Level* level = new Level();
+	PlayerUI playerUI(level->getPlayerPtr());
 
 	Renderable background(glm::vec3(0,0,0), glm::vec2(700, 700), glm::vec4(1,1,1,1));
 	std::vector<Renderable> sprites;
@@ -65,11 +65,11 @@ int main()
 	ResourceManager::getInstance().shader("basic_shader")->setUniform("projection", projection);
 	ResourceManager::getInstance().shader("outline_shader")->setUniform("projection", projection);
 
-	Sprite light(glm::vec3(100, 100, 0), glm::vec2(256, 256), TextureManager::get("Textures/light.png"));
-	Sprite light2(glm::vec3(800, 100, 0), glm::vec2(256, 256), TextureManager::get("Textures/light.png"));
+	FrameBuffer* fbo = new FrameBuffer();
+	FrameBuffer* lightFBO = new FrameBuffer();
 
-	FrameBuffer fbo;
-	FrameBuffer lightFBO;
+	float lightIntensity = 1.0f;
+	float ambientIntensity = 0.0f;
 
 	Timer time;
 	int frames = 0;
@@ -81,6 +81,40 @@ int main()
 	double accumulator = 0.0;
 	while (!Window::Instance().shouldClose())
 	{
+		if (Window::Instance().isKeyPressed(GLFW_KEY_N))
+		{
+			//Level newLevel;
+			//level = newLevel;
+			//delete level;
+			//level = new Level();
+
+		}
+
+		if (Window::Instance().isKeyPressed(GLFW_KEY_K))
+		{
+			lightIntensity += 0.01f;
+			ambientIntensity -= 0.01f;
+		}
+		if (Window::Instance().isKeyPressed(GLFW_KEY_L))
+		{
+			lightIntensity -= 0.01f;
+			ambientIntensity += 0.01f;
+		}
+
+		lightIntensity = lightIntensity < 0 ? 0 : lightIntensity > 1 ? 1 : lightIntensity;
+		ambientIntensity = ambientIntensity < 0.3f ? 0.3f : ambientIntensity > 1 ? 1 : ambientIntensity;
+
+		if (Window::Instance().isWindowResized())
+		{
+			Window::Instance().setWindowResized(false);
+			std::cout << "window resized \n";
+			delete fbo;
+			delete lightFBO;
+
+			fbo = new FrameBuffer();
+			lightFBO = new FrameBuffer();
+		}
+
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT/* | GL_DEPTH_BUFFER_BIT*/);
 
@@ -100,41 +134,39 @@ int main()
 
 		while (accumulator >= dt)
 		{
-			level.update(dt);
+			level->update(dt);
 			playerUI.update(dt);
 			++updates;
 			updateTimer += tick;
 
 			t += dt;
 			accumulator -= dt;
-
-			light.setPosition(level.getPlayerPtr()->getCenterX() - light.getSize().x / 2, level.getPlayerPtr()->getCenterY() - light.getSize().y / 2);
 		}
 
-		fbo.bind();
-		level.render(batchrenderer);
+		fbo->bind();
+		level->render(batchrenderer);
 
 		batchrenderer.render(label);
-		fbo.unbind();
+		fbo->unbind();
 
 		//fbo.render();
 
-		lightFBO.bind();
-		level.renderLights(batchrenderer);
-		//batchrenderer.render(light);
-		//batchrenderer.render(light2);
-		lightFBO.unbind();
+		lightFBO->bind();
+		level->renderLights(batchrenderer);
+		lightFBO->unbind();
 
 		//lightFBO.render();
 
 		ResourceManager::getInstance().shader("light")->use();
+		ResourceManager::getInstance().shader("light")->setUniform("lightIntensity", lightIntensity);
+		ResourceManager::getInstance().shader("light")->setUniform("ambientIntensity", ambientIntensity);
 
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, fbo.getTID());
+		glBindTexture(GL_TEXTURE_2D, fbo->getTID());
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, lightFBO.getTID());
+		glBindTexture(GL_TEXTURE_2D, lightFBO->getTID());
 
-		glBindVertexArray(fbo.getVAO());
+		glBindVertexArray(fbo->getVAO());
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		glBindVertexArray(0);
 
