@@ -10,7 +10,7 @@ public:
 	Entity(float x, float y);
 	Entity(const glm::vec3& pos, const glm::vec2& size, Texture* texture);
 	Entity(const glm::vec3& pos, const glm::vec2& size, const glm::vec4& colour);
-	~Entity();
+	virtual ~Entity();
 
 	void init(const glm::vec3& pos, const glm::vec2& size, Texture* texture);
 

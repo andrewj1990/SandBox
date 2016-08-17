@@ -24,10 +24,10 @@ public:
 	
 	void setUV(float ix, float iy, float w, float h, float sw, float sh);
 	inline const std::vector<glm::vec4> getUVs() { return m_UV; }
-	const int& getWidth() { return m_Width; }
-	const int& getHeight() { return m_Height; }
-	const int& getIndexX() { return m_xIndex; }
-	const int& getIndexY() { return m_yIndex; }
+	int getWidth() { return m_Width; }
+	int getHeight() { return m_Height; }
+	int getIndexX() { return m_xIndex; }
+	int getIndexY() { return m_yIndex; }
 
 	void bind() const;
 	void unbind() const;

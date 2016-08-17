@@ -3,14 +3,14 @@
 
 int AStar::heuristic(const Node& a, const Node& b)
 {
-	const float& dx = abs((float)a.x - (float)b.x);
-	const float& dy = abs((float)a.y - (float)b.y);
+	float dx = abs((float)a.x - (float)b.x);
+	float dy = abs((float)a.y - (float)b.y);
 
-	const float& D = 1.0f;
-	const float& D2 = 1.0f;
+	float D = 1.0f;
+	float D2 = 1.0f;
 
 	//return abs(x1 - x2) + abs(y1 - y2);
-	return D * (dx + dy) + (D2 - 2 * D) * std::min(dx, dy);
+	return (int)(D * (dx + dy) + (D2 - 2 * D) * std::min(dx, dy));
 }
 
 int AStar::cost(Node& node, const std::unique_ptr<QuadTree>& qt)

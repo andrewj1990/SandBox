@@ -80,8 +80,8 @@ public:
 	{
 		if (m_Texture == nullptr) return;
 
-		float sw = m_Texture->getWidth();
-		float sh = m_Texture->getHeight();
+		float sw = (float)m_Texture->getWidth();
+		float sh = (float)m_Texture->getHeight();
 
 		float inverseRow = (sh / height) - y - 1;
 

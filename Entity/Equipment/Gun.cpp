@@ -52,6 +52,8 @@ void Gun::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 
 	m_Sprite.setAngle(angle);
 
+	//for (int i = 0; i < 150; i++) m_Entities.push_back(std::unique_ptr<GunParticle>(new GunParticle(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle)));
+
 	for (auto& bullet : m_Bullets)
 	{
 		bullet->update(timeElapsed);

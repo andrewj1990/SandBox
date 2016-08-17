@@ -103,5 +103,5 @@ void Boss::renderLight(Renderer& renderer)
 
 void Boss::shoot(float angle)
 {
-	//m_Bullets.push_back(std::unique_ptr<Bullet>(new Bullet(getCenterX(), getCenterY(), angle)));
+	m_Bullets.push_back(std::unique_ptr<Bullet>(new Bullet(getCenterX(), getCenterY(), angle)));
 }

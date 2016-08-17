@@ -76,9 +76,9 @@ int main()
 	int updates = 0;
 	float updateTimer = 0.0f;
 	float tick = 1.0f / 60.0f;
-	double t = 0.0;
-	double dt = 0.01;
-	double accumulator = 0.0;
+	float t = 0.0f;
+	float dt = 0.01f;
+	float accumulator = 0.0f;
 	while (!Window::Instance().shouldClose())
 	{
 		if (Window::Instance().isKeyPressed(GLFW_KEY_N))
@@ -123,7 +123,7 @@ int main()
 			Window::Instance().closeWindow();
 		}
 		
-		double frameTime = time.elapsed();
+		float frameTime = time.elapsed();
 		time.reset();
 		if (frameTime > 0.25)
 		{

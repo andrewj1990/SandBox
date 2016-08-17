@@ -17,7 +17,7 @@ public:
 
 	float elapsed()
 	{
-		return (float)(clock() - m_Start) / (double) CLOCKS_PER_SEC;
+		return (float)(clock() - m_Start) / (float) CLOCKS_PER_SEC;
 	}
 
 private:
