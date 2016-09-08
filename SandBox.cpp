@@ -85,8 +85,8 @@ int main()
 		{
 			//Level newLevel;
 			//level = newLevel;
-			//delete level;
-			//level = new Level();
+			delete level;
+			level = new Level();
 
 		}
 

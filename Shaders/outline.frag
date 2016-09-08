@@ -19,11 +19,27 @@ void main()
 {
 	vec4 texColor = fs_in.color;
 	float alpha = 0.0f;
+	float sides = 0.0f;
 	float stepSize = 1.0f / 32.0f;
 	if (fs_in.tid > 0.0)
 	{
 		int tid = int(fs_in.tid - 0.5);
 
+		alpha = (1 - texture(textures[tid], fs_in.uv.xy).a);
+
+		sides += texture(textures[tid], fs_in.uv.xy + vec2(fs_in.uv.z, 0.0f)).a;
+		sides += texture(textures[tid], fs_in.uv.xy + vec2(-fs_in.uv.z, 0.0f)).a;
+		sides += texture(textures[tid], fs_in.uv.xy + vec2(0.0f, fs_in.uv.w)).a;
+		sides += texture(textures[tid], fs_in.uv.xy + vec2(0.0f, -fs_in.uv.w)).a;
+		
+		sides += texture(textures[tid], fs_in.uv.xy + vec2(-fs_in.uv.z, -fs_in.uv.w)).a;
+		sides += texture(textures[tid], fs_in.uv.xy + vec2(fs_in.uv.z, -fs_in.uv.w)).a;
+		sides += texture(textures[tid], fs_in.uv.xy + vec2(-fs_in.uv.z, fs_in.uv.w)).a;
+		sides += texture(textures[tid], fs_in.uv.xy + vec2(fs_in.uv.z, fs_in.uv.w)).a;
+
+		alpha *= sides;
+
+		/*
 		alpha = 8 * texture(textures[tid], fs_in.uv.xy).a;
 		alpha -= texture(textures[tid], fs_in.uv.xy + vec2(fs_in.uv.z, 0.0f)).a;
 		alpha -= texture(textures[tid], fs_in.uv.xy + vec2(-fs_in.uv.z, 0.0f)).a;
@@ -35,6 +51,7 @@ void main()
 		alpha -= texture(textures[tid], fs_in.uv.xy + vec2(-fs_in.uv.z, fs_in.uv.w)).a;
 		alpha -= texture(textures[tid], fs_in.uv.xy + vec2(fs_in.uv.z, fs_in.uv.w)).a;
 
+		*/
 		texColor = texture(textures[tid], fs_in.uv.xy);
 	}
 

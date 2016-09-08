@@ -6,6 +6,7 @@ class Action
 {
 public:
 	Action() { m_Complete = false; }
+	virtual ~Action() {}
 
 	virtual void init() { m_Complete = false; }
 	virtual void play(Entity& mob, Entity& player, float timeElapsed) = 0;

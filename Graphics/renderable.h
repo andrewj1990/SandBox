@@ -40,7 +40,7 @@ public:
 		setUVDefaults();
 	}
 
-	~Renderable()
+	virtual ~Renderable()
 	{
 		//m_Texture = nullptr;
 		//delete m_Texture;

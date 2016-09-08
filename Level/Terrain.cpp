@@ -82,6 +82,46 @@ glm::vec4 Terrain::getColor(float height)
 	return glm::vec4(r, g, b, solid);
 }
 
+glm::vec4 Terrain::getUV(float height)
+{
+	int x = 0;
+	int y = 0;
+	int solid = 0;
+
+	if (height < 0.3)
+	{
+		x = 1;
+		solid = 1;
+	}
+	else if (height < 0.4)
+	{
+		x = 1;
+		solid = 1;
+	}
+	else if (height < 0.42)
+	{
+		x = 1;
+		y = 1;
+		solid = 1;
+	}
+	else if (height < 0.45)
+	{
+		x = 0;
+		y = 1;
+	}
+	else if (height < 0.6)
+	{
+	}
+	else if (height < 0.7)
+	{
+	}
+	else
+	{
+	}
+
+	return glm::vec4(x, y, solid, 0);
+}
+
 bool Terrain::isSolid(float x, float y) const
 {
 	const glm::vec3& camPos = Window::Instance().getCamera().getPosition();
@@ -118,7 +158,7 @@ void Terrain::update(float timeElapsed)
 
 			float groundHeight = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, (xp / m_TileSize + i) / m_NoiseSize, (yp / m_TileSize + j) / m_NoiseSize);
 
-			glm::vec4 colour = r < m_FireRadius ? glm::vec4(0.2, 0.1, 0.1, 0) : getColor(groundHeight);
+			glm::vec4 colour = r < m_FireRadius ? glm::vec4(0.2, 0.1, 0.1, 0) : getUV(groundHeight);
 			bool isSolid = colour.w == 1;
 			colour.w = 1.0f;
 			std::unique_ptr<Renderable>& tile = m_Tiles[i + j * m_Width];
@@ -136,6 +176,8 @@ void Terrain::update(float timeElapsed)
 
 void Terrain::render(Renderer& renderer)
 {
+	ResourceManager::getInstance().shader("basic_shader")->setUniform("outline", false);
 	renderer.render(m_Tiles);
+	ResourceManager::getInstance().shader("basic_shader")->setUniform("outline", true);
 
 }

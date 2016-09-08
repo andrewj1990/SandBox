@@ -8,7 +8,7 @@ class Particle : public Entity
 public:
 	Particle(float x, float y);
 	Particle(float x, float y, float angle);
-	~Particle() {}
+	virtual ~Particle() {}
 	
 	void update(float timeElapsed) override;
 	void render(Renderer& renderer) override;

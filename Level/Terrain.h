@@ -17,6 +17,7 @@ public:
 
 	Renderable getTile(float x, float y, float height);
 	glm::vec4 getColor(float height);
+	glm::vec4 getUV(float height);
 
 	bool isSolid(float x, float y) const;
 
