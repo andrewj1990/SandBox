@@ -11,10 +11,13 @@
 #include "SkeletalAnimation\Skeleton.h"
 #include "Entity\player.h"
 #include "Level\Level.h"
+#include "Level\Level2D.h"
 #include "UI\PlayerUI.h"
 
 #include "Graphics\label.h"
 #include "Utils\timer.h"
+
+#define LEVEL 0
 
 void movement(const Window& window, Camera& camera, float deltaTime)
 {
@@ -51,6 +54,8 @@ int main()
 
 	Level* level = new Level();
 	PlayerUI playerUI(level->getPlayerPtr());
+
+	Level2D* level2d = new Level2D();
 
 	Renderable background(glm::vec3(0,0,0), glm::vec2(700, 700), glm::vec4(1,1,1,1));
 	std::vector<Renderable> sprites;
@@ -135,6 +140,7 @@ int main()
 		while (accumulator >= dt)
 		{
 			level->update(dt);
+			level2d->update(dt);
 			playerUI.update(dt);
 			++updates;
 			updateTimer += tick;
@@ -144,7 +150,8 @@ int main()
 		}
 
 		fbo->bind();
-		level->render(batchrenderer);
+		if (LEVEL) level->render(batchrenderer);
+		else level2d->render(batchrenderer);
 
 		batchrenderer.render(label);
 		fbo->unbind();
