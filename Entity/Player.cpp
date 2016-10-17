@@ -278,6 +278,41 @@ void Player::update(float timeElapsed)
 		break;
 	}
 
+	m_Anim += timeElapsed * 10.0f;
+
+	dx = 0.0f;
+	dy = 0.0f;
+
+	if (window.isKeyPressed(GLFW_KEY_W))
+	{
+		m_Row = 3;
+		m_Sprite.setUV((int)m_Anim % 3, m_Row, 10, 10);
+		dy += m_MoveSpeed * timeElapsed;
+	}
+
+	if (window.isKeyPressed(GLFW_KEY_A))
+	{
+		m_Row = 2;
+		m_Sprite.setUV((int)m_Anim % 3, m_Row, 10, 10);
+		dx -= m_MoveSpeed * timeElapsed;
+	}
+
+	if (window.isKeyPressed(GLFW_KEY_S))
+	{
+		m_Row = 0;
+		m_Sprite.setUV((int)m_Anim % 3, m_Row, 10, 10);
+		dy -= m_MoveSpeed * timeElapsed;
+	}
+
+	if (window.isKeyPressed(GLFW_KEY_D))
+	{
+		m_Row = 1;
+		m_Sprite.setUV((int)m_Anim % 3, m_Row, 10, 10);
+		dx += m_MoveSpeed * timeElapsed;
+	}
+
+	move(dx, dy);
+	shoot(angle, timeElapsed);
 }
 
 void Player::submit(Renderer& renderer)

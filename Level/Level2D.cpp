@@ -2,16 +2,18 @@
 
 Level2D::Level2D()
 {
-	const Camera& cam = Window::Instance().getCamera();
-	m_RegionX = (int)(cam.Position.x / (16 * 16));
-	m_RegionY = (int)(cam.Position.y / (16 * 16));
-	m_RegionSize = 3;
+	m_RegionX = 0;
+	m_RegionY = 0;
+	m_RegionSize = 5;
 
-	load();
+	init();
 }
 
-void Level2D::load()
+void Level2D::init()
 {
+	const Camera& cam = Window::Instance().getCamera();
+	m_Player = std::unique_ptr<Player>(new Player(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f));
+
 	constexpr int r_size = 100;
 	constexpr int c_size = 100;
 	int tiles[r_size][c_size]; // = {
@@ -48,9 +50,9 @@ void Level2D::load()
 
 	std::cout << "m : " << midX << ", " << midY << "\n";
 
-	for (int i = midX - 1; i <= midX + 1; i++)
+	for (int i = 0; i < m_RegionSize; i++)
 	{
-		for (int j = midY - 1; j <= midY + 1; j++)
+		for (int j = 0; j < m_RegionSize; j++)
 		{
 			addTileRegion(i, j);
 		}
@@ -70,7 +72,7 @@ void Level2D::update(float timeElapsed)
 	{
 		int index = m_RegionX < regionX ? m_RegionX : m_RegionX + m_RegionSize - 1;
 		removeTileRegionCol(index);
-		int indexAdd = m_RegionX > regionX ? regionX : regionX + m_RegionSize;
+		int indexAdd = m_RegionX > regionX ? regionX : m_RegionX + m_RegionSize;
 		addTileRegionCol(indexAdd);
 		m_RegionX = regionX;
 	}
@@ -78,10 +80,12 @@ void Level2D::update(float timeElapsed)
 	{
 		int index = m_RegionY < regionY ? m_RegionY : m_RegionY + m_RegionSize - 1;
 		removeTileRegionRow(index);
-		int indexAdd = m_RegionY > regionY ? regionY : regionY + m_RegionSize;
+		int indexAdd = m_RegionY > regionY ? regionY : m_RegionY + m_RegionSize;
 		addTileRegionRow(indexAdd);
 		m_RegionY = regionY;
 	}
+
+	m_Player->update(timeElapsed);
 
 }
 
@@ -92,6 +96,8 @@ void Level2D::render(Renderer& renderer)
 	{
 		tileRegion->render(renderer);
 	}
+
+	m_Player->render(renderer);
 }
 
 void Level2D::addTileRegion(int i, int j)

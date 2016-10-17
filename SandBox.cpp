@@ -139,8 +139,8 @@ int main()
 
 		while (accumulator >= dt)
 		{
-			level->update(dt);
-			level2d->update(dt);
+			if (LEVEL) level->update(dt);
+			else level2d->update(dt);
 			playerUI.update(dt);
 			++updates;
 			updateTimer += tick;

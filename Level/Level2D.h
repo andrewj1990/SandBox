@@ -3,13 +3,14 @@
 #include "..\Graphics\Renderer.h"
 #include "Tiles\Tile.h"
 #include "TileRegion.h"
+#include "..\Entity\player.h"
 
 class Level2D 
 {
 public:
 	Level2D();
 
-	void load();
+	void init();
 
 	void update(float timeElapsed);
 	void render(Renderer& renderer);
@@ -29,6 +30,7 @@ private:
 	std::vector<std::unique_ptr<Renderable>> m_Tiles;
 
 	std::vector<std::unique_ptr<TileRegion>> m_TestRegion;
+	std::unique_ptr<Player> m_Player;
 
 
 };
