@@ -21,6 +21,10 @@ public:
 private:
 	void setTileUV(std::unique_ptr<Renderable>& tile);
 	float noiseHeight(float x, float y);
+	bool calculateTile(float x, float y);
+	bool surfaceTile(float x, float y);
+	bool transitionTile(float x, float y);
+	bool caveTile(float x, float y, float threshold = 0.5f);
 
 private:
 	int m_IndexX;
@@ -30,6 +34,8 @@ private:
 	int m_Size;
 	int m_TileSize;
 
+	float m_SurfaceTopEdge;
+	float m_TransitionY;
 	float m_NoiseSize;
 
 	SimplexNoise m_Noise;

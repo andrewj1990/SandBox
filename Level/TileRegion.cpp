@@ -25,30 +25,18 @@ void TileRegion::init()
 {
 	m_TileSize = 16;
 	m_NoiseSize = 2500.0f;
+	m_SurfaceTopEdge = 1500.0f;
+	m_TransitionY = -1000.0f;
 	for (int x = 0; x < m_Size; x++)
 	{
-		float height = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, (m_X + x * m_TileSize) / m_NoiseSize, 0) * 1400;
 		for (int y = 0; y < m_Size; y++)
 		{
-			//float height = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, (m_X + x * m_TileSize) / m_NoiseSize, (m_Y + y * m_TileSize) / m_NoiseSize) * 1400;
-			//float height = noiseHeight((m_X + x * m_TileSize) / m_NoiseSize, (m_Y + y * m_TileSize) / m_NoiseSize);
-			float yy = m_Y + y * m_TileSize;
-			//height += m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, (m_X + j * tile_size) / 250, 0) * 10;
-			//std::cout << "height" << height << "\n";
-			if (height > yy)
+			if (calculateTile(m_X + x * m_TileSize, m_Y + y * m_TileSize))
 			{
-				m_Tiles.push_back(std::unique_ptr<Tile>(new Tile(glm::vec2(m_TileSize, m_TileSize))));
-				//auto& t = m_Tiles[j + i * m_Size];
-				auto& t = m_Tiles.back();
-				int di = Utils::random(0, 1);
-				t->init(m_X + x * m_TileSize, m_Y + y * m_TileSize, glm::vec4(0, di, 0, 1), false, false);
-				//if (di != 0) {
-				//}
-				//else
-				//{
-				//	t->init(m_X + j * tile_size, m_Y + i * tile_size, glm::vec4(1, 1, 0, 0), false, false);
-				//}
-
+					m_Tiles.push_back(std::unique_ptr<Tile>(new Tile(glm::vec2(m_TileSize, m_TileSize))));
+					auto& t = m_Tiles.back();
+					int di = Utils::random(0, 1);
+					t->init(m_X + x * m_TileSize, m_Y + y * m_TileSize, glm::vec4(0, di, 0, 1), false, false);
 			}
 		}
 	}
@@ -66,27 +54,15 @@ void TileRegion::render(Renderer& renderer)
 
 void TileRegion::setTileUV(std::unique_ptr<Renderable>& tile)
 {
-	float height = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, (tile->getPosition().x) / m_NoiseSize, 0) * 1400;
-	//float height = noiseHeight((tile->getPosition().x) / m_NoiseSize, (tile->getPosition().y) / m_NoiseSize);
-
 	float rightTileX = tile->getPosition().x + m_TileSize;
 	float leftTileX = tile->getPosition().x - m_TileSize;
 	float aboveTileY = tile->getPosition().y + m_TileSize;
 	float belowTileY = tile->getPosition().y - m_TileSize;
 
-	float rightHeight = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, (rightTileX) / m_NoiseSize, 0) * 1400;
-	float leftHeight = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, (leftTileX) / m_NoiseSize, 0) * 1400;
-	//float rightHeight = noiseHeight((rightTileX) / m_NoiseSize, (tile->getPosition().y) / m_NoiseSize);
-	//float leftHeight = noiseHeight((leftTileX) / m_NoiseSize, (tile->getPosition().y) / m_NoiseSize);
-
-	bool above = height > aboveTileY;
-	bool below = height > belowTileY;
-	bool right = rightHeight > tile->getPosition().y;
-	bool left = leftHeight > tile->getPosition().y;
-	bool topRight = rightHeight > aboveTileY;
-	bool botRight = rightHeight > belowTileY;
-	bool topLeft = leftHeight > aboveTileY;
-	bool botLeft = leftHeight > belowTileY;
+	bool above = calculateTile(tile->getPosition().x, aboveTileY);
+	bool below = calculateTile(tile->getPosition().x, belowTileY);
+	bool right = calculateTile(rightTileX, tile->getPosition().y);
+	bool left = calculateTile(leftTileX, tile->getPosition().y);
 
 	int sum = 0;
 	if (above) sum += 1;
@@ -99,26 +75,49 @@ void TileRegion::setTileUV(std::unique_ptr<Renderable>& tile)
 	//if (topLeft) sum += 128;
 
 	tile->setUV(sum, 0, 16, 16);
-
-	//if (sum == 1) {
-	//	tile->setUV(0, 0, 8, 8);
-	//}
-	//else if (sum == 5)
-	//{
-	//	tile->setUV(1, 1, 8, 8);
-	//}
-	//else if (sum == 4)
-	//{
-	//	tile->setUV(0, 0, 8, 8);
-	//}
-	//else
-	//{
-	//	tile->setUV(1, 1, 8, 8);
-	//}
 }
 
 float TileRegion::noiseHeight(float x, float y)
 {
 	float height = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, x, y) * 1400;
 	return height;
+}
+
+bool TileRegion::calculateTile(float x, float y)
+{
+	if (y > 0) 
+	{
+		return surfaceTile(x, y);
+	}
+	else if (y > m_TransitionY)
+	{
+		return transitionTile(x, y);
+	}
+	else
+	{
+		return caveTile(x, y);
+	}
+
+	return false;
+}
+
+bool TileRegion::surfaceTile(float x, float y)
+{
+	float grad = (m_SurfaceTopEdge - y) / m_SurfaceTopEdge;
+	float surface = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, x / m_NoiseSize, y / m_NoiseSize) +grad;
+	return surface > 1.0f;
+}
+
+bool TileRegion::transitionTile(float x, float y)
+{
+	float caveEdge = -1000.0f;
+	float grad = (caveEdge - y) / caveEdge;
+	float surface = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, x / m_NoiseSize, y / m_NoiseSize) + grad;
+	return surface > 0.3f;
+}
+
+bool TileRegion::caveTile(float x, float y, float threshold)
+{
+	float noise = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, x / m_NoiseSize, y / m_NoiseSize);
+	return noise > threshold || noise < 0.35f;
 }

@@ -283,6 +283,11 @@ void Player::update(float timeElapsed)
 	dx = 0.0f;
 	dy = 0.0f;
 
+	if (window.isKeyPressed(GLFW_KEY_LEFT_SHIFT))
+	{
+		m_MoveSpeed += 100.0f;
+	}
+
 	if (window.isKeyPressed(GLFW_KEY_W))
 	{
 		m_Row = 3;
