@@ -73,8 +73,8 @@ int main()
 	FrameBuffer* fbo = new FrameBuffer();
 	FrameBuffer* lightFBO = new FrameBuffer();
 
-	float lightIntensity = 1.0f;
-	float ambientIntensity = 0.0f;
+	float lightIntensity = 0.0f;//1.0f;
+	float ambientIntensity = 1.0f;//0.0f;
 
 	Timer time;
 	int frames = 0;

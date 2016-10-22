@@ -4,7 +4,8 @@ Level2D::Level2D()
 {
 	m_RegionX = 0;
 	m_RegionY = 0;
-	m_RegionSize = 5;
+	m_RegionSizeX = 6;
+	m_RegionSizeY = 4;
 
 	init();
 }
@@ -50,9 +51,9 @@ void Level2D::init()
 
 	std::cout << "m : " << midX << ", " << midY << "\n";
 
-	for (int i = 0; i < m_RegionSize; i++)
+	for (int i = 0; i < m_RegionSizeX; i++)
 	{
-		for (int j = 0; j < m_RegionSize; j++)
+		for (int j = 0; j < m_RegionSizeY; j++)
 		{
 			addTileRegion(i, j);
 		}
@@ -62,25 +63,28 @@ void Level2D::init()
 
 void Level2D::update(float timeElapsed)
 {
+	int tileSize = 16;
+	int numTilePerRegion = 16;
+	int regionSize= tileSize * numTilePerRegion;
 	const Camera& cam = Window::Instance().getCamera();
-	//std::cout << "camPos : " << (int)(cam.Position.x / (16 * 16)) << ", " << (int)(cam.Position.y / (16 * 16)) << "\n";
-	int regionX = (int)(cam.Position.x / (16 * 16));
-	int regionY = (int)(cam.Position.y / (16 * 16));
-
+	int regionX = (int)std::floor((cam.Position.x / regionSize));
+	int regionY = (int)std::floor((cam.Position.y / regionSize));
+	//std::cout << "camPos : " << regionX << ", " << regionY << "\n";
+	
 	// region changed
 	if (m_RegionX != regionX)
 	{
-		int index = m_RegionX < regionX ? m_RegionX : m_RegionX + m_RegionSize - 1;
+		int index = m_RegionX < regionX ? m_RegionX : m_RegionX + m_RegionSizeX - 1;
 		removeTileRegionCol(index);
-		int indexAdd = m_RegionX > regionX ? regionX : m_RegionX + m_RegionSize;
+		int indexAdd = m_RegionX > regionX ? regionX : m_RegionX + m_RegionSizeX;
 		addTileRegionCol(indexAdd);
 		m_RegionX = regionX;
 	}
 	if (m_RegionY != regionY)
 	{
-		int index = m_RegionY < regionY ? m_RegionY : m_RegionY + m_RegionSize - 1;
+		int index = m_RegionY < regionY ? m_RegionY : m_RegionY + m_RegionSizeY - 1;
 		removeTileRegionRow(index);
-		int indexAdd = m_RegionY > regionY ? regionY : m_RegionY + m_RegionSize;
+		int indexAdd = m_RegionY > regionY ? regionY : m_RegionY + m_RegionSizeY;
 		addTileRegionRow(indexAdd);
 		m_RegionY = regionY;
 	}
@@ -108,7 +112,7 @@ void Level2D::addTileRegion(int i, int j)
 
 void Level2D::addTileRegionRow(int index, bool wholeRow)
 {
-	for (int i = m_RegionX; i < m_RegionX + m_RegionSize; i++)
+	for (int i = m_RegionX; i < m_RegionX + m_RegionSizeX; i++)
 	{
 		addTileRegion(i, index);
 	}
@@ -116,7 +120,7 @@ void Level2D::addTileRegionRow(int index, bool wholeRow)
 
 void Level2D::addTileRegionCol(int index, bool wholeCol)
 {
-	for (int i = m_RegionY; i < m_RegionY + m_RegionSize; i++)
+	for (int i = m_RegionY; i < m_RegionY + m_RegionSizeY; i++)
 	{
 		addTileRegion(index, i);
 	}

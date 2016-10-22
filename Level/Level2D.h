@@ -25,7 +25,8 @@ private:
 private:
 	int m_RegionX;
 	int m_RegionY;
-	int m_RegionSize;
+	int m_RegionSizeX;
+	int m_RegionSizeY;
 
 	std::vector<std::unique_ptr<Renderable>> m_Tiles;
 

@@ -11,6 +11,17 @@ Tile::Tile()
 	setUV(0, 0, 8, 8);
 }
 
+Tile::Tile(const glm::vec2& size)
+	: Renderable(glm::vec3(0, 0, 0), size)
+{
+	m_Tree = std::shared_ptr<Entity>(new Entity(glm::vec3(0, 0, 0), glm::vec2(64, 64), TextureManager::get("Textures/Tree.png")));
+	m_Tree->getSprite().setUV(0, 0, 10, 10);
+	m_TreeTile = true;
+
+	m_Texture = TextureManager::get("Textures/Level/level.png");
+	setUV(0, 0, 8, 8);
+}
+
 Tile::Tile(const std::string& tilesheet)
 	: Renderable()
 {
@@ -27,7 +38,7 @@ void Tile::init(float x, float y, const glm::vec4& colour, bool solid, bool tree
 	m_Position.x = x;
 	m_Position.y = y;
 
-	m_Colour = colour;
+	//m_Colour = colour;
 
 	m_Solid = colour.z;
 	setUV(colour.x, colour.y, 8, 8);
