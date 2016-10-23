@@ -17,6 +17,7 @@ public:
 
 	int indexX() { return m_IndexX; }
 	int indexY() { return m_IndexY; }
+	const std::vector<std::unique_ptr<Renderable>>& getTiles() { return m_Tiles; }
 
 private:
 	void setTileUV(std::unique_ptr<Renderable>& tile);

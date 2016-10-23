@@ -28,6 +28,11 @@ struct BoundingBox
 	{
 		return (x <= box.getPosition().x + box.getSize().x && x + width >= box.getPosition().x && y <= box.getPosition().y + box.getSize().y && y + height >= box.getPosition().y);
 	}
+
+	bool intersects(const BoundingBox& box) 
+	{
+		return (x <= box.x + box.width && x + width >= box.x && y <= box.y + box.height && y + height >= box.y);
+	}
 };
 
 class QuadTree
@@ -42,6 +47,7 @@ public:
 	void retrieve(std::vector<Renderable*>& data, float x, float y, float w, float h);
 	void retrieve(std::vector<Entity*>& data, Renderable* range);
 	void retrieve(std::vector<Entity*>& data, float x, float y, float w, float h);
+	void queryRange(std::vector<Renderable*>& data, const BoundingBox& bbox);
 
 	void insert(Renderable* data);
 	void insert(Entity* data);

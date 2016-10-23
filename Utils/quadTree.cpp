@@ -5,7 +5,7 @@ QuadTree::QuadTree(int level, BoundingBox bounds)
 	: m_Level(level), m_Bounds(bounds), ne(nullptr), se(nullptr), sw(nullptr), nw(nullptr)
 {
 	max_objects = 40;
-	max_levels = 5;
+	max_levels = 8;
 
 }
 
@@ -32,10 +32,10 @@ int QuadTree::getIndex(Renderable* data)
 	double vmid = m_Bounds.x + (m_Bounds.width / 2);
 	double hmid = m_Bounds.y + (m_Bounds.height / 2);
 
-	bool topQuad = data->getPosition().y < hmid && data->getPosition().y + data->getSize().y < hmid;
-	bool botQuad = data->getPosition().y > hmid;
+	bool topQuad = data->getPosition().y < hmid;// && data->getPosition().y + data->getSize().y < hmid;
+	bool botQuad = data->getPosition().y >= hmid;
 
-	if (data->getPosition().x < vmid && data->getPosition().x + data->getSize().x < vmid)
+	if (data->getPosition().x < vmid)// && data->getPosition().x + data->getSize().x < vmid)
 	{
 		if (topQuad)
 		{
@@ -46,7 +46,7 @@ int QuadTree::getIndex(Renderable* data)
 			index = 2;
 		}
 	}
-	else if (data->getPosition().x > vmid)
+	else if (data->getPosition().x >= vmid)
 	{
 		if (topQuad)
 		{
@@ -59,19 +59,21 @@ int QuadTree::getIndex(Renderable* data)
 
 	}
 
+	//if (index == -1) std::cout << "uh oh\n";
+
 	return index;
 }
 
-int QuadTree::getIndex(Entity * data)
+int QuadTree::getIndex(Entity* data)
 {
 	int index = -1;
 	double vmid = m_Bounds.x + (m_Bounds.width / 2);
 	double hmid = m_Bounds.y + (m_Bounds.height / 2);
 
-	bool topQuad = data->getSprite().getPosition().y < hmid && data->getSprite().getPosition().y + data->getSprite().getSize().y < hmid;
-	bool botQuad = data->getSprite().getPosition().y > hmid;
+	bool topQuad = data->getSprite().getPosition().y < hmid;// && data->getSprite().getPosition().y + data->getSprite().getSize().y < hmid;
+	bool botQuad = data->getSprite().getPosition().y >= hmid;
 
-	if (data->getSprite().getPosition().x < vmid && data->getSprite().getPosition().x + data->getSprite().getSize().x < vmid)
+	if (data->getSprite().getPosition().x < vmid)// && data->getSprite().getPosition().x + data->getSprite().getSize().x < vmid)
 	{
 		if (topQuad)
 		{
@@ -82,7 +84,7 @@ int QuadTree::getIndex(Entity * data)
 			index = 2;
 		}
 	}
-	else if (data->getSprite().getPosition().x > vmid)
+	else if (data->getSprite().getPosition().x >= vmid)
 	{
 		if (topQuad)
 		{
@@ -104,10 +106,10 @@ int QuadTree::getIndex(float x, float y, float w, float h)
 	double vmid = m_Bounds.x + (m_Bounds.width / 2);
 	double hmid = m_Bounds.y + (m_Bounds.height / 2);
 
-	bool topQuad = y < hmid && y + h < hmid;
-	bool botQuad = y > hmid;
+	bool topQuad = y < hmid;// && y + h < hmid;
+	bool botQuad = y >= hmid;
 
-	if (x < vmid && x + w < vmid)
+	if (x < vmid)// && x + w < vmid)
 	{
 		if (topQuad)
 		{
@@ -118,7 +120,7 @@ int QuadTree::getIndex(float x, float y, float w, float h)
 			index = 2;
 		}
 	}
-	else if (x > vmid)
+	else if (x >= vmid)
 	{
 		if (topQuad)
 		{
@@ -163,7 +165,7 @@ void QuadTree::insert(Renderable* data)
 	{
 		if (nw == nullptr) split();
 
-		for (auto i = m_Objects.cbegin(); i != m_Objects.cend(); )
+		for (auto i = m_Objects.begin(); i != m_Objects.end(); )
 		{
 			int index = getIndex(*i);
 			if (index != -1)
@@ -203,7 +205,7 @@ void QuadTree::insert(Entity* data)
 	//if (m_Bounds.contains(*data)) 
 	m_Entities.push_back(data);
 
-	if (m_Objects.size() > max_objects && m_Level < max_levels)
+	if (m_Entities.size() > max_objects && m_Level < max_levels)
 	{
 		if (nw == nullptr) split();
 
@@ -287,6 +289,24 @@ void QuadTree::retrieve(std::vector<Entity*>& data, float x, float y, float w, f
 	std::copy(m_Entities.begin(), m_Entities.end(), std::back_inserter(data));
 }
 
+void QuadTree::queryRange(std::vector<Renderable*>& data, const BoundingBox& bbox)
+{
+	if (m_Bounds.intersects(bbox))
+	{
+		if (ne != nullptr) ne->queryRange(data, bbox);
+		else std::copy(m_Objects.begin(), m_Objects.end(), std::back_inserter(data));
+		if (nw != nullptr) nw->queryRange(data, bbox);
+		else std::copy(m_Objects.begin(), m_Objects.end(), std::back_inserter(data));
+		if (sw != nullptr) sw->queryRange(data, bbox);
+		else std::copy(m_Objects.begin(), m_Objects.end(), std::back_inserter(data));
+		if (se != nullptr) se->queryRange(data, bbox);
+		else std::copy(m_Objects.begin(), m_Objects.end(), std::back_inserter(data));
+
+		//std::copy(m_Objects.begin(), m_Objects.end(), std::back_inserter(data));
+	}
+
+}
+
 
 void QuadTree::getBounds(std::vector<BoundingBox>& bounds)
 {
@@ -300,3 +320,35 @@ void QuadTree::getBounds(std::vector<BoundingBox>& bounds)
 	se->getBounds(bounds);
 
 }
+
+//
+//
+//// Find all points that appear within a range
+//function queryRange(AABB range)
+//{
+//	// Prepare an array of results
+//	Array of XY pointsInRange;
+//
+//	// Automatically abort if the range does not intersect this quad
+//	if (!boundary.intersectsAABB(range))
+//		return pointsInRange; // empty list
+//
+//							  // Check objects at this quad level
+//	for (int p = 0; p < points.size; p++)
+//	{
+//		if (range.containsPoint(points[p]))
+//			pointsInRange.append(points[p]);
+//	}
+//
+//	// Terminate here, if there are no children
+//	if (northWest == null)
+//		return pointsInRange;
+//
+//	// Otherwise, add the points from the children
+//	pointsInRange.appendArray(northWest->queryRange(range));
+//	pointsInRange.appendArray(northEast->queryRange(range));
+//	pointsInRange.appendArray(southWest->queryRange(range));
+//	pointsInRange.appendArray(southEast->queryRange(range));
+//
+//	return pointsInRange;
+//}

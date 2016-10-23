@@ -4,6 +4,7 @@
 #include "Tiles\Tile.h"
 #include "TileRegion.h"
 #include "..\Entity\player.h"
+#include "..\Graphics\Light.h"
 
 class Level2D 
 {
@@ -33,5 +34,6 @@ private:
 	std::vector<std::unique_ptr<TileRegion>> m_TestRegion;
 	std::unique_ptr<Player> m_Player;
 
-
+	Light m_Light;
+	std::unique_ptr<QuadTree> m_QuadTree;
 };

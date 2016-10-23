@@ -57,6 +57,7 @@ public:
 	void flush(GLenum blendFactor = GL_ONE_MINUS_SRC_ALPHA);
 
 	void render(const Renderable& renderable);
+	void render(const std::vector<Renderable*> renderables);
 	void render(const std::vector<Renderable>& renderables);
 	void render(const std::vector<std::unique_ptr<Renderable>>& renderables);
 	void render(Entity& entity);

@@ -298,6 +298,19 @@ void Renderer::render(const Renderable& renderable)
 	flush();
 }
 
+void Renderer::render(const std::vector<Renderable*> renderables)
+{
+	begin();
+
+	for (Renderable* renderable : renderables)
+	{
+		renderable->submit(*this);
+	}
+
+	end();
+	flush();
+}
+
 void Renderer::render(const std::vector<Renderable>& renderables)
 {
 	begin();

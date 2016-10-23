@@ -1,11 +1,18 @@
 #include "Level2D.h"
 
 Level2D::Level2D()
+	: m_Light()
 {
 	m_RegionX = 0;
 	m_RegionY = 0;
 	m_RegionSizeX = 6;
 	m_RegionSizeY = 4;
+
+	int camX = Window::Instance().getCamera().Position.x;
+	int camY = Window::Instance().getCamera().Position.y;
+	int winW = Window::Instance().getWidth();
+	int winH = Window::Instance().getHeight();
+	m_QuadTree = std::unique_ptr<QuadTree>(new QuadTree(0, BoundingBox(camX, camY, winW, winH)));
 
 	init();
 }
@@ -91,6 +98,22 @@ void Level2D::update(float timeElapsed)
 
 	m_Player->update(timeElapsed);
 
+	m_Light.update(timeElapsed);
+
+	int camX = Window::Instance().getCamera().Position.x;
+	int camY = Window::Instance().getCamera().Position.y;
+	int winW = Window::Instance().getWidth();
+	int winH = Window::Instance().getHeight();
+	m_QuadTree = std::unique_ptr<QuadTree>(new QuadTree(0, BoundingBox(camX, camY, winW, winH)));
+
+	for (auto& tileRegion : m_TestRegion)
+	{
+		for (auto& tile : tileRegion->getTiles())
+		{
+			m_QuadTree->insert(tile.get());
+		}
+	}
+
 }
 
 void Level2D::render(Renderer& renderer)
@@ -98,10 +121,19 @@ void Level2D::render(Renderer& renderer)
 	//renderer.render(m_Tiles);
 	for (auto& tileRegion : m_TestRegion)
 	{
-		tileRegion->render(renderer);
+		//tileRegion->render(renderer);
 	}
 
 	m_Player->render(renderer);
+
+	std::vector<Renderable*> m_Data;
+	const auto& box = m_Light.getLightRegion();
+	m_QuadTree->queryRange(m_Data, m_Light.getLightRegion());
+	//m_QuadTree->retrieve(m_Data, m_Light.getX(), m_Light.getY(), 0, 0);
+
+	renderer.render(m_Data);
+
+	m_Light.render(renderer);
 }
 
 void Level2D::addTileRegion(int i, int j)
