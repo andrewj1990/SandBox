@@ -294,15 +294,11 @@ void QuadTree::queryRange(std::vector<Renderable*>& data, const BoundingBox& bbo
 	if (m_Bounds.intersects(bbox))
 	{
 		if (ne != nullptr) ne->queryRange(data, bbox);
-		else std::copy(m_Objects.begin(), m_Objects.end(), std::back_inserter(data));
 		if (nw != nullptr) nw->queryRange(data, bbox);
-		else std::copy(m_Objects.begin(), m_Objects.end(), std::back_inserter(data));
 		if (sw != nullptr) sw->queryRange(data, bbox);
-		else std::copy(m_Objects.begin(), m_Objects.end(), std::back_inserter(data));
 		if (se != nullptr) se->queryRange(data, bbox);
-		else std::copy(m_Objects.begin(), m_Objects.end(), std::back_inserter(data));
 
-		//std::copy(m_Objects.begin(), m_Objects.end(), std::back_inserter(data));
+		std::copy(m_Objects.begin(), m_Objects.end(), std::back_inserter(data));
 	}
 
 }

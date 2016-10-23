@@ -5,6 +5,7 @@
 #include "TileRegion.h"
 #include "..\Entity\player.h"
 #include "..\Graphics\Light.h"
+#include "..\Utils\QTree.h"
 
 class Level2D 
 {
@@ -36,4 +37,5 @@ private:
 
 	Light m_Light;
 	std::unique_ptr<QuadTree> m_QuadTree;
+	std::unique_ptr<QTree<Renderable>> m_QTree;
 };

@@ -13,6 +13,7 @@ Level2D::Level2D()
 	int winW = Window::Instance().getWidth();
 	int winH = Window::Instance().getHeight();
 	m_QuadTree = std::unique_ptr<QuadTree>(new QuadTree(0, BoundingBox(camX, camY, winW, winH)));
+	m_QTree = std::unique_ptr<QTree<Renderable>>(new QTree<Renderable>(0, BoundingBox(camX, camY, winW, winH)));
 
 	init();
 }
@@ -104,13 +105,15 @@ void Level2D::update(float timeElapsed)
 	int camY = Window::Instance().getCamera().Position.y;
 	int winW = Window::Instance().getWidth();
 	int winH = Window::Instance().getHeight();
-	m_QuadTree = std::unique_ptr<QuadTree>(new QuadTree(0, BoundingBox(camX, camY, winW, winH)));
+	//m_QuadTree = std::unique_ptr<QuadTree>(new QuadTree(0, BoundingBox(camX, camY, winW, winH)));
+	m_QTree = std::unique_ptr<QTree<Renderable>>(new QTree<Renderable>(0, BoundingBox(camX, camY, winW, winH)));
 
 	for (auto& tileRegion : m_TestRegion)
 	{
 		for (auto& tile : tileRegion->getTiles())
 		{
-			m_QuadTree->insert(tile.get());
+			//m_QuadTree->insert(tile.get());
+			m_QTree->insert(tile.get());
 		}
 	}
 
@@ -127,9 +130,7 @@ void Level2D::render(Renderer& renderer)
 	m_Player->render(renderer);
 
 	std::vector<Renderable*> m_Data;
-	const auto& box = m_Light.getLightRegion();
-	m_QuadTree->queryRange(m_Data, m_Light.getLightRegion());
-	//m_QuadTree->retrieve(m_Data, m_Light.getX(), m_Light.getY(), 0, 0);
+	m_QTree->retrieve(m_Data, m_Light.getLightRegion());
 
 	renderer.render(m_Data);
 
