@@ -70,6 +70,11 @@ public:
 		m_Colour = colour;
 	}
 
+	void setSize(const glm::vec2& size)
+	{
+		m_Size = size;
+	}
+
 	void addDirection(float dx, float dy)
 	{
 		m_Position.x += dx;

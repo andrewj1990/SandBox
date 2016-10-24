@@ -117,6 +117,11 @@ void Level2D::update(float timeElapsed)
 		}
 	}
 
+	std::vector<Renderable*> m_Data;
+	m_QTree->retrieve(m_Data, m_Light.getLightRegion());
+
+	m_Light.update(m_Data, timeElapsed);
+
 }
 
 void Level2D::render(Renderer& renderer)

@@ -1,5 +1,7 @@
 #pragma once
 
+// referenced https://gamedevelopment.tutsplus.com/tutorials/quick-tip-use-quadtrees-to-detect-likely-collisions-in-2d-space--gamedev-374
+
 #include <vector>
 #include <iterator>
 #include "BoundingBox.h"
