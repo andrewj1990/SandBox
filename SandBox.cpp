@@ -51,6 +51,7 @@ int main()
 	ResourceManager::getInstance().shader("basic_shader")->setUniform("textures", 32, texID);
 	ResourceManager::getInstance().shader("light")->setUniform("screenTexture", 0);
 	ResourceManager::getInstance().shader("light")->setUniform("lightMap", 1);
+	ResourceManager::getInstance().shader("light")->setUniform("shadowMap", 2);
 
 	Level* level = new Level();
 	PlayerUI playerUI(level->getPlayerPtr());
@@ -72,6 +73,7 @@ int main()
 
 	FrameBuffer* fbo = new FrameBuffer();
 	FrameBuffer* lightFBO = new FrameBuffer();
+	FrameBuffer* shadowFBO = new FrameBuffer();
 
 	float lightIntensity = 0.0f;//1.0f;
 	float ambientIntensity = 1.0f;//0.0f;
@@ -118,6 +120,7 @@ int main()
 
 			fbo = new FrameBuffer();
 			lightFBO = new FrameBuffer();
+			shadowFBO = new FrameBuffer();
 		}
 
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -159,8 +162,13 @@ int main()
 		//fbo.render();
 
 		lightFBO->bind();
-		level->renderLights(batchrenderer);
+		//level->renderLights(batchrenderer);
+		level2d->renderLights(batchrenderer);
 		lightFBO->unbind();
+
+		shadowFBO->bind();
+		level2d->renderShadow(batchrenderer);
+		shadowFBO->unbind();
 
 		//lightFBO.render();
 
@@ -172,6 +180,8 @@ int main()
 		glBindTexture(GL_TEXTURE_2D, fbo->getTID());
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, lightFBO->getTID());
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, shadowFBO->getTID());
 
 		glBindVertexArray(fbo->getVAO());
 		glDrawArrays(GL_TRIANGLES, 0, 6);

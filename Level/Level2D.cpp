@@ -1,7 +1,7 @@
 #include "Level2D.h"
 
 Level2D::Level2D()
-	: m_Light()
+	: m_Light(), m_Background(glm::vec3(0, 0, 0), glm::vec2(Window::Instance().getWidth(), Window::Instance().getHeight()), TextureManager::get("Textures/left.jpg"))
 {
 	m_RegionX = 0;
 	m_RegionY = 0;
@@ -78,6 +78,8 @@ void Level2D::update(float timeElapsed)
 	int regionX = (int)std::floor((cam.Position.x / regionSize));
 	int regionY = (int)std::floor((cam.Position.y / regionSize));
 	//std::cout << "camPos : " << regionX << ", " << regionY << "\n";
+
+	m_Background.setPosition(cam.Position.x, cam.Position.y);
 	
 	// region changed
 	if (m_RegionX != regionX)
@@ -113,6 +115,7 @@ void Level2D::update(float timeElapsed)
 		for (auto& tile : tileRegion->getTiles())
 		{
 			//m_QuadTree->insert(tile.get());
+			tile->setColor(glm::vec4(1, 1, 1, 1));
 			m_QTree->insert(tile.get());
 		}
 	}
@@ -126,20 +129,35 @@ void Level2D::update(float timeElapsed)
 
 void Level2D::render(Renderer& renderer)
 {
+	renderer.render(m_Background);
+
 	//renderer.render(m_Tiles);
 	for (auto& tileRegion : m_TestRegion)
 	{
-		//tileRegion->render(renderer);
+		tileRegion->render(renderer);
 	}
 
 	m_Player->render(renderer);
 
-	std::vector<Renderable*> m_Data;
-	m_QTree->retrieve(m_Data, m_Light.getLightRegion());
+	//std::vector<Renderable*> m_Data;
+	//m_QTree->retrieve(m_Data, m_Light.getLightRegion());
 
-	renderer.render(m_Data);
+	//renderer.render(m_Data);
 
+}
+
+void Level2D::renderLights(Renderer & renderer)
+{
+	renderer.begin();
 	m_Light.render(renderer);
+
+	renderer.end();
+	renderer.flush(GL_ONE);
+}
+
+void Level2D::renderShadow(Renderer& renderer)
+{
+	m_Light.renderShadow(renderer);
 }
 
 void Level2D::addTileRegion(int i, int j)

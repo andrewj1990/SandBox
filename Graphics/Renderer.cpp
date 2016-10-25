@@ -79,6 +79,7 @@ void Renderer::submit(const Renderable& renderable)
 	}
 
 	const glm::vec3& position = renderable.getPosition();
+	const std::vector<glm::vec3> positions = renderable.getPositions();
 	const glm::vec2& size = renderable.getSize();
 	const glm::vec4& colour = renderable.getColour();
 	const std::vector<glm::vec4>& uv = renderable.getUV();
@@ -124,28 +125,32 @@ void Renderer::submit(const Renderable& renderable)
 	scale = glm::scale(scale, glm::vec3(size, 1.0f));
 
 	//m_Buffer->vertex = m_TransformationStack.back() * scale * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	m_Buffer->vertex = m_TransformationStack.back() * glm::vec4(position, 1.0f);
+	//m_Buffer->vertex = m_TransformationStack.back() * glm::vec4(position, 1.0f);
+	m_Buffer->vertex = m_TransformationStack.back() * (positions.size() > 0 ? glm::vec4(positions[0], 1.0f) : glm::vec4(position, 1.0f));
 	m_Buffer->uv = uv[0];
 	m_Buffer->tid = ts;
 	m_Buffer->colour = color;
 	++m_Buffer;
 
 	//m_Buffer->vertex = m_TransformationStack.back() * scale * glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
-	m_Buffer->vertex = m_TransformationStack.back() * glm::vec4(position.x, position.y + size.y, position.z, 1.0f);
+	//m_Buffer->vertex = m_TransformationStack.back() * glm::vec4(position.x, position.y + size.y, position.z, 1.0f);
+	m_Buffer->vertex = m_TransformationStack.back() * (positions.size() > 0 ? glm::vec4(positions[1], 1.0f) : glm::vec4(position.x, position.y + size.y, position.z, 1.0f));
 	m_Buffer->uv = uv[1];
 	m_Buffer->tid = ts;
 	m_Buffer->colour = color;
 	++m_Buffer;
 
 	//m_Buffer->vertex = m_TransformationStack.back() * scale * glm::vec4(1.0f, 1.0f, 0.0f, 1.0f);
-	m_Buffer->vertex = m_TransformationStack.back() * glm::vec4(position.x + size.x, position.y + size.y, position.z, 1.0f);
+	//m_Buffer->vertex = m_TransformationStack.back() * glm::vec4(position.x + size.x, position.y + size.y, position.z, 1.0f);
+	m_Buffer->vertex = m_TransformationStack.back() * (positions.size() > 0 ? glm::vec4(positions[2], 1.0f) : glm::vec4(position.x + size.x, position.y + size.y, position.z, 1.0f));
 	m_Buffer->uv = uv[2];
 	m_Buffer->tid = ts;
 	m_Buffer->colour = color;
 	++m_Buffer;
 
 	//m_Buffer->vertex = m_TransformationStack.back() * scale * glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-	m_Buffer->vertex = m_TransformationStack.back() * glm::vec4(position.x + size.x, position.y, position.z, 1.0f);
+	//m_Buffer->vertex = m_TransformationStack.back() * glm::vec4(position.x + size.x, position.y, position.z, 1.0f);
+	m_Buffer->vertex = m_TransformationStack.back() * (positions.size() > 0 ? glm::vec4(positions[3], 1.0f) : glm::vec4(position.x + size.x, position.y, position.z, 1.0f));
 	m_Buffer->uv = uv[3];
 	m_Buffer->tid = ts;
 	m_Buffer->colour = color;

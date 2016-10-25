@@ -12,27 +12,28 @@ class Ray
 {
 public:
 	Ray()
-		: m_Position(glm::vec2(0, 0)), m_Direction(glm::vec2(0, 0)), m_Angle(0)
+		: m_Position(glm::vec2(0, 0)), m_Direction(glm::vec2(0, 0)), m_Angle(0), m_Sprite(glm::vec3(0, 0, 0), glm::vec2(0, 0), glm::vec4(0, 1, 0, 1))
 	{
 	}
 
-	Ray(glm::vec2 position, glm::vec2 direction)
-		: m_Position(position), m_Direction(direction), m_Angle(0)
+	Ray(glm::vec2 position, float angle)
+		: m_Position(position), m_Direction(glm::vec2(0, 0)), m_Sprite(glm::vec3(position, 0), glm::vec2(0, 0), glm::vec4(0, 1, 0, 1))
 	{
+		m_Angle = glm::radians(angle);
+		setDirection(m_Angle);
 	}
 
 	void setPosition(const glm::vec2& position)
 	{
 		m_Position = position;
+		m_Sprite.setPosition(position.x, position.y);
 	}
 
-	void intersection(const std::vector<Renderable*>& renderables)
+	void intersection(const std::vector<Renderable*>& renderables, const BoundingBox& bbox)
 	{
 		glm::vec2 temp;
 		float t1 = INT_MAX;
 		float t2 = INT_MAX;
-
-		//std::cout << "renderables size : " << renderables.size() << "\n";
 		
 		for (auto renderable : renderables)
 		{
@@ -41,7 +42,6 @@ public:
 			int y = renderable->getPosition().y;
 			int w = renderable->getSize().x;
 			int h = renderable->getSize().y;
-			//std::cout << "pos : " << x << ", " << y << " | " << w << ", " << h << "\n";
 
 			temp = intersection(x, y, x + w, y);
 			if (intersection(temp.x, temp.y))
@@ -82,17 +82,60 @@ public:
 			}
 		}
 
-		if (intersection(t1, t2))
-		{
-			float ix = m_Position.x + m_Direction.x * t1;
-			float iy = m_Position.y + m_Direction.y * t1;
+		// intersections of bounding box
+		int x = bbox.x;
+		int y = bbox.y;
+		int w = bbox.width;
+		int h = bbox.height;
 
-			float dx = ix - m_Position.x;
-			float dy = iy - m_Position.y;
-			m_Length = std::sqrtf(dx * dx + dy * dy);
-			//std::cout << "rayPos : " << m_Position.x << ", " << m_Position.y << " | " << ix << ", " << iy << "\n";
+		temp = intersection(x, y, x + w, y);
+		if (intersection(temp.x, temp.y))
+		{
+			if (temp.x < t1)
+			{
+				t1 = temp.x;
+				t2 = temp.y;
+			}
 		}
 
+		temp = intersection(x, y, x, y + h);
+		if (intersection(temp.x, temp.y))
+		{
+			if (temp.x < t1)
+			{
+				t1 = temp.x;
+				t2 = temp.y;
+			}
+		}
+		temp = intersection(x, y + h, x + w, y + h);
+		if (intersection(temp.x, temp.y))
+		{
+			if (temp.x < t1)
+			{
+				t1 = temp.x;
+				t2 = temp.y;
+			}
+		}
+		temp = intersection(x + w, y, x + w, y + h);
+		if (intersection(temp.x, temp.y))
+		{
+			if (temp.x < t1)
+			{
+				t1 = temp.x;
+				t2 = temp.y;
+			}
+		}
+
+		float ix = m_Position.x + m_Direction.x * t1;
+		float iy = m_Position.y + m_Direction.y * t1;
+
+		float dx = ix - m_Position.x;
+		float dy = iy - m_Position.y;
+		m_Length = std::sqrtf(dx * dx + dy * dy);
+		m_Sprite.setSize(glm::vec2(m_Length, 2));
+
+		m_EndPoint.x = ix;
+		m_EndPoint.y = iy;
 	}
 
 	bool intersection(float t1, float t2)
@@ -107,28 +150,11 @@ public:
 
 		float angle = std::atan2f(dy, dx);
 
-		//dx = std::cosf(angle);
-		//dy = std::sinf(angle);
-
-		if (dx == m_Direction.x && dy == m_Direction.y) return glm::vec2(-1, -1);
-
-		//float r_dx = m_Direction.x;
-		//float s_px = sx;
-		//float s_py = sy;
-		//float r_py = m_Position.y;
-		//float r_dy = m_Direction.y;
-		//float r_px = m_Position.x;
-		//float s_dx = dx;
-		//float s_dy = dy;
-
-		//float t2 = (r_dx*(s_py - r_py) + r_dy*(r_px - s_px)) / (s_dx*r_dy - s_dy*r_dx);
-		//float t1 = (s_px + s_dx*t2 - r_px) / r_dx;
+		//if (std::cosf(angle) == m_Direction.x && std::sinf(angle) == m_Direction.y) return glm::vec2(-1, -1);
 
 		float t2 = (m_Direction.x * (sy - m_Position.y) + m_Direction.y * (m_Position.x - sx)) / (dx * m_Direction.y - dy * m_Direction.x);
 		float t1 = (sx + dx * t2 - m_Position.x) / m_Direction.x;
 		
-		//std::cout << "sx : " << dx << ", " << dy << " | " << m_Direction.x << ", " << m_Direction.y << " | Angle : " << glm::degrees(m_Angle) << "\n";
-
 		return glm::vec2(t1, t2);
 	}
 
@@ -144,15 +170,38 @@ public:
 		m_Direction.y = std::sinf(m_Angle);
 	}
 
+	void setDirection(float angleR)
+	{
+		m_Direction.x = std::cosf(m_Angle);
+		m_Direction.y = std::sinf(m_Angle);
+	}
+
+	void render(Renderer& renderer)
+	{
+		glm::mat4 m;
+		m = glm::translate(m, glm::vec3(m_Sprite.getPosition().x, m_Sprite.getPosition().y, 0));
+		m = glm::rotate(m, m_Angle, glm::vec3(0, 0, 1));
+		m = glm::translate(m, glm::vec3(-m_Sprite.getPosition().x, -m_Sprite.getPosition().y, 0));
+		renderer.push(m);
+		renderer.render(m_Sprite);
+		renderer.pop();
+	}
+
 	float getAngle() const { return m_Angle; }
 	float getLength() const { return m_Length; }
 
+	const glm::vec2& getPosition() const { return m_Position; }
+	const glm::vec2& getEndPosition() const { return m_EndPoint; }
+
 private:
 	glm::vec2 m_Position;
+	glm::vec2 m_EndPoint;
 	glm::vec2 m_Direction;
 
 	float m_Angle;
 	float m_Length;
+
+	Sprite m_Sprite;
 
 };
 
@@ -165,6 +214,7 @@ public:
 	void update(float timeElapsed);
 	void update(const std::vector<Renderable*> renderables, float timeElapsed);
 	void render(Renderer& renderer);
+	void renderShadow(Renderer& renderer);
 
 	int getX() { return m_Point.getPosition().x; }
 	int getY() { return m_Point.getPosition().y; }
@@ -178,5 +228,7 @@ private:
 	BoundingBox m_LightRegion;
 
 	Ray m_Ray;
+	std::vector<Ray> m_Rays;
+	std::vector<Renderable> m_RaySprites;
 
 };

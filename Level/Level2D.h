@@ -16,6 +16,8 @@ public:
 
 	void update(float timeElapsed);
 	void render(Renderer& renderer);
+	void renderLights(Renderer& renderer);
+	void renderShadow(Renderer& renderer);
 	
 private:
 	void addTileRegion(int i, int j);
@@ -38,4 +40,5 @@ private:
 	Light m_Light;
 	std::unique_ptr<QuadTree> m_QuadTree;
 	std::unique_ptr<QTree<Renderable>> m_QTree;
+	Sprite m_Background;
 };

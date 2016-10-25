@@ -58,7 +58,7 @@ void main()
 			*/
 		}
 
-		texColor = texture(textures[tid], fs_in.uv.xy);
+		texColor = texture(textures[tid], fs_in.uv.xy) * fs_in.color;
 	}
 
 	float light_intensity = 1.0f;
