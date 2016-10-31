@@ -2,10 +2,10 @@
 
 Light::Light()
 	: m_Point(glm::vec3(0, 0, 0), glm::vec2(50, 50), TextureManager::get("Textures/Bullet.png")), m_LightRegion(0, 0, 0, 0),
-	m_LightBox(glm::vec3(0, 0, 0), glm::vec2(600, 600), TextureManager::get("Textures/light.png")), m_Ray()
+	m_LightBox(glm::vec3(0, 0, 0), glm::vec2(800, 800), TextureManager::get("Textures/light.png")), m_Ray()
 {
-	m_LightRegion.width = 600;
-	m_LightRegion.height = 600;
+	m_LightRegion.width = 800;
+	m_LightRegion.height = 800;
 
 	m_Ray.setPosition(glm::vec2(m_Point.getPosition().x, m_Point.getPosition().y));
 
@@ -23,12 +23,17 @@ Light::Light()
 	//b2.setTexture(TextureManager::get("Textures/light_grad.png"));
 }
 
-void Light::update(float timeElapsed)
+Light::Light(const Light& other)
+	: m_Point(other.m_Point), m_LightBox(other.m_LightBox), m_Ray(other.m_Ray), m_LightRegion(other.m_LightRegion), m_Rays(other.m_Rays), m_RaySprites(other.m_RaySprites)
+{
+}
+
+void Light::update(float x, float y, float timeElapsed)
 {
 	const Camera& cam = Window::Instance().getCamera();
-	float mouseX = Window::Instance().mouseX() + cam.getPosition().x;
-	float mouseY = (Window::Instance().getHeight() - Window::Instance().mouseY()) + cam.getPosition().y;
-	m_Point.setPosition(glm::vec3(mouseX, mouseY, 0));
+	//float mouseX = Window::Instance().mouseX() + cam.getPosition().x;
+	//float mouseY = (Window::Instance().getHeight() - Window::Instance().mouseY()) + cam.getPosition().y;
+	m_Point.setPosition(glm::vec3(x, y, 0));
 
 	m_LightRegion.x = m_Point.getPosition().x - m_LightRegion.width / 2;
 	m_LightRegion.y = m_Point.getPosition().y - m_LightRegion.height / 2;
@@ -49,10 +54,8 @@ void Light::update(float timeElapsed)
 		ray.setPosition(glm::vec2(m_Point.getPosition().x, m_Point.getPosition().y));
 	}
 
-	m_Ray.setPosition(glm::vec2(m_Point.getPosition().x, m_Point.getPosition().y));
-	m_Ray.calcAndSetDirection(cam.getPosition().x + Window::Instance().getWidth() / 2, cam.getPosition().y + Window::Instance().getHeight() / 2);
-	//m_LightBox.setAngle(m_Ray.getAngle());
-	//m_LightBox.setPosition(glm::vec3(m_LightRegion.x, m_LightRegion.y, 0));
+	//m_Ray.setPosition(glm::vec2(m_Point.getPosition().x, m_Point.getPosition().y));
+	//m_Ray.calcAndSetDirection(cam.getPosition().x + Window::Instance().getWidth() / 2, cam.getPosition().y + Window::Instance().getHeight() / 2);
 }
 
 void Light::update(const std::vector<Renderable*> renderables, float timeElapsed)
@@ -72,6 +75,7 @@ void Light::update(const std::vector<Renderable*> renderables, float timeElapsed
 
 		auto& quad = m_RaySprites[i];
 		quad.setPositions(m_Point.getPosition().x, m_Point.getPosition().y, m_Point.getPosition().x, m_Point.getPosition().y, endPoint1.x, endPoint1.y, endPoint2.x, endPoint2.y);
+		quad.setLightPosition(m_Point.getPosition().x, m_Point.getPosition().y);
  	}
 
 }
@@ -96,5 +100,10 @@ void Light::render(Renderer& renderer)
 
 void Light::renderShadow(Renderer& renderer)
 {
-	renderer.render(m_RaySprites);
+	//renderer.render(m_RaySprites);
+
+	for (auto quad : m_RaySprites)
+	{
+		renderer.submit(quad);
+	}
 }

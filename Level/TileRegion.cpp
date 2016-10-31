@@ -21,7 +21,7 @@ TileRegion::TileRegion(int x, int y, int size)
 	m_TileSize = 0.0f;
 }
 
-void TileRegion::init()
+void TileRegion::init(const std::unordered_set<std::string>& region_tiles)
 {
 	m_TileSize = 16;
 	m_NoiseSize = 2500.0f;
@@ -33,17 +33,22 @@ void TileRegion::init()
 		{
 			if (calculateTile(m_X + x * m_TileSize, m_Y + y * m_TileSize))
 			{
+				std::string positionInRegion = std::to_string(m_X + x * m_TileSize) + "_" + std::to_string(m_Y + y * m_TileSize);
+				auto it = region_tiles.find(positionInRegion);
+				if (it == region_tiles.end())
+				{
 					m_Tiles.push_back(std::unique_ptr<Tile>(new Tile(glm::vec2(m_TileSize, m_TileSize))));
 					auto& t = m_Tiles.back();
 					int di = Utils::random(0, 1);
 					t->init(m_X + x * m_TileSize, m_Y + y * m_TileSize, glm::vec4(0, di, 0, 1), false, false);
+				}
 			}
 		}
 	}
 
 	for (auto& tile : m_Tiles) 
 	{
-		setTileUV(tile);
+		setTileUV(tile, region_tiles);
 	}
 }
 
@@ -52,13 +57,14 @@ void TileRegion::render(Renderer& renderer)
 	renderer.render(m_Tiles);
 }
 
-void TileRegion::setTileUV(std::unique_ptr<Renderable>& tile)
+void TileRegion::setTileUV(std::unique_ptr<Renderable>& tile, const std::unordered_set<std::string>& region_tiles)
 {
 	float rightTileX = tile->getPosition().x + m_TileSize;
 	float leftTileX = tile->getPosition().x - m_TileSize;
 	float aboveTileY = tile->getPosition().y + m_TileSize;
 	float belowTileY = tile->getPosition().y - m_TileSize;
 
+	auto it = region_tiles.find(std::to_string(tile->getPosition().x) + "_" + std::to_string(aboveTileY));
 	bool above = calculateTile(tile->getPosition().x, aboveTileY);
 	bool below = calculateTile(tile->getPosition().x, belowTileY);
 	bool right = calculateTile(rightTileX, tile->getPosition().y);

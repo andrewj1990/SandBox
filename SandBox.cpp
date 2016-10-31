@@ -39,6 +39,7 @@ int main()
 	ResourceManager::getInstance().addShader("outline_shader", "Shaders/outline.vs", "Shaders/outline.frag");
 	ResourceManager::getInstance().addShader("screen", "Shaders/screen.vs", "Shaders/screen.frag");
 	ResourceManager::getInstance().addShader("light", "Shaders/light.vs", "Shaders/light.frag");
+	ResourceManager::getInstance().addShader("lightShadow", "Shaders/lightShadow.vs", "Shaders/lightshadow.frag");
 
 	ResourceManager::getInstance().shader("basic_shader")->use();
 	Renderer batchrenderer;
@@ -49,9 +50,9 @@ int main()
 		texID[i] = i;
 	}
 	ResourceManager::getInstance().shader("basic_shader")->setUniform("textures", 32, texID);
+	ResourceManager::getInstance().shader("lightShadow")->setUniform("textures", 32, texID);
 	ResourceManager::getInstance().shader("light")->setUniform("screenTexture", 0);
 	ResourceManager::getInstance().shader("light")->setUniform("lightMap", 1);
-	ResourceManager::getInstance().shader("light")->setUniform("shadowMap", 2);
 
 	Level* level = new Level();
 	PlayerUI playerUI(level->getPlayerPtr());
@@ -69,14 +70,19 @@ int main()
 	glm::mat4 projection = glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f, -1.0f, 1.0f);
 	//glm::mat4 projection = glm::ortho(520.0f, 760.0f, 240.0f, 480.0f, -1.0f, 1.0f);
 	ResourceManager::getInstance().shader("basic_shader")->setUniform("projection", projection);
+	ResourceManager::getInstance().shader("lightShadow")->setUniform("projection", projection);
 	ResourceManager::getInstance().shader("outline_shader")->setUniform("projection", projection);
 
 	FrameBuffer* fbo = new FrameBuffer();
-	FrameBuffer* lightFBO = new FrameBuffer();
-	FrameBuffer* shadowFBO = new FrameBuffer();
+	std::unique_ptr<FrameBuffer> lightFBO = std::unique_ptr<FrameBuffer>(new FrameBuffer());
+	std::unique_ptr<FrameBuffer> shadowFBO = std::unique_ptr<FrameBuffer>(new FrameBuffer());
+	std::unique_ptr<FrameBuffer> bufferFBO = std::unique_ptr<FrameBuffer>(new FrameBuffer());
+	//FrameBuffer* shadowFBO = new FrameBuffer();
 
-	float lightIntensity = 0.0f;//1.0f;
-	float ambientIntensity = 1.0f;//0.0f;
+	//float lightIntensity = 0.0f;//1.0f;
+	//float ambientIntensity = 1.0f;//0.0f;
+	float lightIntensity = 1.0f;
+	float ambientIntensity = 0.0f;
 
 	Timer time;
 	int frames = 0;
@@ -116,11 +122,12 @@ int main()
 			Window::Instance().setWindowResized(false);
 			std::cout << "window resized \n";
 			delete fbo;
-			delete lightFBO;
+			//delete lightFBO;
 
 			fbo = new FrameBuffer();
-			lightFBO = new FrameBuffer();
-			shadowFBO = new FrameBuffer();
+			lightFBO = std::unique_ptr<FrameBuffer>(new FrameBuffer());
+			shadowFBO = std::unique_ptr<FrameBuffer>(new FrameBuffer());
+			//shadowFBO = new FrameBuffer();
 		}
 
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -153,24 +160,16 @@ int main()
 		}
 
 		fbo->bind();
+		ResourceManager::getInstance().shader("basic_shader")->use();
 		if (LEVEL) level->render(batchrenderer);
 		else level2d->render(batchrenderer);
 
 		batchrenderer.render(label);
 		fbo->unbind();
 
-		//fbo.render();
-
 		lightFBO->bind();
-		//level->renderLights(batchrenderer);
 		level2d->renderLights(batchrenderer);
 		lightFBO->unbind();
-
-		shadowFBO->bind();
-		level2d->renderShadow(batchrenderer);
-		shadowFBO->unbind();
-
-		//lightFBO.render();
 
 		ResourceManager::getInstance().shader("light")->use();
 		ResourceManager::getInstance().shader("light")->setUniform("lightIntensity", lightIntensity);
@@ -180,8 +179,6 @@ int main()
 		glBindTexture(GL_TEXTURE_2D, fbo->getTID());
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, lightFBO->getTID());
-		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, shadowFBO->getTID());
 
 		glBindVertexArray(fbo->getVAO());
 		glDrawArrays(GL_TRIANGLES, 0, 6);

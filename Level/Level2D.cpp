@@ -16,48 +16,14 @@ Level2D::Level2D()
 	m_QTree = std::unique_ptr<QTree<Renderable>>(new QTree<Renderable>(0, BoundingBox(camX, camY, winW, winH)));
 
 	init();
+
+	m_Delay = 0;
 }
 
 void Level2D::init()
 {
 	const Camera& cam = Window::Instance().getCamera();
 	m_Player = std::unique_ptr<Player>(new Player(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f));
-
-	constexpr int r_size = 100;
-	constexpr int c_size = 100;
-	int tiles[r_size][c_size]; // = {
-	//	{0, 0, 0, 0, 0, 0, 0, 0, 0},
-	//	{0, 0, 0, 0, 0, 0, 0, 0, 1},
-	//	{0, 1, 1, 0, 0, 1, 1, 0, 0},
-	//	{0, 1, 1, 1, 1, 1, 1, 1, 1},
-	//	{1, 1, 1, 1, 1, 1, 1, 1, 1}
-	//};
-
-	//int tile_size = 16;
-
-	for (int row = 0; row < r_size; row++) {
-		for (int col = 0; col < c_size; col++) {
-			int i = Utils::random(0, 2);
-			tiles[row][col] = i;
-			//m_Tiles.push_back(std::unique_ptr<Tile>(new Tile("Textures/Level/Tiles_2.png")));
-			//auto& t = m_Tiles[col + row * c_size];
-			//if (i != 0) {
-			//	t->init(col * tile_size, (r_size - row) * tile_size, glm::vec4(0, 1, 0, 1), false, false);
-			//}
-			//else
-			//{
-			//	t->init(col * tile_size, (r_size - row) * tile_size, glm::vec4(1, 1, 0, 0), false, false);
-			//}
-		}
-	}
-
-	int midX = (int)(Window::Instance().getWidth() / 2) / (16 * 16);
-	int midY = (int)(Window::Instance().getHeight() / 2) / (16 * 16);
-
-	midX = 1;
-	midY = 1;
-
-	std::cout << "m : " << midX << ", " << midY << "\n";
 
 	for (int i = 0; i < m_RegionSizeX; i++)
 	{
@@ -101,12 +67,37 @@ void Level2D::update(float timeElapsed)
 
 	m_Player->update(timeElapsed);
 
-	m_Light.update(timeElapsed);
 
 	int camX = Window::Instance().getCamera().Position.x;
 	int camY = Window::Instance().getCamera().Position.y;
 	int winW = Window::Instance().getWidth();
 	int winH = Window::Instance().getHeight();
+	//m_Light.update(camX + Window::Instance().mouseX(), camY + (winH - Window::Instance().mouseY()), timeElapsed);
+	m_Light.update(m_Player->getCenterX(), m_Player->getCenterY(), timeElapsed);
+
+	m_Delay++;
+	if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_1) && m_Delay > 100)
+	{
+		m_Delay = 0;
+		m_Lights.push_back(Light(m_Light));
+	}
+
+	if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_1))
+	{
+		float mx = camX + Window::Instance().mouseX();
+		float my = camY + (Window::Instance().getHeight() - Window::Instance().mouseY());
+
+		std::string positionInRegion = std::to_string((int)mx / 16 * 16) + "_" + std::to_string((int)my / 16 * 16);
+		auto it = m_RegionSet.find(positionInRegion);
+		if (it == m_RegionSet.end())
+		{
+			m_RegionSet.insert(positionInRegion);
+			// remove the tile from the region
+
+		}
+
+	}
+
 	//m_QuadTree = std::unique_ptr<QuadTree>(new QuadTree(0, BoundingBox(camX, camY, winW, winH)));
 	m_QTree = std::unique_ptr<QTree<Renderable>>(new QTree<Renderable>(0, BoundingBox(camX, camY, winW, winH)));
 
@@ -120,50 +111,47 @@ void Level2D::update(float timeElapsed)
 		}
 	}
 
+
 	std::vector<Renderable*> m_Data;
 	m_QTree->retrieve(m_Data, m_Light.getLightRegion());
 
 	m_Light.update(m_Data, timeElapsed);
-
 }
 
 void Level2D::render(Renderer& renderer)
 {
 	renderer.render(m_Background);
 
-	//renderer.render(m_Tiles);
 	for (auto& tileRegion : m_TestRegion)
 	{
 		tileRegion->render(renderer);
 	}
 
 	m_Player->render(renderer);
-
-	//std::vector<Renderable*> m_Data;
-	//m_QTree->retrieve(m_Data, m_Light.getLightRegion());
-
-	//renderer.render(m_Data);
-
 }
 
-void Level2D::renderLights(Renderer & renderer)
+void Level2D::renderLights(Renderer& renderer)
 {
+	ResourceManager::getInstance().shader("lightShadow")->use();
+
 	renderer.begin();
-	m_Light.render(renderer);
+	m_Light.renderShadow(renderer);
+
+	for (auto& light : m_Lights)
+	{
+		light.renderShadow(renderer);
+	}
 
 	renderer.end();
-	renderer.flush(GL_ONE);
-}
+	renderer.flush(GL_SRC_ALPHA, GL_ONE);
 
-void Level2D::renderShadow(Renderer& renderer)
-{
-	m_Light.renderShadow(renderer);
+	ResourceManager::getInstance().shader("basic_shader")->use();
 }
 
 void Level2D::addTileRegion(int i, int j)
 {
 	m_TestRegion.push_back(std::unique_ptr<TileRegion>(new TileRegion(i, j)));
-	m_TestRegion.back()->init();
+	m_TestRegion.back()->init(m_RegionSet);
 }
 
 void Level2D::addTileRegionRow(int index, bool wholeRow)

@@ -209,9 +209,10 @@ class Light
 {
 public:
 	Light();
+	Light(const Light& other);
 	~Light() {}
 
-	void update(float timeElapsed);
+	void update(float x, float y, float timeElapsed);
 	void update(const std::vector<Renderable*> renderables, float timeElapsed);
 	void render(Renderer& renderer);
 	void renderShadow(Renderer& renderer);

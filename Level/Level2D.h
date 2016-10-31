@@ -1,11 +1,13 @@
 #pragma once
 
+#include <unordered_set>
 #include "..\Graphics\Renderer.h"
 #include "Tiles\Tile.h"
 #include "TileRegion.h"
 #include "..\Entity\player.h"
 #include "..\Graphics\Light.h"
 #include "..\Utils\QTree.h"
+#include "..\Graphics\Buffers\framebuffer.h"
 
 class Level2D 
 {
@@ -17,7 +19,6 @@ public:
 	void update(float timeElapsed);
 	void render(Renderer& renderer);
 	void renderLights(Renderer& renderer);
-	void renderShadow(Renderer& renderer);
 	
 private:
 	void addTileRegion(int i, int j);
@@ -41,4 +42,9 @@ private:
 	std::unique_ptr<QuadTree> m_QuadTree;
 	std::unique_ptr<QTree<Renderable>> m_QTree;
 	Sprite m_Background;
+
+	std::vector<Light> m_Lights;
+	std::unordered_set<std::string> m_RegionSet;
+
+	int m_Delay;
 };

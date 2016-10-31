@@ -35,7 +35,7 @@ public:
 
 	// quad in ccw position where x0,y0 is bottom left
 	Renderable(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3, const glm::vec4& color = glm::vec4(1, 1, 1, 1))
-		: m_Colour(color)
+		: m_Colour(color), m_Texture(nullptr)
 	{
 		m_Solid = false;
 		setPositions(x0, y0, x1, y1, x2, y2, x3, y3);
@@ -83,6 +83,15 @@ public:
 		m_Position.y += dy;
 	}
 	
+	// store light position in uv
+	void setLightPosition(float x, float y)
+	{
+		m_UV[0] = glm::vec4(x, y, 0, 0);
+		m_UV[1] = glm::vec4(x, y, 0, 0);
+		m_UV[2] = glm::vec4(x, y, 0, 0);
+		m_UV[3] = glm::vec4(x, y, 0, 0);
+	}
+
 	void setUV(float x, float y, float width, float height)
 	{
 		if (m_Texture == nullptr) return;

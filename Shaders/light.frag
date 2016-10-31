@@ -5,12 +5,11 @@ out vec4 color;
 
 uniform sampler2D screenTexture;
 uniform sampler2D lightMap;
-uniform sampler2D shadowMap;
 
 uniform float lightIntensity;
 uniform float ambientIntensity;
 
-const float offset = 1.0 / 300;
+const float offset = 1.0 / 600;
 
 void main()
 { 
@@ -40,8 +39,7 @@ void main()
 	vec3 ambient = vec3(1.0f, 1.0f, 1.0f) * ambientIntensity;
 
 	vec4 diffuseColor = texture(screenTexture, TexCoords);
-	vec4 shadow = texture(shadowMap, TexCoords);
-	vec4 light = texture(lightMap, TexCoords) * lightIntensity * shadow;
+	vec4 light = texture(lightMap, TexCoords) * lightIntensity;
 
 	vec3 sampleTex[9];
     for(int i = 0; i < 9; i++)
@@ -53,10 +51,10 @@ void main()
     for(int i = 0; i < 9; i++)
         col += sampleTex[i] * kernel[i];
     
-    //color = vec4(col, 1.0);
+    light = vec4(col, 1.0);// * light;
 	vec3 intensity = ambient + vec3(light);
 	vec3 finalColor = diffuseColor.rgb * intensity;
 
     color = vec4(finalColor, diffuseColor.a);
-	//color = light;
+	//color = diffuseColor;
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm\glm.hpp>
+#include <unordered_set>
 #include "..\Graphics\Renderer.h"
 #include "Tiles\Tile.h"
 #include "..\Utils\simplexNoise.h"
@@ -11,7 +12,7 @@ public:
 	TileRegion(int x, int y, int size);
 	~TileRegion() { }
 
-	void init();
+	void init(const std::unordered_set<std::string>& region_tiles);
 
 	void render(Renderer& renderer);
 
@@ -20,7 +21,7 @@ public:
 	const std::vector<std::unique_ptr<Renderable>>& getTiles() { return m_Tiles; }
 
 private:
-	void setTileUV(std::unique_ptr<Renderable>& tile);
+	void setTileUV(std::unique_ptr<Renderable>& tile, const std::unordered_set<std::string>& region_tiles);
 	float noiseHeight(float x, float y);
 	bool calculateTile(float x, float y);
 	bool surfaceTile(float x, float y);

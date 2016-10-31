@@ -146,6 +146,7 @@ void Player::move(float dx, float dy)
 	camera.moveCamera(dx, dy);
 	ResourceManager::getInstance().shader("outline_shader")->setUniform("view", camera.GetViewMatrix());
 	ResourceManager::getInstance().shader("basic_shader")->setUniform("view", camera.GetViewMatrix());
+	ResourceManager::getInstance().shader("lightShadow")->setUniform("view", camera.GetViewMatrix());
 
 }
 
