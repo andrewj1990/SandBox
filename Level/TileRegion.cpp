@@ -64,7 +64,7 @@ void TileRegion::setTileUV(std::unique_ptr<Renderable>& tile, const std::unorder
 	float aboveTileY = tile->getPosition().y + m_TileSize;
 	float belowTileY = tile->getPosition().y - m_TileSize;
 
-	auto it = region_tiles.find(std::to_string(tile->getPosition().x) + "_" + std::to_string(aboveTileY));
+	//auto it = region_tiles.find(std::to_string(tile->getPosition().x) + "_" + std::to_string(aboveTileY));
 	bool above = calculateTile(tile->getPosition().x, aboveTileY);
 	bool below = calculateTile(tile->getPosition().x, belowTileY);
 	bool right = calculateTile(rightTileX, tile->getPosition().y);

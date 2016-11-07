@@ -3,6 +3,7 @@
 #include <unordered_set>
 #include "..\Graphics\Renderer.h"
 #include "Tiles\Tile.h"
+#include "Region.h"
 #include "TileRegion.h"
 #include "..\Entity\player.h"
 #include "..\Graphics\Light.h"
@@ -21,30 +22,16 @@ public:
 	void renderLights(Renderer& renderer);
 	
 private:
-	void addTileRegion(int i, int j);
-	void addTileRegionRow(int index, bool wholeRow = true);
-	void addTileRegionCol(int index, bool wholeCol = true);
-	void removeTileRegionRow(int index, bool wholeRowCol = true);
-	void removeTileRegionCol(int index, bool wholeRowCol = true);
-
-private:
-	int m_RegionX;
-	int m_RegionY;
-	int m_RegionSizeX;
-	int m_RegionSizeY;
-
-	std::vector<std::unique_ptr<Renderable>> m_Tiles;
-
-	std::vector<std::unique_ptr<TileRegion>> m_TestRegion;
 	std::unique_ptr<Player> m_Player;
 
 	Light m_Light;
-	std::unique_ptr<QuadTree> m_QuadTree;
 	std::unique_ptr<QTree<Renderable>> m_QTree;
 	Sprite m_Background;
 
 	std::vector<Light> m_Lights;
 	std::unordered_set<std::string> m_RegionSet;
+
+	Region m_Region;
 
 	int m_Delay;
 };
