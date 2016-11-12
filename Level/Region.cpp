@@ -5,6 +5,7 @@ Region::Region()
 	m_X = Window::Instance().getCamera().getPosition().x;
 	m_Y = Window::Instance().getCamera().getPosition().y;
 
+	m_TileSize = 16;
 	m_SubRegionWidth = 256;
 	m_SubRegionHeight = 256;
 	m_RegionWidth = Window::Instance().getWidth() + m_SubRegionWidth;
@@ -55,23 +56,50 @@ void Region::addTiles(std::unique_ptr<QTree<Renderable>>& quadTree)
 	}
 }
 
-void Region::removeTiles(float x, float y)
+void Region::removeTiles(float x, float y, bool exactCoord)
 {
-	int ix = (int)x / 16 * 16;
-	int iy = (int)y / 16 * 16;
+	int ix = (int)x / m_TileSize * m_TileSize;
+	int iy = (int)y / m_TileSize * m_TileSize;
+	//std::cout << "x : " << x << ", " << y << "\n";
+	if (!exactCoord)
+	{
+		ix = x < 0 ? ix - m_TileSize : ix;
+		iy = y < 0 ? iy - m_TileSize : iy;
+	}
 
 	std::string positionInRegion = std::to_string(ix) + "_" + std::to_string(iy);
+
 	auto it = m_Tiles.find(positionInRegion);
 	if (it == m_Tiles.end())
 	{
 		m_Tiles.insert(positionInRegion);
+		auto& region = getTileRegion(ix, iy);
+		region->removeTile(ix, iy);
 
 		// remove the tile from the region
-		int rx = std::floor(x / m_SubRegionWidth);
-		int ry = std::floor(y / m_SubRegionHeight);
+		//int rx = std::floor(x / m_SubRegionWidth);
+		//int ry = std::floor(y / m_SubRegionHeight);
 
-		unload(rx, ry);
-		load(rx, ry);
+		// reload the region
+		//unload(rx, ry);
+		//load(rx, ry);
+
+		// reload the uv for the adjacent tiles
+		for (int i = -1; i < 2; i++)
+		{
+			for (int j = -1; j < 2; j++)
+			{
+				if (i == 0 && j == 0)
+				{
+					continue;
+				}
+
+				int a = ix + i * m_TileSize;
+				int b = iy + j * m_TileSize;
+
+				reloadTileUV(a, b);
+			}
+		}
 	}
 }
 
@@ -117,8 +145,7 @@ void Region::update(float timeElapsed)
 		float mx = camX + Window::Instance().mouseX();
 		float my = camY + (Window::Instance().getHeight() - Window::Instance().mouseY());
 
-		removeTiles(mx, my);
-
+		removeTiles(mx, my, false);
 	}
 }
 
@@ -128,4 +155,27 @@ void Region::render(Renderer& renderer)
 	{
 		tileRegion->render(renderer);
 	}
+}
+
+void Region::reloadTileUV(int x, int y)
+{
+	auto& tileRegion = getTileRegion(x, y);
+	
+	tileRegion->setUV(x, y, m_Tiles);
+}
+
+std::unique_ptr<TileRegion>& Region::getTileRegion(int x, int y)
+{
+	int rx = (int)std::floor((float)x / m_SubRegionWidth);
+	int ry = (int)std::floor((float)y / m_SubRegionHeight);
+
+	for (auto& tileRegion : m_Regions)
+	{
+		if (tileRegion->indexX() == rx && tileRegion->indexY() == ry)
+		{
+			return tileRegion;
+		}
+	}
+
+	return m_Regions[0];
 }

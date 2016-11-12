@@ -12,6 +12,8 @@
 #include "Projectile\Bullet.h"
 #include "..\Utils\quadTree.h"
 #include "..\Level\Terrain.h"
+#include "..\Utils\QTree.h"
+#include "..\Level\Region.h"
 
 enum PlayerState
 {
@@ -32,6 +34,7 @@ public:
 
 	void update(float timeElapsed) override;
 	void update(const Terrain& terrain, const std::unique_ptr<QuadTree>& quadTree, float timeElapsed) override;
+	void update(Region& region, const std::unique_ptr<QTree<Renderable>>& quadTree, float timeElapsed);
 	void submit(Renderer& renderer) override;
 	void render(Renderer& renderer) override;
 

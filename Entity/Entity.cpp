@@ -73,6 +73,26 @@ bool Entity::collide(const Entity& entity) const
 	return false;
 }
 
+bool Entity::collide(const Renderable& renderable) const
+{
+	float x = getX();
+	float y = getY();
+	float w = getWidth();
+	float h = getHeight();
+
+	float ex = renderable.getPosition().x;
+	float ey = renderable.getPosition().y;
+	float ew = renderable.getSize().x;
+	float eh = renderable.getSize().y;
+
+	if (Utils::quadCollision(x, y, w, h, ex, ey, ew, eh))
+	{
+		return true;
+	}
+
+	return false;
+}
+
 float Entity::getAngle(const Entity& entity)
 {
 	float x = getCenterX();

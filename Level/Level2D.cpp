@@ -1,7 +1,7 @@
 #include "Level2D.h"
 
 Level2D::Level2D()
-	: m_Light(), m_Background(glm::vec3(0, 0, 0), glm::vec2(Window::Instance().getWidth(), Window::Instance().getHeight()), TextureManager::get("Textures/left.jpg")), m_Region()
+	: m_Light(), m_Background(glm::vec3(0, 0, 0), glm::vec2(Window::Instance().getWidth(), Window::Instance().getHeight()), TextureManager::get("Textures/Level/bg.png")), m_Region()
 {
 	int camX = Window::Instance().getCamera().Position.x;
 	int camY = Window::Instance().getCamera().Position.y;
@@ -25,8 +25,8 @@ void Level2D::update(float timeElapsed)
 	const Camera& cam = Window::Instance().getCamera();
 
 	m_Background.setPosition(cam.Position.x, cam.Position.y);
-	m_Region.update(timeElapsed);	
-	m_Player->update(timeElapsed);
+	m_Region.update(timeElapsed);
+	//m_Player->update(timeElapsed);
 
 	int camX = Window::Instance().getCamera().Position.x;
 	int camY = Window::Instance().getCamera().Position.y;
@@ -38,7 +38,7 @@ void Level2D::update(float timeElapsed)
 	if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_1) && m_Delay > 100)
 	{
 		m_Delay = 0;
-		m_Lights.push_back(Light(m_Light));
+		//m_Lights.push_back(Light(m_Light));
 	}
 
 	m_QTree = std::unique_ptr<QTree<Renderable>>(new QTree<Renderable>(0, BoundingBox(camX, camY, winW, winH)));
@@ -47,6 +47,7 @@ void Level2D::update(float timeElapsed)
 	std::vector<Renderable*> m_Data;
 	m_QTree->retrieve(m_Data, m_Light.getLightRegion());
 
+	m_Player->update(m_Region, m_QTree, timeElapsed);
 	m_Light.update(m_Data, timeElapsed);
 }
 

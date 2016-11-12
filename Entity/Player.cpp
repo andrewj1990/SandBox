@@ -17,7 +17,7 @@ void Player::init()
 	m_CumulativeTime = 0.0f;
 
 	m_MoveSpeed = 180.0f;
-	m_AttackSpeed = 0.5f;
+	m_AttackSpeed = 0.0f;
 	m_AttackFrame = 0.0f;
 
 	m_Sprite.setUV(1, 0, 10, 10);
@@ -115,13 +115,13 @@ void Player::shoot(float angle, float timeElapsed)
 	m_AttackFrame += timeElapsed;
 
 	// fire projectile
-	if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_1) && m_AttackFrame > m_AttackSpeed)
+	if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_1))// && m_AttackFrame > m_AttackSpeed)
 	{
-		//for (int i = 3; i > 0; i--)
-		//{
-		//	m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle + glm::radians(10.0f * i));
-		//	m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle - glm::radians(10.0f * i));
-		//}
+		for (int i = 3; i > 0; i--)
+		{
+			m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle + glm::radians(10.0f * i));
+			m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle - glm::radians(10.0f * i));
+		}
 		m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle);
 
 		m_AttackFrame = 0.0f;
@@ -236,7 +236,14 @@ void Player::update(const Terrain& terrain, const std::unique_ptr<QuadTree>& qua
 	shoot(angle, timeElapsed);
 
 	//m_Sword.update(quadTree, timeElapsed);
-	m_Gun.update(quadTree, timeElapsed);
+	//m_Gun.update(quadTree, timeElapsed);
+}
+
+void Player::update(Region& region, const std::unique_ptr<QTree<Renderable>>& quadTree, float timeElapsed)
+{
+	update(timeElapsed);
+	m_Gun.update(region, quadTree, timeElapsed);
+	
 }
 
 void Player::update(float timeElapsed)

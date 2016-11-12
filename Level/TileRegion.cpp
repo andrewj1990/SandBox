@@ -31,7 +31,7 @@ void TileRegion::init(const std::unordered_set<std::string>& region_tiles)
 	{
 		for (int y = 0; y < m_Size; y++)
 		{
-			if (calculateTile(m_X + x * m_TileSize, m_Y + y * m_TileSize))
+			if (calculateTile(m_X + x * m_TileSize, m_Y + y * m_TileSize, region_tiles))
 			{
 				std::string positionInRegion = std::to_string(m_X + x * m_TileSize) + "_" + std::to_string(m_Y + y * m_TileSize);
 				auto it = region_tiles.find(positionInRegion);
@@ -57,6 +57,47 @@ void TileRegion::render(Renderer& renderer)
 	renderer.render(m_Tiles);
 }
 
+void TileRegion::setUV(int x, int y, const std::unordered_set<std::string>& region_tiles)
+{
+	std::string pos = std::to_string(x) + "_" + std::to_string(y);
+	auto it = region_tiles.find(pos);
+	if (it != region_tiles.end()) return;
+
+	auto tileIt = getTileIterator(x, y);
+	if (tileIt == m_Tiles.end()) return;
+	setTileUV(*tileIt, region_tiles);
+}
+
+void TileRegion::removeTile(int x, int y)
+{
+	auto tileIt = getTileIterator(x, y);
+	if (tileIt == m_Tiles.end()) return;
+
+	m_Tiles.erase(tileIt);
+
+}
+
+std::unique_ptr<Renderable>& TileRegion::getTile(int x, int y)
+{
+	int px = x - (m_IndexX * (m_Size - 16));
+	int py = y - (m_IndexY * (m_Size - 16));
+
+	for (auto& tile : m_Tiles)
+	{
+		if ((int)tile->getPosition().x == px && (int)tile->getPosition().y == py)
+		{
+			return tile;
+		}
+	}
+
+	return m_Tiles[0];
+}
+
+std::vector<std::unique_ptr<Renderable>>::iterator TileRegion::getTileIterator(int x, int y)
+{
+	return std::find_if(m_Tiles.begin(), m_Tiles.end(), [x, y](const auto& tile) { return (tile->getPosition().x == x && tile->getPosition().y == y); });
+}
+
 void TileRegion::setTileUV(std::unique_ptr<Renderable>& tile, const std::unordered_set<std::string>& region_tiles)
 {
 	float rightTileX = tile->getPosition().x + m_TileSize;
@@ -64,11 +105,10 @@ void TileRegion::setTileUV(std::unique_ptr<Renderable>& tile, const std::unorder
 	float aboveTileY = tile->getPosition().y + m_TileSize;
 	float belowTileY = tile->getPosition().y - m_TileSize;
 
-	//auto it = region_tiles.find(std::to_string(tile->getPosition().x) + "_" + std::to_string(aboveTileY));
-	bool above = calculateTile(tile->getPosition().x, aboveTileY);
-	bool below = calculateTile(tile->getPosition().x, belowTileY);
-	bool right = calculateTile(rightTileX, tile->getPosition().y);
-	bool left = calculateTile(leftTileX, tile->getPosition().y);
+	bool above = calculateTile(tile->getPosition().x, aboveTileY, region_tiles);
+	bool below = calculateTile(tile->getPosition().x, belowTileY, region_tiles);
+	bool right = calculateTile(rightTileX, tile->getPosition().y, region_tiles);
+	bool left = calculateTile(leftTileX, tile->getPosition().y, region_tiles);
 
 	int sum = 0;
 	if (above) sum += 1;
@@ -89,8 +129,14 @@ float TileRegion::noiseHeight(float x, float y)
 	return height;
 }
 
-bool TileRegion::calculateTile(float x, float y)
+bool TileRegion::calculateTile(float x, float y, const std::unordered_set<std::string>& region_tiles)
 {
+	auto it = region_tiles.find(std::to_string((int)x) + "_" + std::to_string((int)y));
+	if (it != region_tiles.end())
+	{
+		return false;
+	}
+
 	if (y > 0) 
 	{
 		return surfaceTile(x, y);

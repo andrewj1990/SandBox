@@ -23,6 +23,7 @@ public:
 	virtual void renderLight(Renderer& renderer) {}
 
 	virtual bool collide(const Entity& entity) const;
+	virtual bool collide(const Renderable& renderable) const;
 
 	virtual void setDestroy(bool flag) { m_Destroy = flag; }
 	virtual bool shouldDestroy() const { return m_Destroy; }
