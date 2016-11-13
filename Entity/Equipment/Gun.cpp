@@ -57,19 +57,19 @@ void Gun::update(Region& region, const std::unique_ptr<QTree<Renderable>>& quadT
 	for (auto& bullet : m_Bullets)
 	{
 		bullet->update(timeElapsed);
-		std::vector<Renderable*> enemies;
+		std::vector<Renderable*> tiles;
 
 		const glm::vec3& pos = bullet->getSprite().getPosition();
 		const glm::vec2& size = bullet->getSprite().getSize();
 
-		quadTree->retrieve(enemies, BoundingBox(pos.x, pos.y, size.x, size.y));
+		quadTree->retrieve(tiles, BoundingBox(pos.x, pos.y, size.x, size.y));
 
-		for (auto& enemy : enemies)
+		for (auto& tile : tiles)
 		{
-			float ex = enemy->getPosition().x;
-			float ey = enemy->getPosition().y;
-			float ew = enemy->getSize().x;
-			float eh = enemy->getSize().y;
+			float ex = tile->getPosition().x;
+			float ey = tile->getPosition().y;
+			float ew = tile->getSize().x;
+			float eh = tile->getSize().y;
 
 			float sx = pos.x;
 			float sy = pos.y;
@@ -77,7 +77,7 @@ void Gun::update(Region& region, const std::unique_ptr<QTree<Renderable>>& quadT
 			float sh = size.y;
 
 			//if (sx > ex && sx < ex + ew && sy > ey && sy < ey + eh)
-			if (bullet->collide(*enemy))
+			if (bullet->collide(*tile))
 			{
 				for (int i = 0; i < 25; i++)
 				{

@@ -67,36 +67,32 @@ void Region::removeTiles(float x, float y, bool exactCoord)
 		iy = y < 0 ? iy - m_TileSize : iy;
 	}
 
-	std::string positionInRegion = std::to_string(ix) + "_" + std::to_string(iy);
+	std::string tileGlobalPosition = std::to_string(ix) + "_" + std::to_string(iy);
 
-	auto it = m_Tiles.find(positionInRegion);
+	auto it = m_Tiles.find(tileGlobalPosition);
 	if (it == m_Tiles.end())
 	{
-		m_Tiles.insert(positionInRegion);
-		auto& region = getTileRegion(ix, iy);
-		region->removeTile(ix, iy);
+		m_Tiles.insert(tileGlobalPosition);
 
-		// remove the tile from the region
+		//// remove the tile from the region
 		//int rx = std::floor(x / m_SubRegionWidth);
 		//int ry = std::floor(y / m_SubRegionHeight);
 
-		// reload the region
+		//// reload the region
 		//unload(rx, ry);
 		//load(rx, ry);
 
+		auto& region = getTileRegion(ix, iy);
+		region->removeTile(ix, iy);
 		// reload the uv for the adjacent tiles
 		for (int i = -1; i < 2; i++)
 		{
 			for (int j = -1; j < 2; j++)
 			{
-				if (i == 0 && j == 0)
-				{
-					continue;
-				}
+				if (i == 0 && j == 0) continue;
 
 				int a = ix + i * m_TileSize;
 				int b = iy + j * m_TileSize;
-
 				reloadTileUV(a, b);
 			}
 		}
