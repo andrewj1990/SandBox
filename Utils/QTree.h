@@ -15,18 +15,18 @@ public:
 	void split();
 
 
-	int getIndex(T* data);
+	int getIndex(std::shared_ptr<T> data);
 	int getIndex(float x, float y, float w, float h);
-	void insert(T* data);
+	void insert(std::shared_ptr<T> data);
 
-	void retrieve(std::vector<T*>& data, const BoundingBox& bbox);
+	void retrieve(std::vector<std::shared_ptr<T>>& data, const BoundingBox& bbox);
 
 private:
 	int max_objects;
 	int max_levels;
 
 	int m_Level;
-	std::vector<T*> m_Objects;
+	std::vector<std::shared_ptr<T>> m_Objects;
 
 	BoundingBox m_Bounds;
 	std::unique_ptr<QTree<T>> ne;
@@ -59,7 +59,7 @@ inline void QTree<T>::split()
 }
 
 template<class T>
-inline int QTree<T>::getIndex(T* data)
+inline int QTree<T>::getIndex(std::shared_ptr<T> data)
 {
 	int index = -1;
 	double vmid = m_Bounds.x + (m_Bounds.width / 2);
@@ -135,7 +135,7 @@ inline int QTree<T>::getIndex(float x, float y, float w, float h)
 }
 
 template<class T>
-inline void QTree<T>::insert(T* data)
+inline void QTree<T>::insert(std::shared_ptr<T> data)
 {
 	// if there are child nodes then find the child node that we insert into
 	if (nw != nullptr)
@@ -180,7 +180,7 @@ inline void QTree<T>::insert(T* data)
 }
 
 template<class T>
-inline void QTree<T>::retrieve(std::vector<T*>& data, const BoundingBox& bbox)
+inline void QTree<T>::retrieve(std::vector<std::shared_ptr<T>>& data, const BoundingBox& bbox)
 {
 	if (m_Bounds.intersects(bbox))
 	{

@@ -77,7 +77,7 @@ void TileRegion::removeTile(int x, int y)
 
 }
 
-std::unique_ptr<Renderable>& TileRegion::getTile(int x, int y)
+std::shared_ptr<Renderable>& TileRegion::getTile(int x, int y)
 {
 	int px = x - (m_IndexX * (m_Size - 16));
 	int py = y - (m_IndexY * (m_Size - 16));
@@ -93,12 +93,12 @@ std::unique_ptr<Renderable>& TileRegion::getTile(int x, int y)
 	return m_Tiles[0];
 }
 
-std::vector<std::unique_ptr<Renderable>>::iterator TileRegion::getTileIterator(int x, int y)
+std::vector<std::shared_ptr<Renderable>>::iterator TileRegion::getTileIterator(int x, int y)
 {
 	return std::find_if(m_Tiles.begin(), m_Tiles.end(), [x, y](const auto& tile) { return (tile->getPosition().x == x && tile->getPosition().y == y); });
 }
 
-void TileRegion::setTileUV(std::unique_ptr<Renderable>& tile, const std::unordered_set<std::string>& region_tiles)
+void TileRegion::setTileUV(std::shared_ptr<Renderable>& tile, const std::unordered_set<std::string>& region_tiles)
 {
 	float rightTileX = tile->getPosition().x + m_TileSize;
 	float leftTileX = tile->getPosition().x - m_TileSize;

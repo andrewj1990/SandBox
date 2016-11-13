@@ -58,7 +58,7 @@ void Light::update(float x, float y, float timeElapsed)
 	//m_Ray.calcAndSetDirection(cam.getPosition().x + Window::Instance().getWidth() / 2, cam.getPosition().y + Window::Instance().getHeight() / 2);
 }
 
-void Light::update(const std::vector<Renderable*> renderables, float timeElapsed)
+void Light::update(const std::vector<std::shared_ptr<Renderable>> renderables, float timeElapsed)
 {
 	m_Ray.intersection(renderables, m_LightRegion);
 	//m_LightBox.setSize(glm::vec2(m_Ray.getLength(), 2));

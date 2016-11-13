@@ -51,7 +51,7 @@ void Region::addTiles(std::unique_ptr<QTree<Renderable>>& quadTree)
 	{
 		for (auto& tile : tileRegion->getTiles())
 		{
-			quadTree->insert(tile.get());
+			quadTree->insert(tile);
 		}
 	}
 }

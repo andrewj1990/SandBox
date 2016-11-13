@@ -44,7 +44,7 @@ void Level2D::update(float timeElapsed)
 	m_QTree = std::unique_ptr<QTree<Renderable>>(new QTree<Renderable>(0, BoundingBox(camX, camY, winW, winH)));
 	m_Region.addTiles(m_QTree);
 
-	std::vector<Renderable*> m_Data;
+	std::vector<std::shared_ptr<Renderable>> m_Data;
 	m_QTree->retrieve(m_Data, m_Light.getLightRegion());
 
 	m_Player->update(m_Region, m_QTree, timeElapsed);

@@ -18,15 +18,15 @@ public:
 
 	int indexX() { return m_IndexX; }
 	int indexY() { return m_IndexY; }
-	const std::vector<std::unique_ptr<Renderable>>& getTiles() { return m_Tiles; }
+	const std::vector<std::shared_ptr<Renderable>>& getTiles() { return m_Tiles; }
 
 	void setUV(int x, int y, const std::unordered_set<std::string>& region_tiles);
 	void removeTile(int x, int y);
-	std::unique_ptr<Renderable>& getTile(int x, int y);
-	std::vector<std::unique_ptr<Renderable>>::iterator getTileIterator(int x, int y);
+	std::shared_ptr<Renderable>& getTile(int x, int y);
+	std::vector<std::shared_ptr<Renderable>>::iterator getTileIterator(int x, int y);
 
 private:
-	void setTileUV(std::unique_ptr<Renderable>& tile, const std::unordered_set<std::string>& region_tiles);
+	void setTileUV(std::shared_ptr<Renderable>& tile, const std::unordered_set<std::string>& region_tiles);
 	float noiseHeight(float x, float y);
 	bool calculateTile(float x, float y, const std::unordered_set<std::string>& region_tiles);
 	bool surfaceTile(float x, float y);
@@ -46,5 +46,5 @@ private:
 	float m_NoiseSize;
 
 	SimplexNoise m_Noise;
-	std::vector<std::unique_ptr<Renderable>> m_Tiles;
+	std::vector<std::shared_ptr<Renderable>> m_Tiles;
 };

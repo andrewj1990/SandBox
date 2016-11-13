@@ -57,7 +57,7 @@ void Gun::update(Region& region, const std::unique_ptr<QTree<Renderable>>& quadT
 	for (auto& bullet : m_Bullets)
 	{
 		bullet->update(timeElapsed);
-		std::vector<Renderable*> tiles;
+		std::vector<std::shared_ptr<Renderable>> tiles;
 
 		const glm::vec3& pos = bullet->getSprite().getPosition();
 		const glm::vec2& size = bullet->getSprite().getSize();

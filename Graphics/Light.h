@@ -29,7 +29,7 @@ public:
 		m_Sprite.setPosition(position.x, position.y);
 	}
 
-	void intersection(const std::vector<Renderable*>& renderables, const BoundingBox& bbox)
+	void intersection(const std::vector<std::shared_ptr<Renderable>>& renderables, const BoundingBox& bbox)
 	{
 		glm::vec2 temp;
 		float t1 = INT_MAX;
@@ -213,7 +213,7 @@ public:
 	~Light() {}
 
 	void update(float x, float y, float timeElapsed);
-	void update(const std::vector<Renderable*> renderables, float timeElapsed);
+	void update(const std::vector<std::shared_ptr<Renderable>> renderables, float timeElapsed);
 	void render(Renderer& renderer);
 	void renderShadow(Renderer& renderer);
 
