@@ -5,9 +5,10 @@ Region::Region()
 	m_X = Window::Instance().getCamera().getPosition().x;
 	m_Y = Window::Instance().getCamera().getPosition().y;
 
-	m_TileSize = 16;
-	m_SubRegionWidth = 256;
-	m_SubRegionHeight = 256;
+	// number of tiles per sub region
+
+	m_SubRegionWidth = Settings::SUB_REGION_TILE_COUNT * Settings::TILE_SIZE;
+	m_SubRegionHeight = Settings::SUB_REGION_TILE_COUNT * Settings::TILE_SIZE;
 	m_RegionWidth = Window::Instance().getWidth() + m_SubRegionWidth;
 	m_RegionHeight = Window::Instance().getHeight() + m_SubRegionHeight * 2;
 
@@ -58,13 +59,13 @@ void Region::addTiles(std::unique_ptr<QTree<Renderable>>& quadTree)
 
 void Region::removeTiles(float x, float y, bool exactCoord)
 {
-	int ix = (int)x / m_TileSize * m_TileSize;
-	int iy = (int)y / m_TileSize * m_TileSize;
+	int ix = (int)x / Settings::TILE_SIZE * Settings::TILE_SIZE;
+	int iy = (int)y / Settings::TILE_SIZE * Settings::TILE_SIZE;
 	//std::cout << "x : " << x << ", " << y << "\n";
 	if (!exactCoord)
 	{
-		ix = x < 0 ? ix - m_TileSize : ix;
-		iy = y < 0 ? iy - m_TileSize : iy;
+		ix = x < 0 ? ix - Settings::TILE_SIZE : ix;
+		iy = y < 0 ? iy - Settings::TILE_SIZE : iy;
 	}
 
 	std::string tileGlobalPosition = std::to_string(ix) + "_" + std::to_string(iy);
@@ -91,8 +92,8 @@ void Region::removeTiles(float x, float y, bool exactCoord)
 			{
 				if (i == 0 && j == 0) continue;
 
-				int a = ix + i * m_TileSize;
-				int b = iy + j * m_TileSize;
+				int a = ix + i * Settings::TILE_SIZE;
+				int b = iy + j * Settings::TILE_SIZE;
 				reloadTileUV(a, b);
 			}
 		}

@@ -15,7 +15,7 @@ public:
 	void split();
 
 
-	int getIndex(std::shared_ptr<T> data);
+	int getIndex(const std::shared_ptr<T>& data);
 	int getIndex(float x, float y, float w, float h);
 	void insert(std::shared_ptr<T> data);
 
@@ -59,7 +59,7 @@ inline void QTree<T>::split()
 }
 
 template<class T>
-inline int QTree<T>::getIndex(std::shared_ptr<T> data)
+inline int QTree<T>::getIndex(const std::shared_ptr<T>& data)
 {
 	int index = -1;
 	double vmid = m_Bounds.x + (m_Bounds.width / 2);

@@ -5,6 +5,7 @@
 #include "..\Graphics\Renderer.h"
 #include "Tiles\Tile.h"
 #include "..\Utils\simplexNoise.h"
+#include "..\Settings.h"
 
 class TileRegion {
 public:
@@ -39,7 +40,6 @@ private:
 	int m_X;
 	int m_Y;
 	int m_Size;
-	int m_TileSize;
 
 	float m_SurfaceTopEdge;
 	float m_TransitionY;

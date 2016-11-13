@@ -6,6 +6,7 @@
 #include "..\Graphics\Window.h"
 #include "..\Utils\quadTree.h"
 #include "Tiles\Tile.h"
+#include "..\Settings.h"
 
 class Terrain
 {
@@ -38,7 +39,6 @@ private:
 	int m_WidthOffset;
 	int m_HeightOffset;
 
-	int m_TileSize;
 	float m_NoiseSize;
 
 	std::vector<std::unique_ptr<Renderable>> m_Tiles;

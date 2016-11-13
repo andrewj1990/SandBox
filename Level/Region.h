@@ -2,6 +2,7 @@
 
 #include "TileRegion.h"
 #include "..\Utils\QTree.h"
+#include "..\Settings.h"
 
 class Region
 {
@@ -31,8 +32,6 @@ private:
 
 	int m_SubRegionWidth;
 	int m_SubRegionHeight;
-
-	int m_TileSize;
 
 	std::vector<std::unique_ptr<TileRegion>> m_Regions;
 	std::unordered_set<std::string> m_Tiles;

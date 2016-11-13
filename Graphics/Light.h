@@ -213,7 +213,7 @@ public:
 	~Light() {}
 
 	void update(float x, float y, float timeElapsed);
-	void update(const std::vector<std::shared_ptr<Renderable>> renderables, float timeElapsed);
+	void update(const std::vector<std::shared_ptr<Renderable>>& renderables, float timeElapsed);
 	void render(Renderer& renderer);
 	void renderShadow(Renderer& renderer);
 
