@@ -103,6 +103,12 @@ void Region::removeTiles(float x, float y, bool exactCoord, bool ripple)
 	}
 }
 
+bool Region::emptyTile(float x, float y)
+{
+	auto& region = getTileRegion(x, y);
+	return !region->calculateTile(x, y, m_Tiles);
+}
+
 void Region::update(float timeElapsed)
 {
 	int x = std::floor(Window::Instance().getCamera().getPosition().x / m_SubRegionWidth);
@@ -163,10 +169,19 @@ void Region::update(float timeElapsed)
 
 void Region::render(Renderer& renderer)
 {
+	//for (auto& tileRegion : m_Regions)
+	//{
+	//	tileRegion->render(renderer);
+	//}
+
+	renderer.begin();
 	for (auto& tileRegion : m_Regions)
 	{
-		tileRegion->render(renderer);
+		tileRegion->submit(renderer);
 	}
+	renderer.end();
+	renderer.flush();
+
 }
 
 void Region::reloadTileUV(int x, int y)

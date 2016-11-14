@@ -15,6 +15,7 @@ public:
 
 	void init(const std::unordered_set<std::string>& region_tiles);
 
+	void submit(Renderer& renderer);
 	void render(Renderer& renderer);
 
 	int indexX() { return m_IndexX; }
@@ -25,11 +26,12 @@ public:
 	void removeTile(int x, int y);
 	std::shared_ptr<Renderable>& getTile(int x, int y);
 	std::vector<std::shared_ptr<Renderable>>::iterator getTileIterator(int x, int y);
+	bool calculateTile(float x, float y, const std::unordered_set<std::string>& region_tiles);
+	float getSurfacePosition(float x);
 
 private:
 	void setTileUV(std::shared_ptr<Renderable>& tile, const std::unordered_set<std::string>& region_tiles);
 	float noiseHeight(float x, float y);
-	bool calculateTile(float x, float y, const std::unordered_set<std::string>& region_tiles);
 	bool surfaceTile(float x, float y);
 	bool transitionTile(float x, float y);
 	bool caveTile(float x, float y, float threshold = 0.5f);

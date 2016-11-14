@@ -30,7 +30,7 @@ public:
 
 private:
 	void pushQueue(float x, float y);
-	glm::vec2 popQueue();
+	const glm::vec2& popQueue();
 
 private:
 	float m_RippleChance;

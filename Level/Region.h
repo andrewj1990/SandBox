@@ -15,9 +15,11 @@ public:
 	void unload(int x, int y);
 	void addTiles(std::unique_ptr<QTree<Renderable>>& quadTree);
 	void removeTiles(float x, float y, bool exactCoord = true, bool ripple = false);
+	bool emptyTile(float x, float y);
 
 	void update(float timeElapsed);
 	void render(Renderer& renderer);
+
 
 private:
 	void reloadTileUV(int x, int y);

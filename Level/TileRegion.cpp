@@ -49,7 +49,15 @@ void TileRegion::init(const std::unordered_set<std::string>& region_tiles)
 	}
 }
 
-void TileRegion::render(Renderer& renderer) 
+void TileRegion::submit(Renderer& renderer)
+{
+	for (const auto& tile : m_Tiles)
+	{
+		renderer.submit(*tile);
+	}
+}
+
+void TileRegion::render(Renderer& renderer)
 {
 	renderer.render(m_Tiles);
 }
@@ -150,10 +158,17 @@ bool TileRegion::calculateTile(float x, float y, const std::unordered_set<std::s
 	return false;
 }
 
+float TileRegion::getSurfacePosition(float x)
+{
+	float grad = (m_SurfaceTopEdge) / m_SurfaceTopEdge;
+	float surface = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, x / m_NoiseSize, m_NoiseSize) + grad;
+	return surface;
+}
+
 bool TileRegion::surfaceTile(float x, float y)
 {
 	float grad = (m_SurfaceTopEdge - y) / m_SurfaceTopEdge;
-	float surface = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, x / m_NoiseSize, y / m_NoiseSize) +grad;
+	float surface = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, x / m_NoiseSize, y / m_NoiseSize) + grad;
 	return surface > 1.0f;
 }
 

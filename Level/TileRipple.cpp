@@ -9,25 +9,20 @@ TileRipple::TileRipple(float x, float y)
 
 bool TileRipple::update(Region& region)
 {
-	if (m_Queue.empty())
-	{
-		std::cout << "queue empty!!! DESOTRYING\n";
-		return false;
-	}
+	if (m_Queue.empty()) return false;
 
-	glm::vec2 front = popQueue();
+	const glm::vec2& front = popQueue();
 
 	float rand = Utils::random(0.0f, 100.0f);
 	if (rand < m_RippleChance)
 	{
-		region.removeTiles(front.x, front.y);
-		pushQueue(front.x, front.y + Settings::TILE_SIZE);
-		pushQueue(front.x + Settings::TILE_SIZE, front.y + Settings::TILE_SIZE);
-		pushQueue(front.x - Settings::TILE_SIZE, front.y + Settings::TILE_SIZE);
-	}
-	else
-	{
-
+		if (!region.emptyTile(front.x, front.y))
+		{
+			region.removeTiles(front.x, front.y);
+			pushQueue(front.x, front.y + Settings::TILE_SIZE);
+			pushQueue(front.x + Settings::TILE_SIZE, front.y + Settings::TILE_SIZE);
+			pushQueue(front.x - Settings::TILE_SIZE, front.y + Settings::TILE_SIZE);
+		}
 	}
 
 	//std::cout << "queue size : " << m_Queue.size() << "\n";
@@ -45,7 +40,7 @@ void TileRipple::pushQueue(float x, float y)
 	}
 }
 
-glm::vec2 TileRipple::popQueue()
+const glm::vec2& TileRipple::popQueue()
 {
 	const glm::vec2& val = m_Queue.front();
 	m_Queue.pop();
