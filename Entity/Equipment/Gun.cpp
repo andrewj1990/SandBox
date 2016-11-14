@@ -86,7 +86,7 @@ void Gun::update(Region& region, const std::unique_ptr<QTree<Renderable>>& quadT
 				//enemy->damage(10);
 				//m_DamageText.push_back(std::unique_ptr<DamageCounter>(new DamageCounter("1", sx, sy)));
 
-				region.removeTiles(ex, ey);
+				region.removeTiles(ex, ey, true, true);
 				bullet->setDestroy(true);
 				break;
 			}

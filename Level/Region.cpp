@@ -57,7 +57,7 @@ void Region::addTiles(std::unique_ptr<QTree<Renderable>>& quadTree)
 	}
 }
 
-void Region::removeTiles(float x, float y, bool exactCoord)
+void Region::removeTiles(float x, float y, bool exactCoord, bool ripple)
 {
 	int ix = (int)x / Settings::TILE_SIZE * Settings::TILE_SIZE;
 	int iy = (int)y / Settings::TILE_SIZE * Settings::TILE_SIZE;
@@ -85,6 +85,9 @@ void Region::removeTiles(float x, float y, bool exactCoord)
 
 		auto& region = getTileRegion(ix, iy);
 		region->removeTile(ix, iy);
+
+		if (ripple) m_Ripples.push_back(std::unique_ptr<TileRipple>(new TileRipple(ix, iy)));
+
 		// reload the uv for the adjacent tiles
 		for (int i = -1; i < 2; i++)
 		{
@@ -142,7 +145,19 @@ void Region::update(float timeElapsed)
 		float mx = camX + Window::Instance().mouseX();
 		float my = camY + (Window::Instance().getHeight() - Window::Instance().mouseY());
 
-		removeTiles(mx, my, false);
+		removeTiles(mx, my, false, true);
+	}
+
+	for (auto it = m_Ripples.begin(); it != m_Ripples.end(); )
+	{
+		if (!(*it)->update(*this))
+		{
+			it = m_Ripples.erase(it);
+		}
+		else
+		{
+			it++;
+		}
 	}
 }
 

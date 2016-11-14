@@ -117,11 +117,11 @@ void Player::shoot(float angle, float timeElapsed)
 	// fire projectile
 	if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_1))// && m_AttackFrame > m_AttackSpeed)
 	{
-		for (int i = 3; i > 0; i--)
-		{
-			m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle + glm::radians(10.0f * i));
-			m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle - glm::radians(10.0f * i));
-		}
+		//for (int i = 3; i > 0; i--)
+		//{
+		//	m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle + glm::radians(10.0f * i));
+		//	m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle - glm::radians(10.0f * i));
+		//}
 		m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle);
 
 		m_AttackFrame = 0.0f;

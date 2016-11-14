@@ -3,6 +3,7 @@
 #include "TileRegion.h"
 #include "..\Utils\QTree.h"
 #include "..\Settings.h"
+#include "TileRipple.h"
 
 class Region
 {
@@ -13,7 +14,7 @@ public:
 	void load(int x, int y);
 	void unload(int x, int y);
 	void addTiles(std::unique_ptr<QTree<Renderable>>& quadTree);
-	void removeTiles(float x, float y, bool exactCoord = true);
+	void removeTiles(float x, float y, bool exactCoord = true, bool ripple = false);
 
 	void update(float timeElapsed);
 	void render(Renderer& renderer);
@@ -34,5 +35,6 @@ private:
 	int m_SubRegionHeight;
 
 	std::vector<std::unique_ptr<TileRegion>> m_Regions;
+	std::vector<std::unique_ptr<TileRipple>> m_Ripples;
 	std::unordered_set<std::string> m_Tiles;
 };
