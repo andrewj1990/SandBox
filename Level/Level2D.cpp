@@ -18,6 +18,20 @@ void Level2D::init()
 {
 	const Camera& cam = Window::Instance().getCamera();
 	m_Player = std::unique_ptr<Player>(new Player(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f));
+
+	// move player to surface
+	while (true)
+	{
+		if (m_Region.getSurfacePosition(m_Player->getX(), m_Player->getY()))
+		{
+			m_Player->move(0, Settings::TILE_SIZE);
+			m_Region.update(0);
+		}
+		else
+		{
+			break;
+		}
+	}
 }
 
 void Level2D::update(float timeElapsed)

@@ -109,11 +109,16 @@ bool Region::emptyTile(float x, float y)
 	return !region->calculateTile(x, y, m_Tiles);
 }
 
+bool Region::getSurfacePosition(float x, float y)
+{
+	auto& region = getTileRegion(x, y);
+	return region->surfaceTile(x, y);
+}
+
 void Region::update(float timeElapsed)
 {
-	int x = std::floor(Window::Instance().getCamera().getPosition().x / m_SubRegionWidth);
-	int y = std::floor(Window::Instance().getCamera().getPosition().y / m_SubRegionHeight);
-
+	int x = Utils::fastFloor(Window::Instance().getCamera().getPosition().x / m_SubRegionWidth);
+	int y = Utils::fastFloor(Window::Instance().getCamera().getPosition().y / m_SubRegionHeight);
 
 	// update regions when camera moves outside current region
 	if (m_X != x)

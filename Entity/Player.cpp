@@ -16,7 +16,7 @@ void Player::init()
 	m_Row = 0;
 	m_CumulativeTime = 0.0f;
 
-	m_MoveSpeed = 180.0f;
+	m_MoveSpeed = 280.0f;
 	m_AttackSpeed = 0.0f;
 	m_AttackFrame = 0.0f;
 
@@ -26,40 +26,40 @@ void Player::init()
 	camera.Position = glm::vec3(0, 0, 0);
 }
 
-bool Player::playerCollision(const std::unique_ptr<QuadTree>& quadTree)
+bool Player::playerCollision(float dx, float dy, const std::unique_ptr<QTree<Renderable>>& quadTree)
 {
-	std::vector<Renderable*> enemies;
-	quadTree->retrieve(enemies, m_Sprite.getPosition().x, m_Sprite.getPosition().y, 10, 10);
+	float x = getX() + dx;
+	float y = getY() + dy;
+	float w = getSprite().getSize().x;
+	float h = getSprite().getSize().y;
 
-	for (auto enemy : enemies)
+	std::vector<std::shared_ptr<Renderable>> tiles;
+	quadTree->retrieve(tiles, BoundingBox(x, y, getSprite().getSize().x, getSprite().getSize().y));
+
+	for (auto& tile : tiles)
 	{
-		float ex = enemy->getPosition().x;
-		float ey = enemy->getPosition().y;
-		float ew = enemy->getSize().x;
-		float eh = enemy->getSize().y;
+		float tx = tile->getPosition().x;
+		float ty = tile->getPosition().y;
+		float tw = tile->getSize().x;
+		float th = tile->getSize().y;
 
-		float px = m_Sprite.getPosition().x;
-		float py = m_Sprite.getPosition().y;
-		float pw = m_Sprite.getSize().x;
-		float ph = m_Sprite.getSize().y;
-
-		if (px > ex && px < ex + ew && py > ey && py < ey + eh)
+		if (Utils::quadCollision(x, y, w, h, tx, ty, tw, th))
 		{
 			return true;
 		}
-
 	}
+
 	return false;
 }
 
-void Player::move(const Terrain& terrain, float timeElapsed)
+void Player::move(const std::unique_ptr<QTree<Renderable>>& quadTree, float timeElapsed)
 {
 	Window& window = Window::Instance();
 
 	m_Anim += timeElapsed * 10.0f;
 
 	float dx = 0.0f;
-	float dy = 0.0f;
+	float dy = -200.0f * timeElapsed;
 
 	if (window.isKeyPressed(GLFW_KEY_W))
 	{
@@ -89,18 +89,12 @@ void Player::move(const Terrain& terrain, float timeElapsed)
 		dx += m_MoveSpeed * timeElapsed;
 	}
 
-	if (terrain.isSolid(m_Sprite.getPosition().x + dx, m_Sprite.getPosition().y) ||
-		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x + dx, m_Sprite.getPosition().y) ||
-		terrain.isSolid(m_Sprite.getPosition().x + dx, m_Sprite.getPosition().y + m_Sprite.getSize().y) ||
-		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x + dx, m_Sprite.getPosition().y + m_Sprite.getSize().y))
+	if (playerCollision(dx, 0, quadTree))
 	{
 		dx = 0.0f;
 	}
 
-	if (terrain.isSolid(m_Sprite.getPosition().x, m_Sprite.getPosition().y + dy) ||
-		terrain.isSolid(m_Sprite.getPosition().x, m_Sprite.getPosition().y + m_Sprite.getSize().y + dy) ||
-		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x, m_Sprite.getPosition().y + dy) ||
-		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x, m_Sprite.getPosition().y + m_Sprite.getSize().y + dy))
+	if (playerCollision(0, dy, quadTree))
 	{
 		dy = 0.0f;
 	}
@@ -147,7 +141,6 @@ void Player::move(float dx, float dy)
 	ResourceManager::getInstance().shader("outline_shader")->setUniform("view", camera.GetViewMatrix());
 	ResourceManager::getInstance().shader("basic_shader")->setUniform("view", camera.GetViewMatrix());
 	ResourceManager::getInstance().shader("lightShadow")->setUniform("view", camera.GetViewMatrix());
-
 }
 
 void Player::dodge(const Terrain& terrain)
@@ -187,63 +180,12 @@ void Player::dodge(const Terrain& terrain)
 	}
 }
 
-void Player::update(const Terrain& terrain, const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
-{
-	Window& window = Window::Instance();
-	float mouseX = Window::Instance().mouseX();
-	float mouseY = Window::Instance().mouseY();
-
-	float dx = mouseX - (window.getWidth() / 2 - 16.0f);
-	float dy = mouseY - (window.getHeight() / 2 - 16.0f);
-	float angle = -std::atan2f(dy, dx);
-
-	m_CumulativeTime += timeElapsed;
-
-	if (playerCollision(quadTree))
-	{
-		//std::cout << "player collision\n";
-	}
-
-	switch (m_State)
-	{
-	case (PlayerState::ATTACK) :
-		break;
-	case (PlayerState::NORMAL) :
-		// shield
-		m_Shield.setAngle(angle);
-		m_ShieldActive = window.isButtonPressed(GLFW_MOUSE_BUTTON_2);
-
-		// sword
-		if (window.isButtonPressed(GLFW_MOUSE_BUTTON_1)) m_Sword.setAttackParams(angle);
-
-		// movement
-
-		if (window.isKeyPressed(GLFW_KEY_SPACE))
-		{
-			m_State = PlayerState::DODGE;
-			m_CumulativeTime = 0.0f;
-			m_DodgeAngle = angle;
-		}
-		break;
-	case (PlayerState::DODGE) :
-		dodge(terrain);
-		break;
-	default:
-		break;
-	}
-
-	move(terrain, timeElapsed);
-	shoot(angle, timeElapsed);
-
-	//m_Sword.update(quadTree, timeElapsed);
-	//m_Gun.update(quadTree, timeElapsed);
-}
-
 void Player::update(Region& region, const std::unique_ptr<QTree<Renderable>>& quadTree, float timeElapsed)
 {
 	update(timeElapsed);
+	move(quadTree, timeElapsed);
 	m_Gun.update(region, quadTree, timeElapsed);
-	
+
 }
 
 void Player::update(float timeElapsed)
@@ -256,75 +198,6 @@ void Player::update(float timeElapsed)
 	float dy = mouseY - m_Y;
 	float angle = -std::atan2f(dy, dx);
 
-	m_CumulativeTime += timeElapsed;
-
-	switch (m_State)
-	{
-	case (PlayerState::ATTACK) :
-		break;
-	case (PlayerState::NORMAL) :
-		// shield
-		m_Shield.setAngle(angle);
-		m_ShieldActive = window.isButtonPressed(GLFW_MOUSE_BUTTON_2);
-
-		// sword
-		if (window.isButtonPressed(GLFW_MOUSE_BUTTON_1)) m_Sword.setAttackParams(angle);
-
-		// movement
-		
-		if (window.isKeyPressed(GLFW_KEY_SPACE))
-		{
-			m_State = PlayerState::DODGE;
-			m_CumulativeTime = 0.0f;
-			m_DodgeAngle = angle;
-		}
-		break;
-	case (PlayerState::DODGE) :
-		//dodge();
-		break;
-	default:
-		break;
-	}
-
-	m_Anim += timeElapsed * 10.0f;
-
-	dx = 0.0f;
-	dy = 0.0f;
-
-	if (window.isKeyPressed(GLFW_KEY_LEFT_SHIFT))
-	{
-		m_MoveSpeed += 100.0f;
-	}
-
-	if (window.isKeyPressed(GLFW_KEY_W))
-	{
-		m_Row = 3;
-		m_Sprite.setUV((int)m_Anim % 3, m_Row, 10, 10);
-		dy += m_MoveSpeed * timeElapsed;
-	}
-
-	if (window.isKeyPressed(GLFW_KEY_A))
-	{
-		m_Row = 2;
-		m_Sprite.setUV((int)m_Anim % 3, m_Row, 10, 10);
-		dx -= m_MoveSpeed * timeElapsed;
-	}
-
-	if (window.isKeyPressed(GLFW_KEY_S))
-	{
-		m_Row = 0;
-		m_Sprite.setUV((int)m_Anim % 3, m_Row, 10, 10);
-		dy -= m_MoveSpeed * timeElapsed;
-	}
-
-	if (window.isKeyPressed(GLFW_KEY_D))
-	{
-		m_Row = 1;
-		m_Sprite.setUV((int)m_Anim % 3, m_Row, 10, 10);
-		dx += m_MoveSpeed * timeElapsed;
-	}
-
-	move(dx, dy);
 	shoot(angle, timeElapsed);
 }
 

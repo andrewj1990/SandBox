@@ -33,7 +33,6 @@ public:
 	void addBuff();
 
 	void update(float timeElapsed) override;
-	void update(const Terrain& terrain, const std::unique_ptr<QuadTree>& quadTree, float timeElapsed) override;
 	void update(Region& region, const std::unique_ptr<QTree<Renderable>>& quadTree, float timeElapsed);
 	void submit(Renderer& renderer) override;
 	void render(Renderer& renderer) override;
@@ -42,8 +41,8 @@ public:
 
 private:
 	void init();
-	bool playerCollision(const std::unique_ptr<QuadTree>& quadTree);
-	void move(const Terrain& terrain, float timeElapsed);
+	bool playerCollision(float dx, float dy, const std::unique_ptr<QTree<Renderable>>& quadTree);
+	void move(const std::unique_ptr<QTree<Renderable>>& quadTree, float timeElapsed);
 	void shoot(float angle, float timeElapsed);
 
 private:

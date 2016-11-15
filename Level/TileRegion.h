@@ -27,12 +27,11 @@ public:
 	std::shared_ptr<Renderable>& getTile(int x, int y);
 	std::vector<std::shared_ptr<Renderable>>::iterator getTileIterator(int x, int y);
 	bool calculateTile(float x, float y, const std::unordered_set<std::string>& region_tiles);
-	float getSurfacePosition(float x);
+	bool surfaceTile(float x, float y);
 
 private:
 	void setTileUV(std::shared_ptr<Renderable>& tile, const std::unordered_set<std::string>& region_tiles);
 	float noiseHeight(float x, float y);
-	bool surfaceTile(float x, float y);
 	bool transitionTile(float x, float y);
 	bool caveTile(float x, float y, float threshold = 0.5f);
 
