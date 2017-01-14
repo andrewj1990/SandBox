@@ -77,6 +77,11 @@ public:
 		m_Size = size;
 	}
 
+	void scale(float scale)
+	{
+		m_Size *= scale;
+	}
+
 	void addDirection(float dx, float dy)
 	{
 		m_Position.x += dx;

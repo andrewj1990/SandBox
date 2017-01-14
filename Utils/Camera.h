@@ -78,6 +78,11 @@ public:
 		Position += glm::vec3(dx, dy, 0.0f);
 	}
 
+	void moveCameraPosition(float x, float y)
+	{
+		Position = glm::vec3(x, y, 0);
+	}
+
 	void moveCamera(CameraMovement direction)
 	{
 		float velocity = 1.0f;

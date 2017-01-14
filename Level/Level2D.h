@@ -1,6 +1,8 @@
 #pragma once
 
 #include <unordered_set>
+#include <algorithm>
+
 #include "..\Graphics\Renderer.h"
 #include "Tiles\Tile.h"
 #include "Region.h"

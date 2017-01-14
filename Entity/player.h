@@ -47,6 +47,7 @@ private:
 
 private:
 	PlayerState m_State;
+	int m_TexSize;
 
 	float m_Anim;
 	int m_Row;
@@ -56,6 +57,7 @@ private:
 
 	bool m_ShieldActive;
 	Sprite m_Shield;
+	Sprite m_Crosshair;
 	Sword m_Sword;
 	Gun m_Gun;
 
@@ -64,5 +66,7 @@ private:
 	float m_MoveSpeed;
 	float m_AttackSpeed;
 	float m_AttackFrame;
+
+	bool m_Moving;
 
 };

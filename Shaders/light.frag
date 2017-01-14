@@ -51,6 +51,7 @@ void main()
     for(int i = 0; i < 9; i++)
         col += sampleTex[i] * kernel[i];
     
+//    light = vec4(1.0) - vec4(col, 1.0);// * light;
     light = vec4(col, 1.0);// * light;
 	vec3 intensity = ambient + vec3(light);
 	vec3 finalColor = diffuseColor.rgb * intensity;

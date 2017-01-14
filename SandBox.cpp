@@ -35,6 +35,7 @@ void movement(const Window& window, Camera& camera, float deltaTime)
 int main()
 {
 	Window::Instance().setParams("SandBox", 1280, 720);
+	//Window::Instance().setParams("SandBox", 1920, 1080);
 
 	ResourceManager::getInstance().addShader("outline_shader", "Shaders/outline.vs", "Shaders/outline.frag");
 	ResourceManager::getInstance().addShader("screen", "Shaders/screen.vs", "Shaders/screen.frag");

@@ -37,10 +37,13 @@ public:
 
 	inline int getWidth() const { return m_Width; }
 	inline int getHeight() const { return m_Height; }
+	inline int getInitWidth() const { return m_InitWidth; }
+	inline int getInitHeight() const { return m_InitHeight; }
 	inline float mouseX() const { return m_MousePosX; }
 	inline float mouseY() const { return m_MousePosY; }
 	inline bool isWindowResized() { return m_WindowResized; }
 	inline void setWindowResized(bool flag) { m_WindowResized = flag; }
+	inline GLFWwindow* getWindow() { return m_Window; }
 	Camera& getCamera() { return m_Camera; }
 
 private:
@@ -53,6 +56,8 @@ private:
 
 private:
 	std::string m_Name;
+	int m_InitWidth;
+	int m_InitHeight;
 	int m_Width;
 	int m_Height;
 

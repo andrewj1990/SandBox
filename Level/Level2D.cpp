@@ -29,6 +29,8 @@ void Level2D::init()
 		}
 		else
 		{
+			m_Player->move(0, Settings::TILE_SIZE);
+			m_Region.update(0);
 			break;
 		}
 	}
@@ -36,7 +38,7 @@ void Level2D::init()
 
 void Level2D::update(float timeElapsed)
 {
-	const Camera& cam = Window::Instance().getCamera();
+	Camera& cam = Window::Instance().getCamera();
 
 	m_Background.setPosition(cam.Position.x, cam.Position.y);
 	m_Region.update(timeElapsed);
@@ -49,10 +51,10 @@ void Level2D::update(float timeElapsed)
 	m_Light.update(m_Player->getCenterX(), m_Player->getCenterY(), timeElapsed);
 
 	m_Delay++;
-	if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_1) && m_Delay > 100)
+	if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_2) && m_Delay > 100)
 	{
 		m_Delay = 0;
-		//m_Lights.push_back(Light(m_Light));
+		m_Lights.push_back(Light(m_Light));
 	}
 
 	m_QTree = std::unique_ptr<QTree<Renderable>>(new QTree<Renderable>(0, BoundingBox(camX, camY, winW, winH)));
@@ -63,6 +65,34 @@ void Level2D::update(float timeElapsed)
 
 	m_Player->update(m_Region, m_QTree, timeElapsed);
 	m_Light.update(m_Data, timeElapsed);
+
+	// move camera based on player position and mouse
+	float px = m_Player->getCenterX();
+	float py = m_Player->getCenterY();
+	float mx = cam.getPosition().x + Window::Instance().mouseX();
+	float my = cam.getPosition().y + Window::Instance().mouseY();
+
+	float mcw = 500.0f;
+	float mch = 500.0f;
+	float dcx = mx - px;
+	float dcy = my - py;
+
+	//float cx = mcw < std::abs(dcx) ? mcw : dcx;
+	//float cy = mch < std::abs(dcy) ? mch : dcy;
+
+	float cx = std::max(-mcw, std::min(dcx, mcw));
+	float cy = -std::max(-mch, std::min(dcy, mch));
+
+	cx /= (mcw / 100.0f);
+	cy /= (mcw / 100.0f);
+
+	//float ccx = px - Window::Instance().getWidth() / 2.0f;
+	//float ccy = py - Window::Instance().getHeight() / 2.0f;
+	float ccx = px - Window::Instance().getInitWidth() / 2.0f;
+	float ccy = py - Window::Instance().getInitHeight() / 2.0f;
+
+	cam.moveCameraPosition(ccx + cx, ccy + cy);
+	//cam.moveCamera(cx, cy);
 }
 
 void Level2D::render(Renderer& renderer)

@@ -17,7 +17,7 @@ class Gun : public Entity
 public:
 	Gun(float x, float y);
 
-	void shoot(float x, float y, float angle);
+	void shoot(float x, float y, float angle, float movespeed = 0.0f);
 	void move(float x, float y);
 
 	//void update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed);
@@ -28,8 +28,9 @@ public:
 	void renderLight(Renderer& renderer) override;
 
 private:
+	bool m_FaceRight;
+
 	std::vector<std::unique_ptr<Entity>> m_Entities;
 	std::vector<std::unique_ptr<Entity>> m_Bullets;
 	std::vector<std::unique_ptr<DamageCounter>> m_DamageText;
-
 };

@@ -9,6 +9,8 @@ void Window::setParams(std::string name, int width, int height)
 	m_Name = name;
 	m_Width = width;
 	m_Height = height;
+	m_InitWidth = width;
+	m_InitHeight = height;
 	m_Camera = Camera();
 	m_WindowResized = false;
 
@@ -26,6 +28,16 @@ void Window::init()
 	}
 
 	m_Window = glfwCreateWindow(m_Width, m_Height, m_Name.c_str(), nullptr, nullptr);
+	// fullscreen
+	//GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+
+	//const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+	//glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+	//glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+	//glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+	//glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+
+	//m_Window = glfwCreateWindow(m_Width, m_Height, m_Name.c_str(), monitor, nullptr);
 
 	if (!m_Window)
 	{
@@ -47,7 +59,7 @@ void Window::init()
 	glfwSetMouseButtonCallback(m_Window, mouse_button_callback);
 	glfwSetCursorPosCallback(m_Window, mouse_callback);
 
-	//glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// vsync
 	glfwSwapInterval(0);

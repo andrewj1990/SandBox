@@ -1,11 +1,13 @@
 #include "player.h"
 
 Player::Player(float x, float y)
-	: Entity(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/Player2.png")), 
-	m_Sword(x + 2, y + 8), m_Gun(x + 2, y + 8)
+	: Entity(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/player_anim.png")), 
+	m_Sword(x + 2, y + 8), m_Gun(x + 10, y + 12)
 {
 	m_Light = Sprite(glm::vec3(0, 0, 0), glm::vec2(256, 256), TextureManager::get("Textures/light2.png"));
 	m_Shield = Sprite(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/Shield.png"));
+	m_Crosshair = Sprite(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/crosshair.png"));
+	m_TexSize = 16;
 
 	init();
 }
@@ -17,10 +19,12 @@ void Player::init()
 	m_CumulativeTime = 0.0f;
 
 	m_MoveSpeed = 280.0f;
-	m_AttackSpeed = 0.0f;
+	m_AttackSpeed = 0.1f;
 	m_AttackFrame = 0.0f;
 
-	m_Sprite.setUV(1, 0, 10, 10);
+	m_Moving = false;
+
+	m_Sprite.setUV(1, 0, m_TexSize, m_TexSize);
 
 	Camera& camera = Window::Instance().getCamera();
 	camera.Position = glm::vec3(0, 0, 0);
@@ -56,37 +60,50 @@ void Player::move(const std::unique_ptr<QTree<Renderable>>& quadTree, float time
 {
 	Window& window = Window::Instance();
 
-	m_Anim += timeElapsed * 10.0f;
+	m_Anim += timeElapsed * 25.0f;
 
 	float dx = 0.0f;
-	float dy = -200.0f * timeElapsed;
+	float dy = 0.0f;//-200.0f * timeElapsed;
+
+	if (!m_Moving)
+	{
+		m_Sprite.setUV(0, 0, m_TexSize, m_TexSize);
+	}
+	else
+	{
+		m_Moving = false;
+	}
 
 	if (window.isKeyPressed(GLFW_KEY_W))
 	{
 		m_Row = 3;
-		m_Sprite.setUV((int)m_Anim % 3, m_Row, 10, 10);
+		m_Sprite.setUV((int)m_Anim % 6, m_Row, m_TexSize, m_TexSize);
 		dy += m_MoveSpeed * timeElapsed;
+		m_Moving = true;
 	}
 
 	if (window.isKeyPressed(GLFW_KEY_A))
 	{
 		m_Row = 2;
-		m_Sprite.setUV((int)m_Anim % 3, m_Row, 10, 10);
+		m_Sprite.setUV((int)m_Anim % 8, m_Row, m_TexSize, m_TexSize);
 		dx -= m_MoveSpeed * timeElapsed;
+		m_Moving = true;
 	}
 
 	if (window.isKeyPressed(GLFW_KEY_S))
 	{
-		m_Row = 0;
-		m_Sprite.setUV((int)m_Anim % 3, m_Row, 10, 10);
+		m_Row = 3;
+		m_Sprite.setUV((int)m_Anim % 6, m_Row, m_TexSize, m_TexSize);
 		dy -= m_MoveSpeed * timeElapsed;
+		m_Moving = true;
 	}
 
 	if (window.isKeyPressed(GLFW_KEY_D))
 	{
 		m_Row = 1;
-		m_Sprite.setUV((int)m_Anim % 3, m_Row, 10, 10);
+		m_Sprite.setUV((int)m_Anim % 8, m_Row, m_TexSize, m_TexSize);
 		dx += m_MoveSpeed * timeElapsed;
+		m_Moving = true;
 	}
 
 	if (playerCollision(dx, 0, quadTree))
@@ -109,14 +126,15 @@ void Player::shoot(float angle, float timeElapsed)
 	m_AttackFrame += timeElapsed;
 
 	// fire projectile
-	if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_1))// && m_AttackFrame > m_AttackSpeed)
+	if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_1) && m_AttackFrame > m_AttackSpeed)
 	{
 		//for (int i = 3; i > 0; i--)
 		//{
 		//	m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle + glm::radians(10.0f * i));
 		//	m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle - glm::radians(10.0f * i));
 		//}
-		m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle);
+		float angleOffset = glm::radians(Utils::random(-2.5f, 2.5f));
+		m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle + angleOffset, m_Moving ? m_MoveSpeed : 0.0f);
 
 		m_AttackFrame = 0.0f;
 	}
@@ -138,6 +156,7 @@ void Player::move(float dx, float dy)
 
 	Camera& camera = Window::Instance().getCamera();
 	camera.moveCamera(dx, dy);
+
 	ResourceManager::getInstance().shader("outline_shader")->setUniform("view", camera.GetViewMatrix());
 	ResourceManager::getInstance().shader("basic_shader")->setUniform("view", camera.GetViewMatrix());
 	ResourceManager::getInstance().shader("lightShadow")->setUniform("view", camera.GetViewMatrix());
@@ -186,6 +205,9 @@ void Player::update(Region& region, const std::unique_ptr<QTree<Renderable>>& qu
 	move(quadTree, timeElapsed);
 	m_Gun.update(region, quadTree, timeElapsed);
 
+	Window& win = Window::Instance();
+	m_Crosshair.setPosition(win.getCamera().Position.x + win.mouseX(), win.getCamera().Position.y + (win.getHeight() - win.mouseY()));
+
 }
 
 void Player::update(float timeElapsed)
@@ -194,9 +216,13 @@ void Player::update(float timeElapsed)
 	float mouseX = Window::Instance().mouseX();
 	float mouseY = Window::Instance().mouseY();
 
-	float dx = mouseX - m_X;
-	float dy = mouseY - m_Y;
-	float angle = -std::atan2f(dy, dx);
+	//float dx = mouseX - m_X;
+	//float dy = mouseY - m_Y;
+	//float angle = -std::atan2f(dy, dx);
+
+	float dx = mouseX - Window::Instance().getWidth() / 2 - 16.0f + 2;
+	float dy = mouseY - Window::Instance().getHeight() / 2 - 16.0f + 8;
+	float angle = -std::atan2f(dy, dx);// -glm::radians(45.0f);
 
 	shoot(angle, timeElapsed);
 }
@@ -252,7 +278,7 @@ void Player::render(Renderer& renderer)
 	transform = glm::rotate(transform, m_Sprite.getAngle(), glm::vec3(0, 0, 1));
 	transform = glm::translate(transform, glm::vec3(-m_Sprite.getPosition().x - m_Sprite.getSize().x / 2.0f, -m_Sprite.getPosition().y - m_Sprite.getSize().y / 2.0f, 0));
 
-	if (m_Row == 3)
+	if (m_Gun.getSprite().getAngle() >= 0)
 	{
 		m_Gun.render(renderer);
 	}
@@ -262,7 +288,7 @@ void Player::render(Renderer& renderer)
 	renderer.pop();
 
 	//m_Sword.render(renderer);
-	if (m_Row != 3)
+	if (m_Gun.getSprite().getAngle() < 0)
 	{
 		m_Gun.render(renderer);
 	}
@@ -279,6 +305,7 @@ void Player::render(Renderer& renderer)
 	//}
 
 	ResourceManager::getInstance().shader("basic_shader")->use();
+	renderer.render(m_Crosshair);
 
 }
 

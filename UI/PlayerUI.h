@@ -16,5 +16,6 @@ private:
 
 	Sprite m_PlayerHealth;
 	Sprite m_Stamina;
+	Sprite m_Crosshair;
 
 };
