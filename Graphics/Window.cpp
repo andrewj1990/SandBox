@@ -59,7 +59,7 @@ void Window::init()
 	glfwSetMouseButtonCallback(m_Window, mouse_button_callback);
 	glfwSetCursorPosCallback(m_Window, mouse_callback);
 
-	glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// vsync
 	glfwSwapInterval(0);
@@ -121,6 +121,16 @@ void Window::moveCamera(const double& xpos, const double& ypos)
 
 	m_Camera.ProcessMouseMovement(xoffset, yoffset);
 
+}
+
+float Window::getMouseWorldPosX() const
+{
+	return m_Camera.Position.x + (mouseX() * Settings::PROJECTION_WIDTH / m_Width);
+}
+
+float Window::getMouseWorldPosY() const
+{
+	return m_Camera.Position.y + ((m_Height - mouseY()) * (Settings::PROJECTION_HEIGHT / m_Height));
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)

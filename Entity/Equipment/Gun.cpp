@@ -21,13 +21,17 @@ void Gun::shoot(float x, float y, float angle, float movespeed)
 	const glm::vec3& pos = glm::vec3(m_Sprite.getPosition().x + m_Sprite.getSize().x - 12, m_Sprite.getPosition().y + m_Sprite.getSize().y - rty, 0);
 	glm::vec4 gunPos = transform * glm::vec4(pos, 1.0f);
 
-	float mx = Window::Instance().mouseX() + Window::Instance().getCamera().getPosition().x;
-	float my = Window::Instance().mouseY() + Window::Instance().getCamera().getPosition().y;
+	//float mx = Window::Instance().mouseX() + Window::Instance().getCamera().getPosition().x;
+	//float my = Window::Instance().mouseY() + Window::Instance().getCamera().getPosition().y;
+	float mx = Window::Instance().getMouseWorldPosX();
+	float my = Window::Instance().getMouseWorldPosY();
+
+	//std::cout << gunPos.x << ", " << gunPos.y << "\n";
 
 	float dx = mx - gunPos.x;
 	float dy = my - gunPos.y;
 
-	float a = -std::atan2f(dy, dx);
+	float a = std::atan2f(dy, dx);
 
 	for (int i = 0; i < 150; i++) m_Entities.push_back(std::unique_ptr<GunParticle>(new GunParticle(gunPos.x, gunPos.y, angle, movespeed)));
 	m_Bullets.push_back(std::unique_ptr<Bullet>(new Bullet(gunPos.x, gunPos.y, angle)));
@@ -47,6 +51,12 @@ void Gun::update(Region& region, const std::unique_ptr<QTree<Renderable>>& quadT
 	float dy = my - Window::Instance().getHeight() / 2 - 16.0f + 8;
 	float angle = -std::atan2f(dy, dx);// -glm::radians(45.0f);
 
+	mx = Window::Instance().getMouseWorldPosX();
+	my = Window::Instance().getMouseWorldPosY();
+	dx = mx - getCenterX();
+	dy = my - getCenterY();
+	angle = std::atan2f(dy, dx);
+
 	if (m_FaceRight && (std::abs(glm::degrees(angle)) >= 90.0f))
 	{
 		//m_Sprite.setUV(0, 1, 10, 3);
@@ -61,6 +71,7 @@ void Gun::update(Region& region, const std::unique_ptr<QTree<Renderable>>& quadT
 		m_Sprite.setUV(0, 0, 16, 3);
 		m_FaceRight = true;
 	}
+
 
 	m_Sprite.setAngle(angle);
 

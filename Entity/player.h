@@ -57,9 +57,11 @@ private:
 
 	bool m_ShieldActive;
 	Sprite m_Shield;
-	Sprite m_Crosshair;
+	//Sprite m_Crosshair;
 	Sword m_Sword;
 	Gun m_Gun;
+
+	BoundingBox m_CollisionBox;
 
 	Sprite m_Light;
 

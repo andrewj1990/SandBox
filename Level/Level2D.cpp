@@ -67,10 +67,13 @@ void Level2D::update(float timeElapsed)
 	m_Light.update(m_Data, timeElapsed);
 
 	// move camera based on player position and mouse
-	float px = m_Player->getCenterX();
-	float py = m_Player->getCenterY();
-	float mx = cam.getPosition().x + Window::Instance().mouseX();
-	float my = cam.getPosition().y + Window::Instance().mouseY();
+	float px = m_Player->getCenterX();// *1280.0f / Window::Instance().getWidth();
+	float py = m_Player->getCenterY();// *720.0f / Window::Instance().getHeight();
+	//float mx = cam.getPosition().x + Window::Instance().mouseX();
+	//float my = cam.getPosition().y + Window::Instance().mouseY();
+
+	float mx = Window::Instance().getMouseWorldPosX();
+	float my = Window::Instance().getMouseWorldPosY();
 
 	float mcw = 500.0f;
 	float mch = 500.0f;
@@ -81,17 +84,21 @@ void Level2D::update(float timeElapsed)
 	//float cy = mch < std::abs(dcy) ? mch : dcy;
 
 	float cx = std::max(-mcw, std::min(dcx, mcw));
-	float cy = -std::max(-mch, std::min(dcy, mch));
+	float cy = std::max(-mch, std::min(dcy, mch));
 
 	cx /= (mcw / 100.0f);
 	cy /= (mcw / 100.0f);
 
 	//float ccx = px - Window::Instance().getWidth() / 2.0f;
 	//float ccy = py - Window::Instance().getHeight() / 2.0f;
-	float ccx = px - Window::Instance().getInitWidth() / 2.0f;
-	float ccy = py - Window::Instance().getInitHeight() / 2.0f;
+	float ccx = px - Settings::PROJECTION_WIDTH / 2.0f;
+	float ccy = py - Settings::PROJECTION_HEIGHT / 2.0f;
 
 	cam.moveCameraPosition(ccx + cx, ccy + cy);
+
+	//std::cout << Window::Instance().getMouseWorldPosX() << ", " << Window::Instance().getMouseWorldPosY() << "\n";
+	//std::cout << Window::Instance().mouseX() << ", " << Window::Instance().mouseY() << "\n";
+	//std::cout << cam.Position.x << ", " << cam.Position.y << "\n";
 	//cam.moveCamera(cx, cy);
 }
 

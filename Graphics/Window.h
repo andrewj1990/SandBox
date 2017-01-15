@@ -5,7 +5,9 @@
 #include <iostream>
 #include <string>
 #include <FreeImage.h>
+
 #include "..\Utils\Camera.h"
+#include "..\Settings.h"
 
 constexpr int MAX_KEYS = 1024;
 constexpr int MAX_BUTTONS = 32;
@@ -34,6 +36,9 @@ public:
 	bool isButtonPressed(unsigned int mousebutton) const;
 	
 	void moveCamera(const double& xpos, const double& ypos);
+
+	float getMouseWorldPosX() const;
+	float getMouseWorldPosY() const;
 
 	inline int getWidth() const { return m_Width; }
 	inline int getHeight() const { return m_Height; }

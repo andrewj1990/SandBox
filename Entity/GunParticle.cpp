@@ -23,5 +23,8 @@ GunParticle::GunParticle(float x, float y, float angle, float movespeed)
 	m_Dx += std::cosf(angle) * movespeed;
 	m_Dy += std::sinf(angle) * movespeed;
 
+	//m_Dx = 0;
+	//m_Dy = 0;
+
 	m_Duration = Utils::random(0.1f, 0.3f);
 }

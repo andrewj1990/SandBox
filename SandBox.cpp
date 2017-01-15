@@ -68,7 +68,10 @@ int main()
 	
 	//glEnable(GL_DEPTH_TEST);
 
-	glm::mat4 projection = glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f, -1.0f, 1.0f);
+	glm::mat4 projection = glm::ortho(0.0f, Settings::PROJECTION_WIDTH, 0.0f, Settings::PROJECTION_HEIGHT, -1.0f, 1.0f);
+	//float ww = Window::Instance().getWidth();
+	//float wh = Window::Instance().getHeight();
+	//glm::mat4 projection = glm::ortho(0.0f, ww, 0.0f, wh, -1.0f, 1.0f);
 	//glm::mat4 projection = glm::ortho(520.0f, 760.0f, 240.0f, 480.0f, -1.0f, 1.0f);
 	ResourceManager::getInstance().shader("basic_shader")->setUniform("projection", projection);
 	ResourceManager::getInstance().shader("lightShadow")->setUniform("projection", projection);

@@ -2,11 +2,11 @@
 
 Player::Player(float x, float y)
 	: Entity(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/player_anim.png")), 
-	m_Sword(x + 2, y + 8), m_Gun(x + 10, y + 12)
+	m_Sword(x + 2, y + 8), m_Gun(x + 10, y + 12), m_CollisionBox(x, y, 10, 10)
 {
 	m_Light = Sprite(glm::vec3(0, 0, 0), glm::vec2(256, 256), TextureManager::get("Textures/light2.png"));
 	m_Shield = Sprite(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/Shield.png"));
-	m_Crosshair = Sprite(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/crosshair.png"));
+	//m_Crosshair = Sprite(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/crosshair.png"));
 	m_TexSize = 16;
 
 	init();
@@ -206,7 +206,7 @@ void Player::update(Region& region, const std::unique_ptr<QTree<Renderable>>& qu
 	m_Gun.update(region, quadTree, timeElapsed);
 
 	Window& win = Window::Instance();
-	m_Crosshair.setPosition(win.getCamera().Position.x + win.mouseX(), win.getCamera().Position.y + (win.getHeight() - win.mouseY()));
+	//m_Crosshair.setPosition(win.getCamera().Position.x + win.mouseX(), win.getCamera().Position.y + (win.getHeight() - win.mouseY()));
 
 }
 
@@ -223,6 +223,12 @@ void Player::update(float timeElapsed)
 	float dx = mouseX - Window::Instance().getWidth() / 2 - 16.0f + 2;
 	float dy = mouseY - Window::Instance().getHeight() / 2 - 16.0f + 8;
 	float angle = -std::atan2f(dy, dx);// -glm::radians(45.0f);
+
+	float mx = Window::Instance().getMouseWorldPosX();
+	float my = Window::Instance().getMouseWorldPosY();
+	dx = mx - getCenterX();
+	dy = my - getCenterY();
+	angle = std::atan2f(dy, dx);
 
 	shoot(angle, timeElapsed);
 }
@@ -305,7 +311,8 @@ void Player::render(Renderer& renderer)
 	//}
 
 	ResourceManager::getInstance().shader("basic_shader")->use();
-	renderer.render(m_Crosshair);
+	//renderer.render(m_Crosshair);
+	renderer.render(m_CollisionBox);
 
 }
 
