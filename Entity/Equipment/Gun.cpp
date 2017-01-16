@@ -215,11 +215,9 @@ void Gun::render(Renderer& renderer)
 	transform = glm::rotate(transform, m_Sprite.getAngle(), glm::vec3(0, 0, 1));
 	transform = glm::translate(transform, glm::vec3(-m_Sprite.getPosition().x - rtx, -m_Sprite.getPosition().y - rty, 0));
 
-	
 	renderer.push(transform);
 	renderer.render(*this);
 	renderer.pop();
-
 
 	for (auto& b : m_Bullets)
 	{

@@ -68,6 +68,7 @@ template<class T>
 inline int QTree<T>::getIndex(const std::shared_ptr<T>& data)
 {
 	int index = -1;
+
 	double vmid = m_Bounds.x + (m_Bounds.width / 2);
 	double hmid = m_Bounds.y + (m_Bounds.height / 2);
 

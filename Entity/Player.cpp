@@ -33,13 +33,19 @@ void Player::init()
 
 bool Player::playerCollision(float dx, float dy, const std::unique_ptr<QTree<BoundingBox>>& quadTree)
 {
-	float x = getX() + dx;
-	float y = getY() + dy;
-	float w = getSprite().getSize().x;
-	float h = getSprite().getSize().y;
+	//float x = getX() + dx;
+	//float y = getY() + dy;
+	//float w = getSprite().getSize().x;
+	//float h = getSprite().getSize().y;
+
+	float x = m_CollisionBox.x + dx;
+	float y = m_CollisionBox.y + dy;
+	float w = m_CollisionBox.width;
+	float h = m_CollisionBox.height;
 
 	std::vector<std::shared_ptr<BoundingBox>> m_CollisionBoxes;
-	quadTree->retrieve(m_CollisionBoxes, BoundingBox(x, y, getSprite().getSize().x, getSprite().getSize().y));
+	//quadTree->retrieve(m_CollisionBoxes, BoundingBox(x, y, getSprite().getSize().x, getSprite().getSize().y));
+	quadTree->retrieve(m_CollisionBoxes, m_CollisionBox);
 
 	for (auto& tile : m_CollisionBoxes)
 	{
@@ -48,6 +54,7 @@ bool Player::playerCollision(float dx, float dy, const std::unique_ptr<QTree<Bou
 		float tw = tile->width;
 		float th = tile->height;
 
+		//if (tile->intersects(m_CollisionBox))
 		if (Utils::quadCollision(x, y, w, h, tx, ty, tw, th))
 		{
 			return true;
@@ -158,7 +165,7 @@ void Player::move(float dx, float dy)
 	m_Shield.addDirection(dx, dy);
 	m_Sword.move(dx, dy);
 	m_Gun.move(dx, dy);
-	m_CollisionBox.x = m_Sprite.getPosition().x;
+	m_CollisionBox.x = getCenterX() - 5;
 	m_CollisionBox.y = m_Sprite.getPosition().y;
 
 	Camera& camera = Window::Instance().getCamera();
@@ -325,7 +332,7 @@ void Player::render(Renderer& renderer)
 
 	ResourceManager::getInstance().shader("basic_shader")->use();
 	//renderer.render(m_Crosshair);
-	renderer.render(m_CollisionBox, TextureManager::get("Textures/collision_box.png"));
+	//renderer.render(m_CollisionBox, TextureManager::get("Textures/collision_box.png"));
 
 }
 
