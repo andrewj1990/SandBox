@@ -21,7 +21,7 @@ void Level::init()
 	for (int x = 0; x < 1280 / 32; x++)
 	{
 		y = (int)m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 720, x * 1.0f, 0);
-		m_Platforms.push_back(Renderable(glm::vec3(x * 32, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Level/Terrain.png")));
+		//m_Platforms.push_back(Renderable(glm::vec3(x * 32, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Level/Terrain.png")));
 	}
 
 	for (int i = 0; i < 11; i++)

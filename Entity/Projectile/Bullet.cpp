@@ -24,6 +24,8 @@ void Bullet::update(float timeElapsed)
 	m_Duration -= timeElapsed;
 
 	m_Sprite.addDirection(m_Dx * timeElapsed, m_Dy * timeElapsed);
+	m_CollisionBox->x = m_Sprite.getPosition().x;
+	m_CollisionBox->y = m_Sprite.getPosition().y;
 
 	if (m_Duration <= 0)
 	{

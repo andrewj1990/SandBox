@@ -6,6 +6,7 @@
 #include "texture.h"
 #include "Renderer.h"
 #include "..\Utils\Utils.h"
+#include "..\Utils\BoundingBox.h"
 
 class Terrain;
 
@@ -15,13 +16,15 @@ protected:
 	Renderable()
 		: m_Position(glm::vec3(0, 0, 0)), m_Size(32, 32), m_Colour(glm::vec4(1, 1, 1, 1)), m_Texture(nullptr)
 	{
+		m_CollisionBox = std::shared_ptr<BoundingBox>(new BoundingBox(0, 0, 32, 32));
 		setUVDefaults();
 	}
 
 public:
 	Renderable(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color = glm::vec4(1, 1, 1, 1))
 		: m_Position(position), m_Size(size), m_Colour(color), m_Texture(nullptr)
-	{	
+	{
+		m_CollisionBox = std::shared_ptr<BoundingBox>(new BoundingBox(position.x, position.y, size.x, size.y));
 		m_Solid = false;
 		setUVDefaults();
 	}
@@ -29,6 +32,7 @@ public:
 	Renderable(const glm::vec3& position, const glm::vec2& size, Texture* texture)
 		: m_Position(position), m_Size(size), m_Colour(glm::vec4(1, 1, 1, 1)), m_Texture(texture)
 	{
+		m_CollisionBox = std::shared_ptr<BoundingBox>(new BoundingBox(position.x, position.y, size.x, size.y));
 		m_Solid = false;
 		setUVDefaults();
 	}
@@ -37,6 +41,8 @@ public:
 	Renderable(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3, const glm::vec4& color = glm::vec4(1, 1, 1, 1))
 		: m_Colour(color), m_Texture(nullptr)
 	{
+		m_CollisionBox = std::shared_ptr<BoundingBox>(new BoundingBox(0, 0, 32, 32));
+
 		m_Solid = false;
 		setPositions(x0, y0, x1, y1, x2, y2, x3, y3);
 		setUVDefaults();
@@ -46,6 +52,7 @@ public:
 	{
 		//m_Texture = nullptr;
 		//delete m_Texture;
+		//delete m_CollisionBox;
 	}
 
 	virtual void init(float x, float y, const glm::vec4& colour, bool solid, bool treeTile) {}
@@ -87,7 +94,7 @@ public:
 		m_Position.x += dx;
 		m_Position.y += dy;
 	}
-	
+
 	// store light position in uv
 	void setLightPosition(float x, float y)
 	{
@@ -113,7 +120,7 @@ public:
 
 		float sx = 0.2f / sw;
 		float sy = 0.3f / sh;
-		
+
 		m_UV[0] = glm::vec4(tx, ty, sx, sy);
 		m_UV[1] = glm::vec4(tx, ty + th, sx, sy);
 		m_UV[2] = glm::vec4(tx + tw, ty + th, sx, sy);
@@ -152,8 +159,9 @@ public:
 	virtual bool isTreeTile() const { return false; }
 	inline const std::vector<glm::vec4>& getUV() const { return m_UV; }
 	inline unsigned int getTID() const { return m_Texture == nullptr ? 0 : m_Texture->getTID(); }
+	std::shared_ptr<BoundingBox> getCollisionBox() { return m_CollisionBox; }
 
-protected:	
+protected:
 
 private:
 	void setUVDefaults()
@@ -195,6 +203,7 @@ protected:
 	bool m_Solid;
 
 	Texture* m_Texture;
+	std::shared_ptr<BoundingBox> m_CollisionBox;
 	//std::shared_ptr<Texture> m_Texture;
 
 };

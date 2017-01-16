@@ -12,7 +12,7 @@ Sword::Sword(float x, float y)
 
 	for (int i = 2; i < 6; i++)
 	{
-		m_HitBoxes.push_back(Entity(glm::vec3(x + i * 5, y + i * 5, 0), glm::vec2(5, 5), glm::vec4(1, 1, 1, 0.5)));
+		//m_HitBoxes.push_back(Entity(glm::vec3(x + i * 5, y + i * 5, 0), glm::vec2(5, 5), glm::vec4(1, 1, 1, 0.5)));
 	}
 }
 

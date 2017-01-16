@@ -26,24 +26,25 @@ int Utils::fastFloor(float v)
 
 bool Utils::quadCollision(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2)
 {
-	if ((x1 > x2 && x1 < x2 + w2 && y1 > y2 && y1 < y2 + h2) ||
-		(x1 + w1 > x2 && x1 + w1 < x2 + w2 && y1 > y2 && y1 < y2 + h2) ||
-		(x1 > x2 && x1 < x2 + w2 && y1 + h1 > y2 && y1 + h1 < y2 + h2) ||
-		(x1 + w1 > x2 && x1 + w1 < x2 + w2 && y1 + h1 > y2 && y1 + h1 < y2 + h2))
-	{
-		return true;
-	}
+	//if ((x1 > x2 && x1 < x2 + w2 && y1 > y2 && y1 < y2 + h2) ||
+	//	(x1 + w1 > x2 && x1 + w1 < x2 + w2 && y1 > y2 && y1 < y2 + h2) ||
+	//	(x1 > x2 && x1 < x2 + w2 && y1 + h1 > y2 && y1 + h1 < y2 + h2) ||
+	//	(x1 + w1 > x2 && x1 + w1 < x2 + w2 && y1 + h1 > y2 && y1 + h1 < y2 + h2))
+	//{
+	//	return true;
+	//}
 
-	if ((x2 > x1 && x2 < x1 + w1 && y2 > y1 && y2 < y1 + h1) ||
-		(x2 + w2 > x1 && x2 + w2 < x1 + w1 && y2 > y1 && y2 < y1 + h1) ||
-		(x2 > x1 && x2 < x1 + w1 && y2 + h2 > y1 && y2 + h2 < y1 + h1) ||
-		(x2 + w2 > x1 && x2 + w2 < x1 + w1 && y2 + h2 > y1 && y2 + h2 < y1 + h1))
-	{
-		return true;
-	}
+	//if ((x2 > x1 && x2 < x1 + w1 && y2 > y1 && y2 < y1 + h1) ||
+	//	(x2 + w2 > x1 && x2 + w2 < x1 + w1 && y2 > y1 && y2 < y1 + h1) ||
+	//	(x2 > x1 && x2 < x1 + w1 && y2 + h2 > y1 && y2 + h2 < y1 + h1) ||
+	//	(x2 + w2 > x1 && x2 + w2 < x1 + w1 && y2 + h2 > y1 && y2 + h2 < y1 + h1))
+	//{
+	//	return true;
+	//}
 
+	//return false;
 
-	return false;
+	return (x1 <= x2 + w2 && x1 + w1 >= x2 && y1 <= y2 + h2 && y1 + h1 >= y2);
 }
 
 // credit goes to blackpawn : http://blackpawn.com/texts/pointinpoly/default.html

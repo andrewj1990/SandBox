@@ -46,13 +46,13 @@ void Region::unload(int x, int y)
 	}
 }
 
-void Region::addTiles(std::unique_ptr<QTree<Renderable>>& quadTree)
+void Region::addTiles(std::unique_ptr<QTree<BoundingBox>>& quadTree)
 {
 	for (auto& tileRegion : m_Regions)
 	{
 		for (auto& tile : tileRegion->getTiles())
 		{
-			quadTree->insert(tile);
+			quadTree->insert(tile->getCollisionBox());
 		}
 	}
 }
@@ -153,9 +153,11 @@ void Region::update(float timeElapsed)
 	// remove the tile
 	if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_2))
 	{
-		float mx = camX + Window::Instance().mouseX();
-		float my = camY + (Window::Instance().getHeight() - Window::Instance().mouseY());
-
+		//float mx = camX + Window::Instance().mouseX();
+		//float my = camY + (Window::Instance().getHeight() - Window::Instance().mouseY());
+		float mx = Window::Instance().getMouseWorldPosX();
+		float my = Window::Instance().getMouseWorldPosY();
+	
 		removeTiles(mx, my, false, true);
 	}
 

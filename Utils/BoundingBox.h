@@ -1,33 +1,24 @@
 #pragma once
 
-#include "..\Graphics\renderable.h"
+class Renderable;
 
-struct BoundingBox
+class BoundingBox
 {
-	int x;
-	int y;
-	int width;
-	int height;
+public:
+	BoundingBox();
 
-	BoundingBox(int x, int y, int width, int height)
-		: x(x), y(y), width(width), height(height)
-	{ }
+	BoundingBox(float x, float y, float width, float height);
 
-	bool contains(const Renderable& data)
-	{
-		bool containsX = (x <= data.getPosition().x && data.getPosition().x <= x + width);
-		bool containsY = (y <= data.getPosition().y && data.getPosition().y <= y + height);
+	~BoundingBox() { }
 
-		return (containsX && containsY);
-	}
+	bool contains(const Renderable& data);
+	bool intersects(const Renderable& box);
+	bool intersects(const BoundingBox& box, bool offset = false);
 
-	bool intersects(const Renderable& box)
-	{
-		return (x <= box.getPosition().x + box.getSize().x && x + width >= box.getPosition().x && y <= box.getPosition().y + box.getSize().y && y + height >= box.getPosition().y);
-	}
+public:
+	float x;
+	float y;
+	float width;
+	float height;
 
-	bool intersects(const BoundingBox& box)
-	{
-		return (x <= box.x + box.width && x + width >= box.x && y <= box.y + box.height && y + height >= box.y);
-	}
 };

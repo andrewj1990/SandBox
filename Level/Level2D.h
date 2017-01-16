@@ -22,18 +22,23 @@ public:
 	void update(float timeElapsed);
 	void render(Renderer& renderer);
 	void renderLights(Renderer& renderer);
+
+	const std::unique_ptr<Player>& getPlayerPtr() { return m_Player; }
+
 	
 private:
 	std::unique_ptr<Player> m_Player;
 
 	Light m_Light;
 	std::unique_ptr<QTree<Renderable>> m_QTree;
+	std::unique_ptr<QTree<BoundingBox>> m_QuadTree;
 	Sprite m_Background;
 
 	std::vector<Light> m_Lights;
 	std::unordered_set<std::string> m_RegionSet;
 
 	Region m_Region;
+	bool m_ShowQuadTree;
 
 	int m_Delay;
 };

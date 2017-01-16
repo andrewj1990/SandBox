@@ -2,7 +2,7 @@
 
 Player::Player(float x, float y)
 	: Entity(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/player_anim.png")), 
-	m_Sword(x + 2, y + 8), m_Gun(x + 10, y + 12), m_CollisionBox(x, y, 10, 10)
+	m_Sword(x + 2, y + 8), m_Gun(x + 10, y + 12), m_CollisionBox(x, y, 10, 22)
 {
 	m_Light = Sprite(glm::vec3(0, 0, 0), glm::vec2(256, 256), TextureManager::get("Textures/light2.png"));
 	m_Shield = Sprite(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/Shield.png"));
@@ -17,6 +17,7 @@ void Player::init()
 	m_State = PlayerState::NORMAL;
 	m_Row = 0;
 	m_CumulativeTime = 0.0f;
+	m_NoClip = false;
 
 	m_MoveSpeed = 280.0f;
 	m_AttackSpeed = 0.1f;
@@ -30,22 +31,22 @@ void Player::init()
 	camera.Position = glm::vec3(0, 0, 0);
 }
 
-bool Player::playerCollision(float dx, float dy, const std::unique_ptr<QTree<Renderable>>& quadTree)
+bool Player::playerCollision(float dx, float dy, const std::unique_ptr<QTree<BoundingBox>>& quadTree)
 {
 	float x = getX() + dx;
 	float y = getY() + dy;
 	float w = getSprite().getSize().x;
 	float h = getSprite().getSize().y;
 
-	std::vector<std::shared_ptr<Renderable>> tiles;
-	quadTree->retrieve(tiles, BoundingBox(x, y, getSprite().getSize().x, getSprite().getSize().y));
+	std::vector<std::shared_ptr<BoundingBox>> m_CollisionBoxes;
+	quadTree->retrieve(m_CollisionBoxes, BoundingBox(x, y, getSprite().getSize().x, getSprite().getSize().y));
 
-	for (auto& tile : tiles)
+	for (auto& tile : m_CollisionBoxes)
 	{
-		float tx = tile->getPosition().x;
-		float ty = tile->getPosition().y;
-		float tw = tile->getSize().x;
-		float th = tile->getSize().y;
+		float tx = tile->x;
+		float ty = tile->y;
+		float tw = tile->width;
+		float th = tile->height;
 
 		if (Utils::quadCollision(x, y, w, h, tx, ty, tw, th))
 		{
@@ -56,7 +57,7 @@ bool Player::playerCollision(float dx, float dy, const std::unique_ptr<QTree<Ren
 	return false;
 }
 
-void Player::move(const std::unique_ptr<QTree<Renderable>>& quadTree, float timeElapsed)
+void Player::move(const std::unique_ptr<QTree<BoundingBox>>& quadTree, float timeElapsed)
 {
 	Window& window = Window::Instance();
 
@@ -106,14 +107,17 @@ void Player::move(const std::unique_ptr<QTree<Renderable>>& quadTree, float time
 		m_Moving = true;
 	}
 
-	if (playerCollision(dx, 0, quadTree))
+	if (!m_NoClip)
 	{
-		dx = 0.0f;
-	}
+		if (playerCollision(dx, 0, quadTree))
+		{
+			dx = 0.0f;
+		}
 
-	if (playerCollision(0, dy, quadTree))
-	{
-		dy = 0.0f;
+		if (playerCollision(0, dy, quadTree))
+		{
+			dy = 0.0f;
+		}
 	}
 
 	move(dx, dy);
@@ -133,6 +137,7 @@ void Player::shoot(float angle, float timeElapsed)
 		//	m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle + glm::radians(10.0f * i));
 		//	m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle - glm::radians(10.0f * i));
 		//}
+
 		float angleOffset = glm::radians(Utils::random(-2.5f, 2.5f));
 		m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle + angleOffset, m_Moving ? m_MoveSpeed : 0.0f);
 
@@ -153,6 +158,8 @@ void Player::move(float dx, float dy)
 	m_Shield.addDirection(dx, dy);
 	m_Sword.move(dx, dy);
 	m_Gun.move(dx, dy);
+	m_CollisionBox.x = m_Sprite.getPosition().x;
+	m_CollisionBox.y = m_Sprite.getPosition().y;
 
 	Camera& camera = Window::Instance().getCamera();
 	camera.moveCamera(dx, dy);
@@ -199,7 +206,7 @@ void Player::dodge(const Terrain& terrain)
 	}
 }
 
-void Player::update(Region& region, const std::unique_ptr<QTree<Renderable>>& quadTree, float timeElapsed)
+void Player::update(Region& region, const std::unique_ptr<QTree<BoundingBox>>& quadTree, float timeElapsed)
 {
 	update(timeElapsed);
 	move(quadTree, timeElapsed);
@@ -207,6 +214,12 @@ void Player::update(Region& region, const std::unique_ptr<QTree<Renderable>>& qu
 
 	Window& win = Window::Instance();
 	//m_Crosshair.setPosition(win.getCamera().Position.x + win.mouseX(), win.getCamera().Position.y + (win.getHeight() - win.mouseY()));
+
+	if (Window::Instance().isKeyPressed(GLFW_KEY_O) && m_AttackFrame > 0.5)
+	{
+		m_NoClip = !m_NoClip;
+		m_AttackFrame = 0;
+	}
 
 }
 
@@ -312,7 +325,7 @@ void Player::render(Renderer& renderer)
 
 	ResourceManager::getInstance().shader("basic_shader")->use();
 	//renderer.render(m_Crosshair);
-	renderer.render(m_CollisionBox);
+	renderer.render(m_CollisionBox, TextureManager::get("Textures/collision_box.png"));
 
 }
 

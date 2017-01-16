@@ -16,6 +16,8 @@ Entity::Entity(const glm::vec3& pos, const glm::vec2& size, Texture* texture)
 	init();
 	m_X = pos.x;
 	m_Y = pos.y;
+
+	m_CollisionBox = std::shared_ptr<BoundingBox>(new BoundingBox(pos.x, pos.y, size.x, size.y));
 }
 
 Entity::Entity(const glm::vec3& pos, const glm::vec2& size, const glm::vec4& colour)
@@ -24,6 +26,8 @@ Entity::Entity(const glm::vec3& pos, const glm::vec2& size, const glm::vec4& col
 	init();
 	m_X = pos.x;
 	m_Y = pos.y;
+
+	m_CollisionBox = std::shared_ptr<BoundingBox>(new BoundingBox(pos.x, pos.y, size.x, size.y));
 }
 
 Entity::~Entity()
@@ -37,6 +41,7 @@ void Entity::init(const glm::vec3& pos, const glm::vec2& size, Texture* texture)
 	init();
 	m_X = pos.x;
 	m_Y = pos.y;
+	m_CollisionBox = std::shared_ptr<BoundingBox>(new BoundingBox(pos.x, pos.y, size.x, size.y));
 }
 
 void Entity::update(float timeElapsed)
@@ -84,6 +89,26 @@ bool Entity::collide(const Renderable& renderable) const
 	float ey = renderable.getPosition().y;
 	float ew = renderable.getSize().x;
 	float eh = renderable.getSize().y;
+
+	if (Utils::quadCollision(x, y, w, h, ex, ey, ew, eh))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool Entity::collide(const BoundingBox& bbox) const
+{
+	float x = getX();
+	float y = getY();
+	float w = getWidth();
+	float h = getHeight();
+
+	float ex = bbox.x;
+	float ey = bbox.y;
+	float ew = bbox.width;
+	float eh = bbox.height;
 
 	if (Utils::quadCollision(x, y, w, h, ex, ey, ew, eh))
 	{

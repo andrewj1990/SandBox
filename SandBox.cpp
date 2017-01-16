@@ -55,10 +55,11 @@ int main()
 	ResourceManager::getInstance().shader("light")->setUniform("screenTexture", 0);
 	ResourceManager::getInstance().shader("light")->setUniform("lightMap", 1);
 
-	Level* level = new Level();
-	PlayerUI playerUI(level->getPlayerPtr());
+	//Level* level = new Level();
 
 	Level2D* level2d = new Level2D();
+	PlayerUI playerUI(level2d->getPlayerPtr());
+
 
 	Renderable background(glm::vec3(0,0,0), glm::vec2(700, 700), glm::vec4(1,1,1,1));
 	std::vector<Renderable> sprites;
@@ -102,8 +103,8 @@ int main()
 		{
 			//Level newLevel;
 			//level = newLevel;
-			delete level;
-			level = new Level();
+			//delete level;
+			//level = new Level();
 
 		}
 
@@ -153,8 +154,9 @@ int main()
 
 		while (accumulator >= dt)
 		{
-			if (LEVEL) level->update(dt);
-			else level2d->update(dt);
+			//if (LEVEL) level->update(dt);
+			//else 
+			level2d->update(dt);
 			playerUI.update(dt);
 			++updates;
 			updateTimer += tick;
@@ -165,8 +167,9 @@ int main()
 
 		fbo->bind();
 		ResourceManager::getInstance().shader("basic_shader")->use();
-		if (LEVEL) level->render(batchrenderer);
-		else level2d->render(batchrenderer);
+		//if (LEVEL) level->render(batchrenderer);
+		//else 
+		level2d->render(batchrenderer);
 
 		batchrenderer.render(label);
 		fbo->unbind();

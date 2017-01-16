@@ -37,6 +37,10 @@ void Tile::init(float x, float y, const glm::vec4& colour, bool solid, bool tree
 {
 	m_Position.x = x;
 	m_Position.y = y;
+	m_CollisionBox->x = x;
+	m_CollisionBox->y = y;
+	m_CollisionBox->width = Settings::TILE_SIZE;
+	m_CollisionBox->height = Settings::TILE_SIZE;
 
 	//m_Colour = colour;
 

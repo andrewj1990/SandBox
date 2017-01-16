@@ -24,6 +24,7 @@ public:
 
 	virtual bool collide(const Entity& entity) const;
 	virtual bool collide(const Renderable& renderable) const;
+	virtual bool collide(const BoundingBox& bbox) const;
 
 	virtual void setDestroy(bool flag) { m_Destroy = flag; }
 	virtual bool shouldDestroy() const { return m_Destroy; }
@@ -42,12 +43,14 @@ public:
 
 	Sprite& getSprite() { return m_Sprite; }
 	const Sprite& getSprite() const { return m_Sprite; }
+	std::shared_ptr<BoundingBox> getCollisionBox() { return m_CollisionBox; }
 
 private:
 	void init();
 
 protected:
 	Sprite m_Sprite;
+	std::shared_ptr<BoundingBox> m_CollisionBox;
 
 	float m_X;
 	float m_Y;

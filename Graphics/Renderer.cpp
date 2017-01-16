@@ -159,7 +159,7 @@ void Renderer::submit(const Renderable& renderable)
 	m_IndexCount += 6;
 }
 
-void Renderer::submit(const BoundingBox& bb)
+void Renderer::submit(const BoundingBox& bb, Texture* texture)
 {
 	if (m_IndexCount + 6 > RENDERER_INDICES_SIZE)
 	{
@@ -180,7 +180,7 @@ void Renderer::submit(const BoundingBox& bb)
 	uv.push_back(glm::vec4(rr, rr, 0, 0));
 	uv.push_back(glm::vec4(rr, ss, 0, 0));
 
-	const unsigned int tid = 0;
+	const unsigned int tid = texture == nullptr ? 0 : texture->getTID();
 
 	unsigned int color = 0;
 
@@ -400,11 +400,11 @@ void Renderer::render(const Renderable& renderable)
 	flush();
 }
 
-void Renderer::render(const BoundingBox& bb)
+void Renderer::render(const BoundingBox& bb, Texture* texture)
 {
 	begin();
 
-	submit(bb);
+	submit(bb, texture);
 
 	end();
 	flush();

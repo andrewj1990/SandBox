@@ -12,6 +12,7 @@
 class Renderable;
 class Entity;
 class BoundingBox;
+class Texture;
 
 struct VertexData
 {
@@ -53,13 +54,13 @@ public:
 	~Renderer();
 	void begin();
 	void submit(const Renderable& renderable);
-	void submit(const BoundingBox& bb);
+	void submit(const BoundingBox& bb, Texture* texture = nullptr);
 	void drawString(const Font& font, const std::string& text, const glm::vec3& position, const glm::vec4& colour);
 	void end();
 	void flush(GLenum srcFactor = GL_SRC_ALPHA, GLenum blendFactor = GL_ONE_MINUS_SRC_ALPHA);
 
 	void render(const Renderable& renderable);
-	void render(const BoundingBox& bb);
+	void render(const BoundingBox& bb, Texture* texture = nullptr);
 	void render(const std::vector<Renderable*> renderables);
 	void render(const std::vector<Renderable>& renderables);
 	void render(const std::vector<std::unique_ptr<Renderable>>& renderables);

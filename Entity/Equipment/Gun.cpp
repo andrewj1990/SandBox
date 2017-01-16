@@ -42,7 +42,7 @@ void Gun::move(float x, float y)
 	m_Sprite.addDirection(x, y);
 }
 
-void Gun::update(Region& region, const std::unique_ptr<QTree<Renderable>>& quadTree, float timeElapsed)
+void Gun::update(Region& region, const std::unique_ptr<QTree<BoundingBox>>& quadTree, float timeElapsed)
 {
 	float mx = Window::Instance().mouseX();
 	float my = Window::Instance().mouseY();
@@ -80,19 +80,20 @@ void Gun::update(Region& region, const std::unique_ptr<QTree<Renderable>>& quadT
 	for (auto& bullet : m_Bullets)
 	{
 		bullet->update(timeElapsed);
-		std::vector<std::shared_ptr<Renderable>> tiles;
+		std::vector<std::shared_ptr<BoundingBox>> collisionBoxes;
 
 		const glm::vec3& pos = bullet->getSprite().getPosition();
 		const glm::vec2& size = bullet->getSprite().getSize();
+		
+		quadTree->retrieve(collisionBoxes, BoundingBox(pos.x, pos.y, size.x, size.y));
+		//quadTree->retrieve(collisionBoxes, *(bullet->getCollisionBox()));
 
-		quadTree->retrieve(tiles, BoundingBox(pos.x, pos.y, size.x, size.y));
-
-		for (auto& tile : tiles)
+		for (auto& tile : collisionBoxes)
 		{
-			float ex = tile->getPosition().x;
-			float ey = tile->getPosition().y;
-			float ew = tile->getSize().x;
-			float eh = tile->getSize().y;
+			float ex = tile->x;
+			float ey = tile->y;
+			float ew = tile->width;
+			float eh = tile->height;
 
 			float sx = pos.x;
 			float sy = pos.y;
@@ -100,7 +101,8 @@ void Gun::update(Region& region, const std::unique_ptr<QTree<Renderable>>& quadT
 			float sh = size.y;
 
 			//if (sx > ex && sx < ex + ew && sy > ey && sy < ey + eh)
-			if (bullet->collide(*tile))
+			//if (bullet->collide(*tile))
+			if (tile->intersects(*(bullet)->getCollisionBox()))
 			{
 				for (int i = 0; i < 25; i++)
 				{
@@ -108,6 +110,7 @@ void Gun::update(Region& region, const std::unique_ptr<QTree<Renderable>>& quadT
 				}
 				//enemy->damage(10);
 				//m_DamageText.push_back(std::unique_ptr<DamageCounter>(new DamageCounter("1", sx, sy)));
+
 
 				region.removeTiles(ex, ey, true, true);
 				bullet->setDestroy(true);
@@ -216,6 +219,13 @@ void Gun::render(Renderer& renderer)
 	renderer.push(transform);
 	renderer.render(*this);
 	renderer.pop();
+
+
+	for (auto& b : m_Bullets)
+	{
+		renderer.render(*(b->getCollisionBox()), TextureManager::get("Textures/collision_box.png"));
+	}
+
 }
 
 void Gun::renderLight(Renderer& renderer)

@@ -8,6 +8,8 @@ Level2D::Level2D()
 	int winW = Window::Instance().getWidth();
 	int winH = Window::Instance().getHeight();
 	m_QTree = std::unique_ptr<QTree<Renderable>>(new QTree<Renderable>(0, BoundingBox(camX, camY, winW, winH)));
+	m_QuadTree = std::unique_ptr<QTree<BoundingBox>>(new QTree<BoundingBox>(0, BoundingBox(camX, camY, winW, winH)));
+	m_ShowQuadTree = false;
 
 	init();
 
@@ -57,14 +59,24 @@ void Level2D::update(float timeElapsed)
 		m_Lights.push_back(Light(m_Light));
 	}
 
+	if (Window::Instance().isKeyPressed(GLFW_KEY_I) && m_Delay > 50)
+	{
+		m_Delay = 0;
+		m_ShowQuadTree = !m_ShowQuadTree;
+	}
+
 	m_QTree = std::unique_ptr<QTree<Renderable>>(new QTree<Renderable>(0, BoundingBox(camX, camY, winW, winH)));
-	m_Region.addTiles(m_QTree);
+	m_QuadTree = std::unique_ptr<QTree<BoundingBox>>(new QTree<BoundingBox>(0, BoundingBox(camX, camY, Settings::PROJECTION_WIDTH, Settings::PROJECTION_HEIGHT)));
+
+	//m_Region.addTiles(m_QTree);
+	m_Region.addTiles(m_QuadTree);
 
 	std::vector<std::shared_ptr<Renderable>> m_Data;
 	m_QTree->retrieve(m_Data, m_Light.getLightRegion());
 
-	m_Player->update(m_Region, m_QTree, timeElapsed);
+	m_Player->update(m_Region, m_QuadTree, timeElapsed);
 	m_Light.update(m_Data, timeElapsed);
+
 
 	// move camera based on player position and mouse
 	float px = m_Player->getCenterX();// *1280.0f / Window::Instance().getWidth();
@@ -108,6 +120,32 @@ void Level2D::render(Renderer& renderer)
 
 	m_Region.render(renderer);
 	m_Player->render(renderer);
+
+	auto mx = Window::Instance().getMouseWorldPosX();
+	auto my = Window::Instance().getMouseWorldPosY();
+	BoundingBox mouseBoundingBox(mx-8, my-8, 16, 16);
+
+	renderer.render(mouseBoundingBox, TextureManager::get("Textures/collision_box.png"));
+	std::vector<std::shared_ptr<BoundingBox>> tiles;
+	m_QuadTree->retrieve(tiles, mouseBoundingBox);
+	for (auto t : tiles)
+	{
+		renderer.render(*t, TextureManager::get("Textures/collision_box.png"));
+	}
+
+
+	// quadtree outline
+	if (m_ShowQuadTree)
+	{
+		std::vector<BoundingBox> boundingBoxes;
+		m_QuadTree->getBounds(boundingBoxes);
+
+		for (auto& bb : boundingBoxes)
+		{
+			renderer.render(bb, TextureManager::get("Textures/bbox.png"));
+		}
+	}
+
 }
 
 void Level2D::renderLights(Renderer& renderer)
