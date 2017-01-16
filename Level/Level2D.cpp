@@ -9,7 +9,7 @@ Level2D::Level2D()
 	int winH = Window::Instance().getHeight();
 	m_QTree = std::unique_ptr<QTree<Renderable>>(new QTree<Renderable>(0, BoundingBox(camX, camY, winW, winH)));
 	m_QuadTree = std::unique_ptr<QTree<BoundingBox>>(new QTree<BoundingBox>(0, BoundingBox(camX, camY, winW, winH)));
-	m_ShowQuadTree = false;
+	//m_ShowQuadTree = false;
 
 	init();
 
@@ -26,12 +26,12 @@ void Level2D::init()
 	{
 		if (m_Region.getSurfacePosition(m_Player->getX(), m_Player->getY()))
 		{
-			m_Player->move(0, Settings::TILE_SIZE);
+			m_Player->move(0, Settings::Instance().TILE_SIZE);
 			m_Region.update(0);
 		}
 		else
 		{
-			m_Player->move(0, Settings::TILE_SIZE);
+			m_Player->move(0, Settings::Instance().TILE_SIZE);
 			m_Region.update(0);
 			break;
 		}
@@ -59,14 +59,14 @@ void Level2D::update(float timeElapsed)
 		m_Lights.push_back(Light(m_Light));
 	}
 
-	if (Window::Instance().isKeyPressed(GLFW_KEY_I) && m_Delay > 50)
-	{
-		m_Delay = 0;
-		m_ShowQuadTree = !m_ShowQuadTree;
-	}
+	//if (Window::Instance().isKeyPressed(GLFW_KEY_I) && m_Delay > 50)
+	//{
+	//	m_Delay = 0;
+	//	Settings::Instance().debugShowQuadTree = !Settings::Instance().debugShowQuadTree;
+	//}
 
 	m_QTree = std::unique_ptr<QTree<Renderable>>(new QTree<Renderable>(0, BoundingBox(camX, camY, winW, winH)));
-	m_QuadTree = std::unique_ptr<QTree<BoundingBox>>(new QTree<BoundingBox>(0, BoundingBox(camX, camY, Settings::PROJECTION_WIDTH, Settings::PROJECTION_HEIGHT)));
+	m_QuadTree = std::unique_ptr<QTree<BoundingBox>>(new QTree<BoundingBox>(0, BoundingBox(camX, camY, Settings::Instance().PROJECTION_WIDTH, Settings::Instance().PROJECTION_HEIGHT)));
 
 	//m_Region.addTiles(m_QTree);
 	m_Region.addTiles(m_QuadTree);
@@ -103,8 +103,8 @@ void Level2D::update(float timeElapsed)
 
 	//float ccx = px - Window::Instance().getWidth() / 2.0f;
 	//float ccy = py - Window::Instance().getHeight() / 2.0f;
-	float ccx = px - Settings::PROJECTION_WIDTH / 2.0f;
-	float ccy = py - Settings::PROJECTION_HEIGHT / 2.0f;
+	float ccx = px - Settings::Instance().PROJECTION_WIDTH / 2.0f;
+	float ccy = py - Settings::Instance().PROJECTION_HEIGHT / 2.0f;
 
 	cam.moveCameraPosition(ccx + cx, ccy + cy);
 
@@ -121,21 +121,23 @@ void Level2D::render(Renderer& renderer)
 	m_Region.render(renderer);
 	m_Player->render(renderer);
 
-	auto mx = Window::Instance().getMouseWorldPosX();
-	auto my = Window::Instance().getMouseWorldPosY();
-	BoundingBox mouseBoundingBox(mx-8, my-8, 16, 16);
-
-	renderer.render(mouseBoundingBox, TextureManager::get("Textures/collision_box.png"));
-	std::vector<std::shared_ptr<BoundingBox>> tiles;
-	m_QuadTree->retrieve(tiles, mouseBoundingBox);
-	for (auto t : tiles)
+	if (Settings::Instance().debugShowCollisionBoxes)
 	{
-		renderer.render(*t, TextureManager::get("Textures/collision_box.png"));
+		auto mx = Window::Instance().getMouseWorldPosX();
+		auto my = Window::Instance().getMouseWorldPosY();
+		BoundingBox mouseBoundingBox(mx-8, my-8, 16, 16);
+
+		renderer.render(mouseBoundingBox, TextureManager::get("Textures/collision_box.png"));
+		std::vector<std::shared_ptr<BoundingBox>> tiles;
+		m_QuadTree->retrieve(tiles, mouseBoundingBox);
+		for (auto t : tiles)
+		{
+			renderer.render(*t, TextureManager::get("Textures/collision_box.png"));
+		}
 	}
 
-
 	// quadtree outline
-	if (m_ShowQuadTree)
+	if (Settings::Instance().debugShowQuadTree)
 	{
 		std::vector<BoundingBox> boundingBoxes;
 		m_QuadTree->getBounds(boundingBoxes);

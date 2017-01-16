@@ -219,9 +219,12 @@ void Gun::render(Renderer& renderer)
 	renderer.render(*this);
 	renderer.pop();
 
-	for (auto& b : m_Bullets)
+	if (Settings::Instance().debugShowCollisionBoxes)
 	{
-		renderer.render(*(b->getCollisionBox()), TextureManager::get("Textures/collision_box.png"));
+		for (auto& b : m_Bullets)
+		{
+			renderer.render(*(b->getCollisionBox()), TextureManager::get("Textures/collision_box.png"));
+		}
 	}
 
 }

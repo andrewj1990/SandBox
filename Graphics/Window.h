@@ -25,7 +25,7 @@ public:
 	void operator=(Window const&) = delete;
 
 	void setParams(std::string name, int width, int height);
-	
+
 	void init();
 
 	void update();
@@ -33,8 +33,10 @@ public:
 	void closeWindow();
 
 	bool isKeyPressed(unsigned int keycode) const;
+	bool isKeyTyped(unsigned int keycode) const;
 	bool isButtonPressed(unsigned int mousebutton) const;
-	
+	bool isButtonClicked(unsigned int mousebutton) const;
+
 	void moveCamera(const double& xpos, const double& ypos);
 
 	float getMouseWorldPosX() const;
@@ -70,7 +72,11 @@ private:
 	float m_MousePosY;
 
 	bool m_Keys[MAX_KEYS];
+	bool m_KeyTyped[MAX_KEYS];
+	bool m_KeyState[MAX_KEYS];
 	bool m_MouseButtons[MAX_BUTTONS];
+	bool m_MouseClicked[MAX_BUTTONS];
+	bool m_MouseState[MAX_BUTTONS];
 
 	GLFWwindow* m_Window;
 	Camera m_Camera;

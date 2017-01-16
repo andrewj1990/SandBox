@@ -7,8 +7,8 @@ Region::Region()
 
 	// number of tiles per sub region
 
-	m_SubRegionWidth = Settings::SUB_REGION_TILE_COUNT * Settings::TILE_SIZE;
-	m_SubRegionHeight = Settings::SUB_REGION_TILE_COUNT * Settings::TILE_SIZE;
+	m_SubRegionWidth = Settings::Instance().SUB_REGION_TILE_COUNT * Settings::Instance().TILE_SIZE;
+	m_SubRegionHeight = Settings::Instance().SUB_REGION_TILE_COUNT * Settings::Instance().TILE_SIZE;
 	m_RegionWidth = Window::Instance().getWidth() + m_SubRegionWidth;
 	m_RegionHeight = Window::Instance().getHeight() + m_SubRegionHeight * 2;
 
@@ -59,13 +59,13 @@ void Region::addTiles(std::unique_ptr<QTree<BoundingBox>>& quadTree)
 
 void Region::removeTiles(float x, float y, bool exactCoord, bool ripple)
 {
-	int ix = (int)x / Settings::TILE_SIZE * Settings::TILE_SIZE;
-	int iy = (int)y / Settings::TILE_SIZE * Settings::TILE_SIZE;
+	int ix = (int)x / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE;
+	int iy = (int)y / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE;
 	//std::cout << "x : " << x << ", " << y << "\n";
 	if (!exactCoord)
 	{
-		ix = x < 0 ? ix - Settings::TILE_SIZE : ix;
-		iy = y < 0 ? iy - Settings::TILE_SIZE : iy;
+		ix = x < 0 ? ix - Settings::Instance().TILE_SIZE : ix;
+		iy = y < 0 ? iy - Settings::Instance().TILE_SIZE : iy;
 	}
 
 	std::string tileGlobalPosition = std::to_string(ix) + "_" + std::to_string(iy);
@@ -95,8 +95,8 @@ void Region::removeTiles(float x, float y, bool exactCoord, bool ripple)
 			{
 				if (i == 0 && j == 0) continue;
 
-				int a = ix + i * Settings::TILE_SIZE;
-				int b = iy + j * Settings::TILE_SIZE;
+				int a = ix + i * Settings::Instance().TILE_SIZE;
+				int b = iy + j * Settings::Instance().TILE_SIZE;
 				reloadTileUV(a, b);
 			}
 		}

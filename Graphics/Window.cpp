@@ -2,6 +2,15 @@
 
 Window::Window()
 {
+	for (int i = 0; i < MAX_KEYS; i++)
+	{
+		m_Keys[i] = m_KeyTyped[i] = m_KeyState[i] = false;
+	}
+
+	for (int i = 0; i < MAX_BUTTONS; i++)
+	{
+		m_MouseButtons[i] = m_MouseClicked[i] = m_MouseState[i] = false;
+	}
 }
 
 void Window::setParams(std::string name, int width, int height)
@@ -78,6 +87,20 @@ void Window::init()
 
 void Window::update()
 {
+	// if key has been pressed and previous state was set to false then set key typed to true
+	for (int i = 0; i < MAX_KEYS; i++)
+	{
+		m_KeyTyped[i] = m_Keys[i] && !m_KeyState[i];
+	}
+
+	for (int i = 0; i < MAX_BUTTONS; i++)
+	{
+		m_MouseClicked[i] = m_MouseButtons[i] && !m_MouseState[i];
+	}
+
+	// update key/button state
+	memcpy(m_KeyState, m_Keys, MAX_KEYS);
+	memcpy(m_MouseState, m_MouseButtons, MAX_BUTTONS);
 
 	glfwSwapBuffers(m_Window);
 	glfwPollEvents();
@@ -98,9 +121,19 @@ bool Window::isKeyPressed(unsigned int keycode) const
 	return m_Keys[keycode];
 }
 
+bool Window::isKeyTyped(unsigned int keycode) const
+{
+	return m_KeyTyped[keycode];
+}
+
 bool Window::isButtonPressed(unsigned int mousebutton) const
 {
 	return m_MouseButtons[mousebutton];
+}
+
+bool Window::isButtonClicked(unsigned int mousebutton) const
+{
+	return m_MouseClicked[mousebutton];
 }
 
 void Window::moveCamera(const double& xpos, const double& ypos)
@@ -125,12 +158,12 @@ void Window::moveCamera(const double& xpos, const double& ypos)
 
 float Window::getMouseWorldPosX() const
 {
-	return m_Camera.Position.x + (mouseX() * Settings::PROJECTION_WIDTH / m_Width);
+	return m_Camera.Position.x + (mouseX() * Settings::Instance().PROJECTION_WIDTH / m_Width);
 }
 
 float Window::getMouseWorldPosY() const
 {
-	return m_Camera.Position.y + ((m_Height - mouseY()) * (Settings::PROJECTION_HEIGHT / m_Height));
+	return m_Camera.Position.y + ((m_Height - mouseY()) * (Settings::Instance().PROJECTION_HEIGHT / m_Height));
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)

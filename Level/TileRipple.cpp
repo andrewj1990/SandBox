@@ -3,7 +3,7 @@
 
 TileRipple::TileRipple(float x, float y)
 {
-	pushQueue(x, y + Settings::TILE_SIZE);	
+	pushQueue(x, y + Settings::Instance().TILE_SIZE);
 	m_RippleChance = Utils::random(0.0f, 50.0f);
 }
 
@@ -19,9 +19,9 @@ bool TileRipple::update(Region& region)
 		if (!region.emptyTile(front.x, front.y))
 		{
 			region.removeTiles(front.x, front.y);
-			pushQueue(front.x, front.y + Settings::TILE_SIZE);
-			pushQueue(front.x + Settings::TILE_SIZE, front.y + Settings::TILE_SIZE);
-			pushQueue(front.x - Settings::TILE_SIZE, front.y + Settings::TILE_SIZE);
+			pushQueue(front.x, front.y + Settings::Instance().TILE_SIZE);
+			pushQueue(front.x + Settings::Instance().TILE_SIZE, front.y + Settings::Instance().TILE_SIZE);
+			pushQueue(front.x - Settings::Instance().TILE_SIZE, front.y + Settings::Instance().TILE_SIZE);
 		}
 	}
 

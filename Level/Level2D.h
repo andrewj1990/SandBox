@@ -38,7 +38,7 @@ private:
 	std::unordered_set<std::string> m_RegionSet;
 
 	Region m_Region;
-	bool m_ShowQuadTree;
+	//bool m_ShowQuadTree;
 
 	int m_Delay;
 };

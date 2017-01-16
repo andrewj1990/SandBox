@@ -16,6 +16,7 @@
 
 #include "Graphics\label.h"
 #include "Utils\timer.h"
+#include "Settings.h"
 
 #define LEVEL 0
 
@@ -69,7 +70,7 @@ int main()
 	
 	//glEnable(GL_DEPTH_TEST);
 
-	glm::mat4 projection = glm::ortho(0.0f, Settings::PROJECTION_WIDTH, 0.0f, Settings::PROJECTION_HEIGHT, -1.0f, 1.0f);
+	glm::mat4 projection = glm::ortho(0.0f, Settings::Instance().PROJECTION_WIDTH, 0.0f, Settings::Instance().PROJECTION_HEIGHT, -1.0f, 1.0f);
 	//float ww = Window::Instance().getWidth();
 	//float wh = Window::Instance().getHeight();
 	//glm::mat4 projection = glm::ortho(0.0f, ww, 0.0f, wh, -1.0f, 1.0f);
@@ -99,6 +100,8 @@ int main()
 	float accumulator = 0.0f;
 	while (!Window::Instance().shouldClose())
 	{
+		Settings::Instance().settingsToggle();
+
 		if (Window::Instance().isKeyPressed(GLFW_KEY_N))
 		{
 			//Level newLevel;

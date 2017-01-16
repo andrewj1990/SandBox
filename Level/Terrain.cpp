@@ -12,8 +12,8 @@ void Terrain::init()
 	m_WidthOffset = 4;
 	m_HeightOffset = 4;
 
-	m_Width = (Window::Instance().getWidth() / Settings::TILE_SIZE) + m_WidthOffset;
-	m_Height = (Window::Instance().getHeight() / Settings::TILE_SIZE) + m_HeightOffset;
+	m_Width = (Window::Instance().getWidth() / Settings::Instance().TILE_SIZE) + m_WidthOffset;
+	m_Height = (Window::Instance().getHeight() / Settings::Instance().TILE_SIZE) + m_HeightOffset;
 
 	for (int y = 0; y < m_Height; y++)
 	{
@@ -30,7 +30,7 @@ void Terrain::addPlayerPtr()
 
 Renderable Terrain::getTile(float x, float y, float height)
 {
-	return Renderable(glm::vec3(x, y, 0), glm::vec2(Settings::TILE_SIZE, Settings::TILE_SIZE), getColor(height));
+	return Renderable(glm::vec3(x, y, 0), glm::vec2(Settings::Instance().TILE_SIZE, Settings::Instance().TILE_SIZE), getColor(height));
 }
 
 glm::vec4 Terrain::getColor(float height)
@@ -126,8 +126,8 @@ bool Terrain::isSolid(float x, float y) const
 	const glm::vec3& camPos = Window::Instance().getCamera().getPosition();
 
 	// offset the position 1 tile forward to take into account the initial offset
-	int xi = (x / Settings::TILE_SIZE) - (int)(camPos.x / Settings::TILE_SIZE) + (m_WidthOffset / 2);
-	int yi = (y / Settings::TILE_SIZE) - (int)(camPos.y / Settings::TILE_SIZE) + (m_HeightOffset / 2);
+	int xi = (x / Settings::Instance().TILE_SIZE) - (int)(camPos.x / Settings::Instance().TILE_SIZE) + (m_WidthOffset / 2);
+	int yi = (y / Settings::Instance().TILE_SIZE) - (int)(camPos.y / Settings::Instance().TILE_SIZE) + (m_HeightOffset / 2);
 	int index = xi + yi * m_Width;
 
 	if (index < 0 || index >= m_Tiles.size()) return true;
@@ -144,8 +144,8 @@ void Terrain::update(float timeElapsed)
 	const glm::vec3& camPos = Window::Instance().getCamera().getPosition();
 
 	// offset the position 1 tile back so we dont have any blank spaces
-	int xp = (int)(camPos.x) / Settings::TILE_SIZE * Settings::TILE_SIZE - (m_WidthOffset / 2) * Settings::TILE_SIZE;
-	int yp = (int)(camPos.y) / Settings::TILE_SIZE * Settings::TILE_SIZE - (m_HeightOffset / 2) * Settings::TILE_SIZE;
+	int xp = (int)(camPos.x) / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE - (m_WidthOffset / 2) * Settings::Instance().TILE_SIZE;
+	int yp = (int)(camPos.y) / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE - (m_HeightOffset / 2) * Settings::Instance().TILE_SIZE;
 
 	m_Objects = std::vector<std::shared_ptr<Entity>>();
 
@@ -153,17 +153,17 @@ void Terrain::update(float timeElapsed)
 	{
 		for (int i = 0; i < m_Width; i++)
 		{
-			float r = std::sqrtf((xp + i * Settings::TILE_SIZE) * (xp + i * Settings::TILE_SIZE) + (yp + j * Settings::TILE_SIZE) * (yp + j * Settings::TILE_SIZE));
+			float r = std::sqrtf((xp + i * Settings::Instance().TILE_SIZE) * (xp + i * Settings::Instance().TILE_SIZE) + (yp + j * Settings::Instance().TILE_SIZE) * (yp + j * Settings::Instance().TILE_SIZE));
 
-			float groundHeight = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, (xp / Settings::TILE_SIZE + i) / m_NoiseSize, (yp / Settings::TILE_SIZE + j) / m_NoiseSize);
+			float groundHeight = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, (xp / Settings::Instance().TILE_SIZE + i) / m_NoiseSize, (yp / Settings::Instance().TILE_SIZE + j) / m_NoiseSize);
 
 			glm::vec4 colour = r < m_FireRadius ? glm::vec4(0.2, 0.1, 0.1, 0) : getUV(groundHeight);
 			bool isSolid = colour.w == 1;
 			colour.w = 1.0f;
 			std::unique_ptr<Renderable>& tile = m_Tiles[i + j * m_Width];
 
-			float isTree = m_Noise.scaledOctaveNoise(1, 0.5, 1, 0, 1, (xp / Settings::TILE_SIZE + i), (yp / Settings::TILE_SIZE + j));
-			tile->init(xp + i * Settings::TILE_SIZE, yp + j * Settings::TILE_SIZE, colour, isSolid, isTree > 0.90);
+			float isTree = m_Noise.scaledOctaveNoise(1, 0.5, 1, 0, 1, (xp / Settings::Instance().TILE_SIZE + i), (yp / Settings::Instance().TILE_SIZE + j));
+			tile->init(xp + i * Settings::Instance().TILE_SIZE, yp + j * Settings::Instance().TILE_SIZE, colour, isSolid, isTree > 0.90);
 			
 			if (tile->isTreeTile())
 			{

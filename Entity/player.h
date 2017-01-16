@@ -71,6 +71,6 @@ private:
 
 	bool m_Moving;
 
-	bool m_NoClip;
+	//bool m_NoClip;
 
 };

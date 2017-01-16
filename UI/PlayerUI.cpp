@@ -11,7 +11,7 @@ PlayerUI::PlayerUI(const std::unique_ptr<Player>& player)
 void PlayerUI::update(float timeElapsed)
 {
 	const glm::vec3& camPos = Window::Instance().getCamera().getPosition();
-	float winHeight = Settings::PROJECTION_HEIGHT;
+	float winHeight = Settings::Instance().PROJECTION_HEIGHT;
 
 	m_PlayerHealth.setPosition(camPos.x + 20, camPos.y + winHeight - 40);
 	m_Stamina.setPosition(camPos.x + 20, m_PlayerHealth.getPosition().y - 30);

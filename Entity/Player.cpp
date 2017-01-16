@@ -17,10 +17,10 @@ void Player::init()
 	m_State = PlayerState::NORMAL;
 	m_Row = 0;
 	m_CumulativeTime = 0.0f;
-	m_NoClip = false;
+	//m_NoClip = false;
 
 	m_MoveSpeed = 280.0f;
-	m_AttackSpeed = 0.1f;
+	m_AttackSpeed = 0.0f;//0.1f;
 	m_AttackFrame = 0.0f;
 
 	m_Moving = false;
@@ -114,7 +114,7 @@ void Player::move(const std::unique_ptr<QTree<BoundingBox>>& quadTree, float tim
 		m_Moving = true;
 	}
 
-	if (!m_NoClip)
+	if (!Settings::Instance().noClip)
 	{
 		if (playerCollision(dx, 0, quadTree))
 		{
@@ -166,7 +166,7 @@ void Player::move(float dx, float dy)
 	m_Sword.move(dx, dy);
 	m_Gun.move(dx, dy);
 	m_CollisionBox.x = getCenterX() - 5;
-	m_CollisionBox.y = m_Sprite.getPosition().y;
+	m_CollisionBox.y = m_Sprite.getPosition().y + 2;
 
 	Camera& camera = Window::Instance().getCamera();
 	camera.moveCamera(dx, dy);
@@ -222,11 +222,11 @@ void Player::update(Region& region, const std::unique_ptr<QTree<BoundingBox>>& q
 	Window& win = Window::Instance();
 	//m_Crosshair.setPosition(win.getCamera().Position.x + win.mouseX(), win.getCamera().Position.y + (win.getHeight() - win.mouseY()));
 
-	if (Window::Instance().isKeyPressed(GLFW_KEY_O) && m_AttackFrame > 0.5)
-	{
-		m_NoClip = !m_NoClip;
-		m_AttackFrame = 0;
-	}
+//	if (Window::Instance().isKeyPressed(GLFW_KEY_O) && m_AttackFrame > 0.5)
+//	{
+//		Settings::Instance().noClip = !Settings::Instance().noClip;
+//		m_AttackFrame = 0;
+//	}
 
 }
 
@@ -332,7 +332,11 @@ void Player::render(Renderer& renderer)
 
 	ResourceManager::getInstance().shader("basic_shader")->use();
 	//renderer.render(m_Crosshair);
-	//renderer.render(m_CollisionBox, TextureManager::get("Textures/collision_box.png"));
+
+	if (Settings::Instance().debugShowCollisionBoxes)
+	{
+		renderer.render(m_CollisionBox, TextureManager::get("Textures/collision_box.png"));
+	}
 
 }
 

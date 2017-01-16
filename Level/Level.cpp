@@ -18,9 +18,9 @@ Level::Level()
 void Level::init()
 {
 	int y = 0;
-	for (int x = 0; x < Settings::PROJECTION_WIDTH / 32; x++)
+	for (int x = 0; x < Settings::Instance().PROJECTION_WIDTH / 32; x++)
 	{
-		y = (int)m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, Settings::PROJECTION_HEIGHT, x * 1.0f, 0);
+		y = (int)m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, Settings::Instance().PROJECTION_HEIGHT, x * 1.0f, 0);
 		//m_Platforms.push_back(Renderable(glm::vec3(x * 32, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Level/Terrain.png")));
 	}
 
