@@ -68,6 +68,7 @@ private:
 	float m_MoveSpeed;
 	float m_AttackSpeed;
 	float m_AttackFrame;
+	float m_CurrentAttackDuration;
 
 	bool m_Moving;
 

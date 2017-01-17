@@ -22,6 +22,7 @@ void Player::init()
 	m_MoveSpeed = 280.0f;
 	m_AttackSpeed = 0.0f;//0.1f;
 	m_AttackFrame = 0.0f;
+	m_CurrentAttackDuration = 0.0f;
 
 	m_Moving = false;
 
@@ -68,10 +69,14 @@ void Player::move(const std::unique_ptr<QTree<BoundingBox>>& quadTree, float tim
 {
 	Window& window = Window::Instance();
 
-	m_Anim += timeElapsed * 25.0f;
+	//float moveSlow = 0.4f;
+	float moveSlow = Utils::lerp(1.0f, 0.3f, m_CurrentAttackDuration / 2.5f);
+	m_Anim += timeElapsed * 25.0f * (m_AttackFrame == 0 ? moveSlow: 1.0f);
 
 	float dx = 0.0f;
 	float dy = 0.0f;//-200.0f * timeElapsed;
+
+	std::cout << moveSlow << "\n";
 
 	if (!m_Moving)
 	{
@@ -86,7 +91,7 @@ void Player::move(const std::unique_ptr<QTree<BoundingBox>>& quadTree, float tim
 	{
 		m_Row = 3;
 		m_Sprite.setUV((int)m_Anim % 6, m_Row, m_TexSize, m_TexSize);
-		dy += m_MoveSpeed * timeElapsed;
+		dy += m_MoveSpeed * timeElapsed * (m_AttackFrame == 0 ? moveSlow : 1.0f);
 		m_Moving = true;
 	}
 
@@ -94,7 +99,7 @@ void Player::move(const std::unique_ptr<QTree<BoundingBox>>& quadTree, float tim
 	{
 		m_Row = 2;
 		m_Sprite.setUV((int)m_Anim % 8, m_Row, m_TexSize, m_TexSize);
-		dx -= m_MoveSpeed * timeElapsed;
+		dx -= m_MoveSpeed * timeElapsed * (m_AttackFrame == 0 ? moveSlow : 1.0f);
 		m_Moving = true;
 	}
 
@@ -102,7 +107,7 @@ void Player::move(const std::unique_ptr<QTree<BoundingBox>>& quadTree, float tim
 	{
 		m_Row = 3;
 		m_Sprite.setUV((int)m_Anim % 6, m_Row, m_TexSize, m_TexSize);
-		dy -= m_MoveSpeed * timeElapsed;
+		dy -= m_MoveSpeed * timeElapsed * (m_AttackFrame == 0 ? moveSlow : 1.0f);
 		m_Moving = true;
 	}
 
@@ -110,7 +115,7 @@ void Player::move(const std::unique_ptr<QTree<BoundingBox>>& quadTree, float tim
 	{
 		m_Row = 1;
 		m_Sprite.setUV((int)m_Anim % 8, m_Row, m_TexSize, m_TexSize);
-		dx += m_MoveSpeed * timeElapsed;
+		dx += m_MoveSpeed * timeElapsed * (m_AttackFrame == 0 ? moveSlow : 1.0f);
 		m_Moving = true;
 	}
 
@@ -145,10 +150,16 @@ void Player::shoot(float angle, float timeElapsed)
 		//	m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle - glm::radians(10.0f * i));
 		//}
 
-		float angleOffset = glm::radians(Utils::random(-2.5f, 2.5f));
+		//float angleOffset = glm::radians(Utils::random(-2.5f, 2.5f));
+		float angleOffset = glm::radians(Utils::random(-m_CurrentAttackDuration, m_CurrentAttackDuration));
 		m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle + angleOffset, m_Moving ? m_MoveSpeed : 0.0f);
 
 		m_AttackFrame = 0.0f;
+		m_CurrentAttackDuration = std::fminf(2.5f, m_CurrentAttackDuration + timeElapsed * 4);
+	}
+	else if (m_CurrentAttackDuration > 0)
+	{
+		m_CurrentAttackDuration = std::fmaxf(0, m_CurrentAttackDuration - timeElapsed * 4);
 	}
 
 	//for (int i = 15; i > 0; i--)

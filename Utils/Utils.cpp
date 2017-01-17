@@ -24,6 +24,16 @@ int Utils::fastFloor(float v)
 	return v >= 0 ? (int)v : (int)v - 1;
 }
 
+// t range [0, 1] -- a < b
+float Utils::lerp(float a, float b, float t)
+{
+	if (t < 0 || t > 1)
+	{
+		std::cout << "lerp error\n";
+	}
+	return a + (b - a) * t;
+}
+
 bool Utils::quadCollision(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2)
 {
 	//if ((x1 > x2 && x1 < x2 + w2 && y1 > y2 && y1 < y2 + h2) ||
