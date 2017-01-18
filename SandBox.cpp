@@ -90,6 +90,12 @@ int main()
 	float lightIntensity = 1.0f;
 	float ambientIntensity = 0.0f;
 
+	float a = 1280.0f;
+	float b = 720.0f;
+	float sa = 0.0f;
+	float sb = 0.0f;
+	float p = 0.0f;
+
 	Timer time;
 	int frames = 0;
 	int updates = 0;
@@ -167,6 +173,31 @@ int main()
 			t += dt;
 			accumulator -= dt;
 		}
+
+		// zoom
+		if (Window::Instance().isKeyPressed(GLFW_KEY_Z))
+		{
+			Window::Instance().getCamera().processZoom(0.005);
+		}
+		if (Window::Instance().isKeyPressed(GLFW_KEY_X))
+		{
+			Window::Instance().getCamera().processZoom(-0.005);
+		}
+
+		p = Window::Instance().getCamera().Zoom / 2.0f;
+		sa = Settings::Instance().PROJECTION_WIDTH * p;
+		a = Settings::Instance().PROJECTION_WIDTH - Settings::Instance().PROJECTION_WIDTH * p;
+		sb = Settings::Instance().PROJECTION_HEIGHT * p;
+		b = Settings::Instance().PROJECTION_HEIGHT - Settings::Instance().PROJECTION_HEIGHT * p;
+		//sa = Window::Instance().mouseX() - Settings::Instance().PROJECTION_WIDTH / 2.0f * p;
+		//sb = Settings::Instance().PROJECTION_HEIGHT - Window::Instance().mouseY() - Settings::Instance().PROJECTION_HEIGHT / 2.0f * p;
+		//a = Window::Instance().mouseX() + Settings::Instance().PROJECTION_WIDTH / 2.0f * p;
+		//b = Settings::Instance().PROJECTION_HEIGHT - Window::Instance().mouseY() + Settings::Instance().PROJECTION_HEIGHT / 2.0f * p;
+
+		projection = glm::ortho(sa, a, sb, b, -1.0f, 1.0f);
+		ResourceManager::getInstance().shader("basic_shader")->setUniform("projection", projection);
+		ResourceManager::getInstance().shader("lightShadow")->setUniform("projection", projection);
+		ResourceManager::getInstance().shader("outline_shader")->setUniform("projection", projection);
 
 		fbo->bind();
 		ResourceManager::getInstance().shader("basic_shader")->use();

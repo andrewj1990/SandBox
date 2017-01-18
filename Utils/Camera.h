@@ -1,3 +1,7 @@
+/*	Credit to Joey de Vries from learnopengl.com
+ *
+*/
+
 #pragma once
 
 // Std. Includes
@@ -23,7 +27,7 @@ constexpr GLfloat YAW = -90.0f;
 constexpr GLfloat PITCH = 0.0f;
 constexpr GLfloat SPEED = 500.0f;
 constexpr GLfloat SENSITIVTY = 0.25f;
-constexpr GLfloat ZOOM = 45.0f;
+constexpr GLfloat ZOOM = 0.0f;
 
 // An abstract camera class that processes input and calculates the corresponding Eular Angles, Vectors and Matrices for use in OpenGL
 class Camera
@@ -71,6 +75,17 @@ public:
 	glm::mat4 GetViewMatrix()
 	{
 		return glm::lookAt(Position, Position + Front, Up);
+	}
+
+	glm::mat4 getProjectionMatrix()
+	{
+		float p  = 0.0f;
+		float sa = 0.0f;
+		float a  = 0.0f;
+		float sb = 0.0f;
+		float b  = 0.0f;
+
+		return glm::ortho(sa, a, sb, b, -1.0f, 1.0f);
 	}
 
 	void moveCamera(float dx, float dy)
@@ -137,6 +152,14 @@ public:
 			Zoom = 1.0f;
 		if (Zoom >= 45.0f)
 			Zoom = 45.0f;
+	}
+
+	void processZoom(float zOffset)
+	{
+		float maxZoom = 0.1f;
+		if (Zoom >= 0.0f && Zoom <= maxZoom) Zoom += zOffset;
+		if (Zoom > maxZoom) Zoom = maxZoom;
+		if (Zoom < 0.0f) Zoom = 0.0f;
 	}
 
 	const glm::vec3& getPosition() const { return Position; }

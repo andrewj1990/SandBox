@@ -158,12 +158,12 @@ void Window::moveCamera(const double& xpos, const double& ypos)
 
 float Window::getMouseWorldPosX() const
 {
-	return m_Camera.Position.x + (mouseX() * Settings::Instance().PROJECTION_WIDTH / m_Width);
+	return m_Camera.Position.x + (mouseX() * (Settings::Instance().PROJECTION_WIDTH * (1.0f - m_Camera.Zoom)) / m_Width) + Settings::Instance().PROJECTION_WIDTH * (m_Camera.Zoom / 2.0f);
 }
 
 float Window::getMouseWorldPosY() const
 {
-	return m_Camera.Position.y + ((m_Height - mouseY()) * (Settings::Instance().PROJECTION_HEIGHT / m_Height));
+	return m_Camera.Position.y + ((m_Height - mouseY()) * ((Settings::Instance().PROJECTION_HEIGHT * (1.0f - m_Camera.Zoom)) / m_Height)) + Settings::Instance().PROJECTION_HEIGHT * (m_Camera.Zoom / 2.0f);
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)

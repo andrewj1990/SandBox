@@ -66,6 +66,7 @@ private:
 	Sprite m_Light;
 
 	float m_MoveSpeed;
+	float m_MoveSlow;
 	float m_AttackSpeed;
 	float m_AttackFrame;
 	float m_CurrentAttackDuration;

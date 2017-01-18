@@ -103,6 +103,8 @@ void Level2D::update(float timeElapsed)
 
 	//float ccx = px - Window::Instance().getWidth() / 2.0f;
 	//float ccy = py - Window::Instance().getHeight() / 2.0f;
+	//float ccx = px - Settings::Instance().PROJECTION_WIDTH / 2.0f;
+	//float ccy = py - Settings::Instance().PROJECTION_HEIGHT / 2.0f;
 	float ccx = px - Settings::Instance().PROJECTION_WIDTH / 2.0f;
 	float ccy = py - Settings::Instance().PROJECTION_HEIGHT / 2.0f;
 
