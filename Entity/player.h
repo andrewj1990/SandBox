@@ -43,6 +43,7 @@ private:
 	void init();
 	bool playerCollision(float dx, float dy, const std::unique_ptr<QTree<BoundingBox>>& quadTree);
 	void move(const std::unique_ptr<QTree<BoundingBox>>& quadTree, float timeElapsed);
+	void aimDownSight(float timeElapsed);
 	void shoot(float angle, float timeElapsed);
 
 private:
@@ -72,6 +73,9 @@ private:
 	float m_CurrentAttackDuration;
 
 	bool m_Moving;
+	bool m_AimDownSight;
+	bool m_AimDownSightTime;
+	bool m_AimDownSightZoom;
 
 	//bool m_NoClip;
 

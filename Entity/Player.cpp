@@ -23,6 +23,9 @@ void Player::init()
 	m_AttackSpeed = 0.0f;//0.1f;
 	m_AttackFrame = 0.0f;
 	m_CurrentAttackDuration = 0.0f;
+	m_AimDownSight = false;
+	m_AimDownSightTime = 0.0f;
+	m_AimDownSightZoom = 0.0f;
 
 	m_Moving = false;
 
@@ -133,6 +136,26 @@ void Player::move(const std::unique_ptr<QTree<BoundingBox>>& quadTree, float tim
 	move(dx, dy);
 
 	m_Light.setPosition(getCenterX() - m_Light.getSize().x / 2, getCenterY() - m_Light.getSize().y / 2);
+}
+
+void Player::aimDownSight(float timeElapsed)
+{
+	m_AimDownSight = Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_2);
+	m_AimDownSightTime += timeElapsed;
+	if (m_AimDownSightTime > 2.0f) m_AimDownSightTime = 2.0f;
+
+	if (m_AimDownSight)
+	{
+		//float zoom = Utils::lerp(0.0f, 0.35f, m_AimDownSightTime / 2.0f);
+		//Window::Instance().getCamera().Zoom = zoom;
+		Window::Instance().getCamera().processZoom(0.05);
+	}
+	else
+	{
+		//float zoom = Utils::lerp(0.35f, 0.0f, m_AimDownSightTime / 2.0f);
+		//Window::Instance().getCamera().Zoom = zoom;
+		Window::Instance().getCamera().processZoom(-0.05);
+	}
 }
 
 void Player::shoot(float angle, float timeElapsed)
@@ -264,6 +287,7 @@ void Player::update(float timeElapsed)
 	dy = my - getCenterY();
 	angle = std::atan2f(dy, dx);
 
+	aimDownSight(timeElapsed);
 	shoot(angle, timeElapsed);
 }
 

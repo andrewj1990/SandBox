@@ -151,7 +151,7 @@ void Region::update(float timeElapsed)
 	float camX = Window::Instance().getCamera().Position.x;
 	float camY = Window::Instance().getCamera().Position.y;
 	// remove the tile
-	if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_2))
+	if (Window::Instance().isKeyPressed(GLFW_KEY_H))
 	{
 		//float mx = camX + Window::Instance().mouseX();
 		//float my = camY + (Window::Instance().getHeight() - Window::Instance().mouseY());

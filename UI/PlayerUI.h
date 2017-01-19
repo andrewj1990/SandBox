@@ -8,7 +8,7 @@ class PlayerUI
 public:
 	PlayerUI(const std::unique_ptr<Player>& player);
 
-	void update(float timeElapsed);
+	void update();
 	void render(Renderer& renderer);
 
 private:

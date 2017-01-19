@@ -8,7 +8,7 @@ PlayerUI::PlayerUI(const std::unique_ptr<Player>& player)
 	m_Crosshair = Sprite(glm::vec3(0, 0, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/crosshair.png"));
 }
 
-void PlayerUI::update(float timeElapsed)
+void PlayerUI::update()
 {
 	const glm::vec3& camPos = Window::Instance().getCamera().getPosition();
 	float winHeight = Settings::Instance().PROJECTION_HEIGHT;

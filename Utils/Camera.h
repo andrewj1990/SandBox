@@ -50,6 +50,9 @@ public:
 	float lastPosY;
 	bool firstRun;
 
+	glm::vec2 OrthoPos;
+	glm::vec2 OrthoSize;
+
 	// Constructor with vectors
 	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), GLfloat yaw = YAW, GLfloat pitch = PITCH)
 		: Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVTY), Zoom(ZOOM), lastPosX(0.0f), lastPosY(0.0f), firstRun(true)
@@ -77,15 +80,14 @@ public:
 		return glm::lookAt(Position, Position + Front, Up);
 	}
 
-	glm::mat4 getProjectionMatrix()
+	glm::mat4 getProjectionMatrix(float posX, float posY, float width, float height)
 	{
-		float p  = 0.0f;
-		float sa = 0.0f;
-		float a  = 0.0f;
-		float sb = 0.0f;
-		float b  = 0.0f;
+		OrthoPos.x = posX;
+		OrthoPos.y = posY;
+		OrthoSize.x = width;
+		OrthoSize.y = height;
 
-		return glm::ortho(sa, a, sb, b, -1.0f, 1.0f);
+		return glm::ortho(posX, posX + width, posY, posY + height, -1.0f, 1.0f);
 	}
 
 	void moveCamera(float dx, float dy)
@@ -156,10 +158,15 @@ public:
 
 	void processZoom(float zOffset)
 	{
-		float maxZoom = 0.1f;
+		float maxZoom = 0.3f;
 		if (Zoom >= 0.0f && Zoom <= maxZoom) Zoom += zOffset;
 		if (Zoom > maxZoom) Zoom = maxZoom;
 		if (Zoom < 0.0f) Zoom = 0.0f;
+	}
+
+	void setZoom(float zoom)
+	{
+		Zoom = zoom;
 	}
 
 	const glm::vec3& getPosition() const { return Position; }

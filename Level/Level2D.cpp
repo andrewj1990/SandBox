@@ -53,10 +53,15 @@ void Level2D::update(float timeElapsed)
 	m_Light.update(m_Player->getCenterX(), m_Player->getCenterY(), timeElapsed);
 
 	m_Delay++;
-	if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_2) && m_Delay > 100)
+	if (Window::Instance().isKeyTyped(GLFW_KEY_J))
 	{
-		m_Delay = 0;
 		m_Lights.push_back(Light(m_Light));
+		std::cout << "key j pressed\n";
+	}
+	if (Window::Instance().isKeyPressed(GLFW_KEY_Y))
+	{
+		m_Lights.push_back(Light(m_Light));
+		std::cout << "key y pressed\n";
 	}
 
 	//if (Window::Instance().isKeyPressed(GLFW_KEY_I) && m_Delay > 50)
@@ -76,7 +81,6 @@ void Level2D::update(float timeElapsed)
 
 	m_Player->update(m_Region, m_QuadTree, timeElapsed);
 	m_Light.update(m_Data, timeElapsed);
-
 
 	// move camera based on player position and mouse
 	float px = m_Player->getCenterX();// *1280.0f / Window::Instance().getWidth();
