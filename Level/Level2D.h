@@ -25,6 +25,8 @@ public:
 
 	const std::unique_ptr<Player>& getPlayerPtr() { return m_Player; }
 
+private:
+	void moveCamera();
 	
 private:
 	std::unique_ptr<Player> m_Player;

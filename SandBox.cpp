@@ -173,15 +173,23 @@ int main()
 		//sb = Settings::Instance().PROJECTION_HEIGHT * p;
 		//b = Settings::Instance().PROJECTION_HEIGHT - Settings::Instance().PROJECTION_HEIGHT * p;
 
+
 		float mx = Window::Instance().mouseX();//Window::Instance().getMouseWorldPosX();//
 		float my = Window::Instance().mouseY();//Window::Instance().getMouseWorldPosY();//
+		//float mx = Window::Instance().getCamera().OrthoPos.x + Window::Instance().mouseX() * (Window::Instance().getCamera().OrthoSize.x / Settings::Instance().PROJECTION_WIDTH);
+		//float my = Window::Instance().getCamera().OrthoPos.y + Window::Instance().mouseY() * (Window::Instance().getCamera().OrthoSize.y / Settings::Instance().PROJECTION_HEIGHT);
+
 
 		//float mx = Window::Instance().getMouseWorldPosX() - Window::Instance().getCamera().Position.x;
 		//float my = Window::Instance().getMouseWorldPosY() + Window::Instance().getCamera().Position.y;
 		sa = mx - Settings::Instance().PROJECTION_WIDTH / 2.0f * (1.0f - Window::Instance().getCamera().Zoom);
-		a = Settings::Instance().PROJECTION_WIDTH * (1.0f - Window::Instance().getCamera().Zoom);
 		sb = Settings::Instance().PROJECTION_HEIGHT - my - Settings::Instance().PROJECTION_HEIGHT / 2.0f * (1.0f - Window::Instance().getCamera().Zoom);
+		a = Settings::Instance().PROJECTION_WIDTH * (1.0f - Window::Instance().getCamera().Zoom);
 		b = Settings::Instance().PROJECTION_HEIGHT * (1.0f - Window::Instance().getCamera().Zoom);
+
+		float test = Window::Instance().mouseX() * (a / Settings::Instance().PROJECTION_WIDTH);
+		//std::cout << Window::Instance().getMouseWorldPosX() << ", " << Window::Instance().getMouseWorldPosY() << "\n";
+		//std::cout << mx << ", " << my << "\n";
 
 		if (sa < 0) sa = 0.0f;
 		if (sb < 0) sb = 0.0f;
