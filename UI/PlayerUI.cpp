@@ -18,7 +18,7 @@ void PlayerUI::update()
 
 	Window& win = Window::Instance();
 	//m_Crosshair.setPosition(win.getCamera().Position.x + win.mouseX(), win.getCamera().Position.y + (win.getHeight() - win.mouseY()));
-	m_Crosshair.setPosition(win.getMouseWorldPosX() - m_Crosshair.getSize().x / 2.0f, win.getMouseWorldPosY() - m_Crosshair.getSize().y / 2.0f);
+	m_Crosshair.setPosition(win.getMouseWorldPosX(false) - m_Crosshair.getSize().x / 2.0f, win.getMouseWorldPosY(false) - m_Crosshair.getSize().y / 2.0f);
 }
 
 void PlayerUI::render(Renderer& renderer)

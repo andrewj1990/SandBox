@@ -156,24 +156,28 @@ void Window::moveCamera(const double& xpos, const double& ypos)
 
 }
 
-float Window::getMouseWorldPosX() const
+float Window::getMouseWorldPosX(bool zoom) const
 {
-	//if (m_Camera.Zoom > 0)
-	//{
-	//}
+	if (zoom)
+	{
+		return m_Camera.Position.x + (mouseX() * (m_Camera.OrthoSize.x / m_Width)) + m_Camera.OrthoPos.x;
+	}
+	return m_Camera.Position.x + (mouseX() * Settings::Instance().PROJECTION_WIDTH / m_Width);
+	
 
-	return m_Camera.Position.x + (mouseX() * (m_Camera.OrthoSize.x / m_Width)) + m_Camera.OrthoPos.x;
-	//return m_Camera.Position.x + (mouseX() * (Settings::Instance().PROJECTION_WIDTH * (1.0f - m_Camera.Zoom)) / m_Width) + Settings::Instance().PROJECTION_WIDTH * (m_Camera.Zoom / 2.0f);
 	//return m_Camera.Position.x + (mouseX() * Settings::Instance().PROJECTION_WIDTH / m_Width);
+	//return m_Camera.Position.x + (mouseX() * (Settings::Instance().PROJECTION_WIDTH * (1.0f - m_Camera.Zoom)) / m_Width) + Settings::Instance().PROJECTION_WIDTH * (m_Camera.Zoom / 2.0f);
 	//return m_Camera.Position.x + (mouseX() * (m_Camera.OrthoSize.x / m_Width));
 }
 
-float Window::getMouseWorldPosY() const
+float Window::getMouseWorldPosY(bool zoom) const
 {
-	//if (m_Camera.Zoom > 0)
-	//{
-	//}
-	return m_Camera.Position.y + ((m_Height - mouseY()) * (m_Camera.OrthoSize.y / m_Height)) + m_Camera.OrthoPos.y;
+	if (zoom)
+	{
+		return m_Camera.Position.y + ((m_Height - mouseY()) * (m_Camera.OrthoSize.y / m_Height)) + m_Camera.OrthoPos.y;
+	}
+	return m_Camera.Position.y + ((m_Height - mouseY()) * (Settings::Instance().PROJECTION_HEIGHT / m_Height));
+
 	//return m_Camera.Position.y + ((m_Height - mouseY()) * ((Settings::Instance().PROJECTION_HEIGHT * (1.0f - m_Camera.Zoom)) / m_Height)) + Settings::Instance().PROJECTION_HEIGHT * (m_Camera.Zoom / 2.0f);
 	//return m_Camera.Position.y + ((m_Height - mouseY()) * (Settings::Instance().PROJECTION_HEIGHT / m_Height));
 }

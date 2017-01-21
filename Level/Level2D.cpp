@@ -42,7 +42,13 @@ void Level2D::update(float timeElapsed)
 {
 	Camera& cam = Window::Instance().getCamera();
 
-	m_Background.setPosition(cam.Position.x, cam.Position.y);
+	float px = m_Player->getCenterX();
+	float py = m_Player->getCenterY();
+	float ccx = px - Settings::Instance().PROJECTION_WIDTH / 2.0f;
+	float ccy = py - Settings::Instance().PROJECTION_HEIGHT / 2.0f;
+	m_Background.setPosition(ccx + m_Player->getCameraOffsetX(), ccy + m_Player->getCameraOffsetY());
+
+	//m_Background.setPosition(cam.Position.x, cam.Position.y);
 	m_Region.update(timeElapsed);
 	//m_Player->update(timeElapsed);
 
@@ -82,8 +88,27 @@ void Level2D::update(float timeElapsed)
 	m_Player->update(m_Region, m_QuadTree, timeElapsed);
 	m_Light.update(m_Data, timeElapsed);
 
-	moveCamera();
+	//if (m_Player->isADS())
+	//{
+	//	float mx1 = Window::Instance().getMouseWorldPosX();
+	//	float mx2 = Window::Instance().getMouseWorldPosX(false);
+	//	float my1 = Window::Instance().getMouseWorldPosY();
+	//	float my2 = Window::Instance().getMouseWorldPosY(false);
 
+	//	float dx = mx2 - mx1;
+	//	float dy = my2 - my1;
+
+	//	std::cout << mx1 << ", " << my2 << " | " << mx2 << ", " << my2 << " | " << dx << ", " << dy  << "\n";
+	//	float px = m_Player->getCenterX();
+	//	float py = m_Player->getCenterY();
+	//	float ccx = px - Settings::Instance().PROJECTION_WIDTH / 2.0f;
+	//	float ccy = py - Settings::Instance().PROJECTION_HEIGHT / 2.0f;
+	//	Window::Instance().getCamera().moveCameraPosition(ccx + dx, ccy + dy);
+	//}
+	//else
+	//{
+	//	//moveCamera();
+	//}
 }
 
 void Level2D::render(Renderer& renderer)

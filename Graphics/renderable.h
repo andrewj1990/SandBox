@@ -111,7 +111,7 @@ public:
 		float sw = (float)m_Texture->getWidth();
 		float sh = (float)m_Texture->getHeight();
 
-		float inverseRow = (sh / height) - y - 1;
+		float inverseRow = (sh / height) - y - 1.0f;
 
 		float tx = (x * width) / sw;
 		float ty = (inverseRow * height) / sh;

@@ -21,6 +21,7 @@ public:
 
 	bool debugShowQuadTree = false;
 	bool debugShowCollisionBoxes = false;
+	bool ADS = true;
 
 	bool noClip = false;
 

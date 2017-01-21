@@ -26,6 +26,8 @@ void Player::init()
 	m_AimDownSight = false;
 	m_AimDownSightTime = 0.0f;
 	m_AimDownSightZoom = 0.0f;
+	m_CameraOffsetX = 0.0f;
+	m_CameraOffsetY = 0.0f;
 
 	m_Moving = false;
 
@@ -141,20 +143,34 @@ void Player::move(const std::unique_ptr<QTree<BoundingBox>>& quadTree, float tim
 void Player::aimDownSight(float timeElapsed)
 {
 	m_AimDownSight = Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_2);
-	m_AimDownSightTime += timeElapsed;
-	if (m_AimDownSightTime > 2.0f) m_AimDownSightTime = 2.0f;
-
-	if (m_AimDownSight)
+	
+	float ADSTotalTime = 0.25f;
+	if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_2))
 	{
-		//float zoom = Utils::lerp(0.0f, 0.35f, m_AimDownSightTime / 2.0f);
-		//Window::Instance().getCamera().Zoom = zoom;
-		Window::Instance().getCamera().processZoom(0.05);
+		m_AimDownSightTime = std::fminf(ADSTotalTime, m_AimDownSightTime + timeElapsed);
 	}
 	else
 	{
-		//float zoom = Utils::lerp(0.35f, 0.0f, m_AimDownSightTime / 2.0f);
-		//Window::Instance().getCamera().Zoom = zoom;
-		Window::Instance().getCamera().processZoom(-0.05);
+		m_AimDownSightTime = std::fmaxf(0.0f, m_AimDownSightTime - timeElapsed);
+	}
+
+	if (Settings::Instance().ADS)
+	{
+		float zoom = Utils::lerp(0.0f, 0.35f, m_AimDownSightTime / ADSTotalTime);
+		Window::Instance().getCamera().Zoom = zoom;
+
+		if (m_AimDownSight)
+		{
+			//float zoom = Utils::lerp(0.0f, 0.35f, m_AimDownSightTime / 2.0f);
+			//Window::Instance().getCamera().Zoom = zoom;
+			//Window::Instance().getCamera().processZoom(0.05);
+		}
+		else
+		{
+			//float zoom = Utils::lerp(0.35f, 0.0f, m_AimDownSightTime / 2.0f);
+			//Window::Instance().getCamera().Zoom = zoom;
+			//Window::Instance().getCamera().processZoom(-0.05);
+		}
 	}
 }
 
@@ -194,6 +210,57 @@ void Player::shoot(float angle, float timeElapsed)
 	//	m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle - glm::radians(10.0f * i));
 	//}
 	//m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle);
+}
+
+void Player::moveCamera()
+{
+	// move camera based on player position and mouse
+	float px = getCenterX();// *1280.0f / Window::Instance().getWidth();
+	float py = getCenterY();// *720.0f / Window::Instance().getHeight();
+
+	float mx = Window::Instance().getMouseWorldPosX();
+	float my = Window::Instance().getMouseWorldPosY();
+
+	float mcw = 500.0f;
+	float mch = 500.0f;
+	float dcx = mx - px;
+	float dcy = my - py;
+
+	float cx = std::max(-mcw, std::min(dcx, mcw));
+	float cy = std::max(-mch, std::min(dcy, mch));
+
+	cx /= (mcw / 150.0f);
+	cy /= (mcw / 150.0f);
+
+	float ccx = px - Settings::Instance().PROJECTION_WIDTH / 2.0f;
+	float ccy = py - Settings::Instance().PROJECTION_HEIGHT / 2.0f;
+
+	Window::Instance().getCamera().Offset = glm::vec2(cx, cy);
+
+	//Window::Instance().getCamera().moveCameraPosition(ccx + cx, ccy + cy);
+
+	float mx1 = Window::Instance().getMouseWorldPosX();
+	float mx2 = Window::Instance().getMouseWorldPosX(false);
+	float my1 = Window::Instance().getMouseWorldPosY();
+	float my2 = Window::Instance().getMouseWorldPosY(false);
+
+	float dx = mx2 - mx1;
+	float dy = my2 - my1;
+
+	m_CameraOffsetX = cx;
+	m_CameraOffsetY = cy;
+
+	//std::cout << mx1 << ", " << my1 << " | " << mx2 << ", " << my2 << " | " << dx << ", " << dy << "\n";
+	if (Window::Instance().getCamera().Zoom > 0)
+	{
+		//dx *= Window::Instance().getCamera().Zoom;
+		//dy *= Window::Instance().getCamera().Zoom;
+		Window::Instance().getCamera().moveCameraPosition(ccx + cx + dx, ccy + cy + dy);
+	}
+	else
+	{
+		Window::Instance().getCamera().moveCameraPosition(ccx + cx, ccy + cy);
+	}
 }
 
 void Player::move(float dx, float dy)
@@ -257,6 +324,9 @@ void Player::update(Region& region, const std::unique_ptr<QTree<BoundingBox>>& q
 	m_Gun.update(region, quadTree, timeElapsed);
 
 	Window& win = Window::Instance();
+
+	moveCamera();
+
 	//m_Crosshair.setPosition(win.getCamera().Position.x + win.mouseX(), win.getCamera().Position.y + (win.getHeight() - win.mouseY()));
 
 //	if (Window::Instance().isKeyPressed(GLFW_KEY_O) && m_AttackFrame > 0.5)

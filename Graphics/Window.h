@@ -39,8 +39,8 @@ public:
 
 	void moveCamera(const double& xpos, const double& ypos);
 
-	float getMouseWorldPosX() const;
-	float getMouseWorldPosY() const;
+	float getMouseWorldPosX(bool zoom = true) const;
+	float getMouseWorldPosY(bool zoom = true) const;
 
 	inline int getWidth() const { return m_Width; }
 	inline int getHeight() const { return m_Height; }

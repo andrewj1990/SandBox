@@ -39,12 +39,17 @@ public:
 
 	void renderLight(Renderer& renderer) override;
 
+	bool isADS() const { return m_AimDownSight; }
+	float getCameraOffsetX() const { return m_CameraOffsetX; }
+	float getCameraOffsetY() const { return m_CameraOffsetY; }
+
 private:
 	void init();
 	bool playerCollision(float dx, float dy, const std::unique_ptr<QTree<BoundingBox>>& quadTree);
 	void move(const std::unique_ptr<QTree<BoundingBox>>& quadTree, float timeElapsed);
 	void aimDownSight(float timeElapsed);
 	void shoot(float angle, float timeElapsed);
+	void moveCamera();
 
 private:
 	PlayerState m_State;
@@ -74,8 +79,11 @@ private:
 
 	bool m_Moving;
 	bool m_AimDownSight;
-	bool m_AimDownSightTime;
+	float m_AimDownSightTime;
 	bool m_AimDownSightZoom;
+
+	float m_CameraOffsetX;
+	float m_CameraOffsetY;
 
 	//bool m_NoClip;
 

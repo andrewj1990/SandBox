@@ -115,11 +115,11 @@ void TileRegion::setTileUV(std::shared_ptr<Renderable>& tile, const std::unorder
 	bool right = calculateTile(rightTileX, tile->getPosition().y, region_tiles);
 	bool left = calculateTile(leftTileX, tile->getPosition().y, region_tiles);
 
-	int sum = 0;
-	if (above) sum += 1;
-	if (left)  sum += 2;
-	if (below) sum += 4;
-	if (right) sum += 8;
+	float sum = 0;
+	if (above) sum += 1.0f;
+	if (left)  sum += 2.0f;
+	if (below) sum += 4.0f;
+	if (right) sum += 8.0f;
 	//if (topRight) sum += 2;
 	//if (botRight) sum += 8;
 	//if (botLeft) sum += 32;

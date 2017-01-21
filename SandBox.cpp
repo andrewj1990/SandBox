@@ -158,45 +158,38 @@ int main()
 		}
 
 		// zoom
-		if (Window::Instance().isKeyPressed(GLFW_KEY_Z))
+		if (Window::Instance().isKeyTyped(GLFW_KEY_Z))
 		{
 			Window::Instance().getCamera().processZoom(0.005);
 		}
-		if (Window::Instance().isKeyPressed(GLFW_KEY_X))
+		if (Window::Instance().isKeyTyped(GLFW_KEY_X))
 		{
 			Window::Instance().getCamera().processZoom(-0.005);
 		}
 
-		zoom = Window::Instance().getCamera().Zoom / 2.0f;
-		//sa = Settings::Instance().PROJECTION_WIDTH * p;
-		//a = Settings::Instance().PROJECTION_WIDTH - Settings::Instance().PROJECTION_WIDTH * p;
-		//sb = Settings::Instance().PROJECTION_HEIGHT * p;
-		//b = Settings::Instance().PROJECTION_HEIGHT - Settings::Instance().PROJECTION_HEIGHT * p;
+		//zoom = Window::Instance().getCamera().Zoom / 2.0f;
+		//sa = Settings::Instance().PROJECTION_WIDTH * zoom;
+		//a = Settings::Instance().PROJECTION_WIDTH - Settings::Instance().PROJECTION_WIDTH * zoom;
+		//sb = Settings::Instance().PROJECTION_HEIGHT * zoom;
+		//b = Settings::Instance().PROJECTION_HEIGHT - Settings::Instance().PROJECTION_HEIGHT * zoom;
 
 
-		float mx = Window::Instance().mouseX();//Window::Instance().getMouseWorldPosX();//
-		float my = Window::Instance().mouseY();//Window::Instance().getMouseWorldPosY();//
-		//float mx = Window::Instance().getCamera().OrthoPos.x + Window::Instance().mouseX() * (Window::Instance().getCamera().OrthoSize.x / Settings::Instance().PROJECTION_WIDTH);
-		//float my = Window::Instance().getCamera().OrthoPos.y + Window::Instance().mouseY() * (Window::Instance().getCamera().OrthoSize.y / Settings::Instance().PROJECTION_HEIGHT);
+		float mx = Window::Instance().mouseX();
+		float my = Window::Instance().mouseY();
 
-
-		//float mx = Window::Instance().getMouseWorldPosX() - Window::Instance().getCamera().Position.x;
-		//float my = Window::Instance().getMouseWorldPosY() + Window::Instance().getCamera().Position.y;
 		sa = mx - Settings::Instance().PROJECTION_WIDTH / 2.0f * (1.0f - Window::Instance().getCamera().Zoom);
 		sb = Settings::Instance().PROJECTION_HEIGHT - my - Settings::Instance().PROJECTION_HEIGHT / 2.0f * (1.0f - Window::Instance().getCamera().Zoom);
 		a = Settings::Instance().PROJECTION_WIDTH * (1.0f - Window::Instance().getCamera().Zoom);
 		b = Settings::Instance().PROJECTION_HEIGHT * (1.0f - Window::Instance().getCamera().Zoom);
 
-		float test = Window::Instance().mouseX() * (a / Settings::Instance().PROJECTION_WIDTH);
-		//std::cout << Window::Instance().getMouseWorldPosX() << ", " << Window::Instance().getMouseWorldPosY() << "\n";
-		//std::cout << mx << ", " << my << "\n";
+		////std::cout << Window::Instance().getMouseWorldPosX() << ", " << Window::Instance().getMouseWorldPosY() << " | ";
+		////std::cout << Window::Instance().getMouseWorldPosX(false) << ", " << Window::Instance().getMouseWorldPosY(false) << "\n";
 
 		if (sa < 0) sa = 0.0f;
 		if (sb < 0) sb = 0.0f;
 		if (sa + a > Settings::Instance().PROJECTION_WIDTH) sa = Settings::Instance().PROJECTION_WIDTH - a;
 		if (sb + b > Settings::Instance().PROJECTION_HEIGHT) sb = Settings::Instance().PROJECTION_HEIGHT - b;
 
-		//projection = glm::ortho(sa, sa + a, sb, sb + b, -1.0f, 1.0f);
 		projection = Window::Instance().getCamera().getProjectionMatrix(sa, sb, a, b);
 		ResourceManager::getInstance().shader("basic_shader")->setUniform("projection", projection);
 		ResourceManager::getInstance().shader("lightShadow")->setUniform("projection", projection);
@@ -216,7 +209,7 @@ int main()
 			//if (LEVEL) level->update(dt);
 			//else 
 			level2d->update(dt);
-			//playerUI.update(dt);
+			//playerUI.update();
 			++updates;
 			updateTimer += tick;
 
@@ -250,7 +243,8 @@ int main()
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		glBindVertexArray(0);
 
-		projection = Window::Instance().getCamera().getProjectionMatrix(0.0f, 0.0f, Settings::Instance().PROJECTION_WIDTH, Settings::Instance().PROJECTION_HEIGHT);
+		//projection = Window::Instance().getCamera().getProjectionMatrix(0.0f, 0.0f, Settings::Instance().PROJECTION_WIDTH, Settings::Instance().PROJECTION_HEIGHT);
+		projection = glm::ortho(0.0f, Settings::Instance().PROJECTION_WIDTH, 0.0f, Settings::Instance().PROJECTION_HEIGHT, -1.0f, 1.0f);
 		ResourceManager::getInstance().shader("basic_shader")->setUniform("projection", projection);
 		ResourceManager::getInstance().shader("basic_shader")->use();
 		playerUI.update();

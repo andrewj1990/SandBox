@@ -52,6 +52,7 @@ public:
 
 	glm::vec2 OrthoPos;
 	glm::vec2 OrthoSize;
+	glm::vec2 Offset;
 
 	// Constructor with vectors
 	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), GLfloat yaw = YAW, GLfloat pitch = PITCH)
@@ -61,6 +62,9 @@ public:
 		WorldUp = up;
 		Yaw = yaw;
 		Pitch = pitch;
+		OrthoPos = glm::vec2(0.0f, 0.0f);
+		OrthoSize = glm::vec2(0.0f, 0.0f);
+		Offset = glm::vec2(0.0f, 0.0f);
 		updateCameraVectors();
 	}
 	// Constructor with scalar values
@@ -71,6 +75,9 @@ public:
 		WorldUp = glm::vec3(upX, upY, upZ);
 		Yaw = yaw;
 		Pitch = pitch;
+		OrthoPos = glm::vec2(0.0f, 0.0f);
+		OrthoSize = glm::vec2(0.0f, 0.0f);
+		Offset = glm::vec2(0.0f, 0.0f);
 		updateCameraVectors();
 	}
 
@@ -82,10 +89,8 @@ public:
 
 	glm::mat4 getProjectionMatrix(float posX, float posY, float width, float height)
 	{
-		OrthoPos.x = posX;
-		OrthoPos.y = posY;
-		OrthoSize.x = width;
-		OrthoSize.y = height;
+		OrthoPos = glm::vec2(posX, posY);
+		OrthoSize = glm::vec2(width, height);
 
 		return glm::ortho(posX, posX + width, posY, posY + height, -1.0f, 1.0f);
 	}
@@ -97,7 +102,7 @@ public:
 
 	void moveCameraPosition(float x, float y)
 	{
-		Position = glm::vec3(x, y, 0);
+		Position = glm::vec3(x, y, 0.0f);
 	}
 
 	void moveCamera(CameraMovement direction)
