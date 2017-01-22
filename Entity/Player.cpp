@@ -144,7 +144,7 @@ void Player::aimDownSight(float timeElapsed)
 {
 	m_AimDownSight = Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_2);
 	
-	float ADSTotalTime = 0.25f;
+	float ADSTotalTime = 0.1f;
 	if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_2))
 	{
 		m_AimDownSightTime = std::fminf(ADSTotalTime, m_AimDownSightTime + timeElapsed);
@@ -156,7 +156,7 @@ void Player::aimDownSight(float timeElapsed)
 
 	if (Settings::Instance().ADS)
 	{
-		float zoom = Utils::lerp(0.0f, 0.35f, m_AimDownSightTime / ADSTotalTime);
+		float zoom = Utils::lerp(0.0f, 0.20f, m_AimDownSightTime / ADSTotalTime);
 		Window::Instance().getCamera().Zoom = zoom;
 
 		if (m_AimDownSight)
@@ -250,17 +250,18 @@ void Player::moveCamera()
 	m_CameraOffsetX = cx;
 	m_CameraOffsetY = cy;
 
-	//std::cout << mx1 << ", " << my1 << " | " << mx2 << ", " << my2 << " | " << dx << ", " << dy << "\n";
-	if (Window::Instance().getCamera().Zoom > 0)
-	{
-		//dx *= Window::Instance().getCamera().Zoom;
-		//dy *= Window::Instance().getCamera().Zoom;
-		Window::Instance().getCamera().moveCameraPosition(ccx + cx + dx, ccy + cy + dy);
-	}
-	else
-	{
-		Window::Instance().getCamera().moveCameraPosition(ccx + cx, ccy + cy);
-	}
+	Window::Instance().getCamera().moveCameraPosition(ccx + cx + dx, ccy + cy + dy);
+//	std::cout << mx1 << ", " << my1 << " | " << mx2 << ", " << my2 << " | " << dx << ", " << dy << "\n";
+	//if (Window::Instance().getCamera().Zoom > 0)
+	//{
+	//	//dx *= Window::Instance().getCamera().Zoom;
+	//	//dy *= Window::Instance().getCamera().Zoom;
+	//	Window::Instance().getCamera().moveCameraPosition(ccx + cx + dx, ccy + cy + dy);
+	//}
+	//else
+	//{
+	//	Window::Instance().getCamera().moveCameraPosition(ccx + cx, ccy + cy);
+	//}
 }
 
 void Player::move(float dx, float dy)

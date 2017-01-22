@@ -42,6 +42,7 @@ int main()
 	ResourceManager::getInstance().addShader("screen", "Shaders/screen.vs", "Shaders/screen.frag");
 	ResourceManager::getInstance().addShader("light", "Shaders/light.vs", "Shaders/light.frag");
 	ResourceManager::getInstance().addShader("lightShadow", "Shaders/lightShadow.vs", "Shaders/lightshadow.frag");
+	ResourceManager::getInstance().addShader("ui", "Shaders/ui.vs", "Shaders/ui.frag");
 
 	ResourceManager::getInstance().shader("basic_shader")->use();
 	Renderer batchrenderer;
@@ -53,6 +54,7 @@ int main()
 	}
 	ResourceManager::getInstance().shader("basic_shader")->setUniform("textures", 32, texID);
 	ResourceManager::getInstance().shader("lightShadow")->setUniform("textures", 32, texID);
+	ResourceManager::getInstance().shader("ui")->setUniform("textures", 32, texID);
 	ResourceManager::getInstance().shader("light")->setUniform("screenTexture", 0);
 	ResourceManager::getInstance().shader("light")->setUniform("lightMap", 1);
 
@@ -158,13 +160,13 @@ int main()
 		}
 
 		// zoom
-		if (Window::Instance().isKeyTyped(GLFW_KEY_Z))
+		if (Window::Instance().isKeyPressed(GLFW_KEY_Z))
 		{
-			Window::Instance().getCamera().processZoom(0.005);
+			Window::Instance().getCamera().processZoom(0.0005);
 		}
-		if (Window::Instance().isKeyTyped(GLFW_KEY_X))
+		if (Window::Instance().isKeyPressed(GLFW_KEY_X))
 		{
-			Window::Instance().getCamera().processZoom(-0.005);
+			Window::Instance().getCamera().processZoom(-0.0005);
 		}
 
 		//zoom = Window::Instance().getCamera().Zoom / 2.0f;
@@ -172,7 +174,6 @@ int main()
 		//a = Settings::Instance().PROJECTION_WIDTH - Settings::Instance().PROJECTION_WIDTH * zoom;
 		//sb = Settings::Instance().PROJECTION_HEIGHT * zoom;
 		//b = Settings::Instance().PROJECTION_HEIGHT - Settings::Instance().PROJECTION_HEIGHT * zoom;
-
 
 		float mx = Window::Instance().mouseX();
 		float my = Window::Instance().mouseY();
@@ -245,8 +246,11 @@ int main()
 
 		//projection = Window::Instance().getCamera().getProjectionMatrix(0.0f, 0.0f, Settings::Instance().PROJECTION_WIDTH, Settings::Instance().PROJECTION_HEIGHT);
 		projection = glm::ortho(0.0f, Settings::Instance().PROJECTION_WIDTH, 0.0f, Settings::Instance().PROJECTION_HEIGHT, -1.0f, 1.0f);
-		ResourceManager::getInstance().shader("basic_shader")->setUniform("projection", projection);
-		ResourceManager::getInstance().shader("basic_shader")->use();
+
+		//ResourceManager::getInstance().shader("basic_shader")->setUniform("projection", projection);
+		//ResourceManager::getInstance().shader("basic_shader")->use();
+		ResourceManager::getInstance().shader("ui")->setUniform("projection", projection);
+		ResourceManager::getInstance().shader("ui")->use();
 		playerUI.update();
 		playerUI.render(batchrenderer);
 

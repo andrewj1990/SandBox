@@ -46,8 +46,8 @@ public:
 	inline int getHeight() const { return m_Height; }
 	inline int getInitWidth() const { return m_InitWidth; }
 	inline int getInitHeight() const { return m_InitHeight; }
-	inline float mouseX() const { return m_MousePosX; }
-	inline float mouseY() const { return m_MousePosY; }
+	inline float mouseX() const { return m_MousePosX < 0 ? 0 : m_MousePosX > m_Width ? m_Width : m_MousePosX; }
+	inline float mouseY() const { return m_MousePosY < 0 ? 0 : m_MousePosY > m_Height ? m_Height : m_MousePosY; }
 	inline bool isWindowResized() { return m_WindowResized; }
 	inline void setWindowResized(bool flag) { m_WindowResized = flag; }
 	inline GLFWwindow* getWindow() { return m_Window; }
