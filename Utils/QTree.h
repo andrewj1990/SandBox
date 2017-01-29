@@ -46,8 +46,8 @@ template<class T>
 inline QTree<T>::QTree(int level, const BoundingBox& bounds)
 	: m_Level(level), m_Bounds(bounds), ne(nullptr), se(nullptr), sw(nullptr), nw(nullptr)
 {
-	max_objects = 40;
-	max_levels = 8;
+	max_objects = 50;
+	max_levels = 10;
 }
 
 template<class T>
@@ -72,10 +72,13 @@ inline int QTree<T>::getIndex(const std::shared_ptr<T>& data)
 	double vmid = m_Bounds.x + (m_Bounds.width / 2);
 	double hmid = m_Bounds.y + (m_Bounds.height / 2);
 
-	bool topQuad = data->y < hmid;// && data->getPosition().y + data->getSize().y < hmid;
-	bool botQuad = data->y >= hmid;
+	//bool topQuad = data->y < hmid;// && data->getPosition().y + data->getSize().y < hmid;
+	//bool botQuad = data->y >= hmid;
 
-	if (data->x < vmid)// && data->getPosition().x + data->getSize().x < vmid)
+	bool topQuad = data->getPosition().y < hmid;
+	bool botQuad = data->getPosition().y >= hmid;
+
+	if (data->getPosition().x < vmid)// && data->getPosition().x + data->getSize().x < vmid)
 	{
 		if (topQuad)
 		{
@@ -86,7 +89,7 @@ inline int QTree<T>::getIndex(const std::shared_ptr<T>& data)
 			index = 2;
 		}
 	}
-	else if (data->x >= vmid)
+	else if (data->getPosition().x >= vmid)
 	{
 		if (topQuad)
 		{

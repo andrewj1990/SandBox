@@ -33,7 +33,7 @@ private:
 
 	Light m_Light;
 	std::unique_ptr<QTree<Renderable>> m_QTree;
-	std::unique_ptr<QTree<BoundingBox>> m_QuadTree;
+	std::unique_ptr<QTree<Renderable>> m_QuadTree;
 	Sprite m_Background;
 
 	std::vector<Light> m_Lights;

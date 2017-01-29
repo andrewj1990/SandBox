@@ -37,7 +37,7 @@ void Player::init()
 	camera.Position = glm::vec3(0, 0, 0);
 }
 
-bool Player::playerCollision(float dx, float dy, const std::unique_ptr<QTree<BoundingBox>>& quadTree)
+bool Player::playerCollision(float dx, float dy, const std::unique_ptr<QTree<Renderable>>& quadTree)
 {
 	//float x = getX() + dx;
 	//float y = getY() + dy;
@@ -49,16 +49,17 @@ bool Player::playerCollision(float dx, float dy, const std::unique_ptr<QTree<Bou
 	float w = m_CollisionBox.width;
 	float h = m_CollisionBox.height;
 
-	std::vector<std::shared_ptr<BoundingBox>> m_CollisionBoxes;
+	std::vector<std::shared_ptr<Renderable>> tiles;
 	//quadTree->retrieve(m_CollisionBoxes, BoundingBox(x, y, getSprite().getSize().x, getSprite().getSize().y));
-	quadTree->retrieve(m_CollisionBoxes, m_CollisionBox);
+	quadTree->retrieve(tiles, m_CollisionBox);
 
-	for (auto& tile : m_CollisionBoxes)
+	for (auto& tile : tiles)
 	{
-		float tx = tile->x;
-		float ty = tile->y;
-		float tw = tile->width;
-		float th = tile->height;
+		const auto& collisionBox = tile->getCollisionBox();
+		float tx = collisionBox->x;
+		float ty = collisionBox->y;
+		float tw = collisionBox->width;
+		float th = collisionBox->height;
 
 		//if (tile->intersects(m_CollisionBox))
 		if (Utils::quadCollision(x, y, w, h, tx, ty, tw, th))
@@ -70,7 +71,7 @@ bool Player::playerCollision(float dx, float dy, const std::unique_ptr<QTree<Bou
 	return false;
 }
 
-void Player::move(const std::unique_ptr<QTree<BoundingBox>>& quadTree, float timeElapsed)
+void Player::move(const std::unique_ptr<QTree<Renderable>>& quadTree, float timeElapsed)
 {
 	Window& window = Window::Instance();
 
@@ -318,7 +319,7 @@ void Player::dodge(const Terrain& terrain)
 	}
 }
 
-void Player::update(Region& region, const std::unique_ptr<QTree<BoundingBox>>& quadTree, float timeElapsed)
+void Player::update(Region& region, const std::unique_ptr<QTree<Renderable>>& quadTree, float timeElapsed)
 {
 	update(timeElapsed);
 	move(quadTree, timeElapsed);

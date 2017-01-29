@@ -21,7 +21,7 @@ public:
 	void move(float x, float y);
 
 	//void update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed);
-	void update(Region& region, const std::unique_ptr<QTree<BoundingBox>>& quadTree, float timeElapsed);
+	void update(Region& region, const std::unique_ptr<QTree<Renderable>>& quadTree, float timeElapsed);
 	void submit(Renderer& renderer) override;
 	void render(Renderer& renderer) override;
 

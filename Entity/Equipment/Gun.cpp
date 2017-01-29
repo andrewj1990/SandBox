@@ -42,7 +42,7 @@ void Gun::move(float x, float y)
 	m_Sprite.addDirection(x, y);
 }
 
-void Gun::update(Region& region, const std::unique_ptr<QTree<BoundingBox>>& quadTree, float timeElapsed)
+void Gun::update(Region& region, const std::unique_ptr<QTree<Renderable>>& quadTree, float timeElapsed)
 {
 	float mx = Window::Instance().mouseX();
 	float my = Window::Instance().mouseY();
@@ -80,20 +80,21 @@ void Gun::update(Region& region, const std::unique_ptr<QTree<BoundingBox>>& quad
 	for (auto& bullet : m_Bullets)
 	{
 		bullet->update(timeElapsed);
-		std::vector<std::shared_ptr<BoundingBox>> collisionBoxes;
+		std::vector<std::shared_ptr<Renderable>> tiles;
 
 		const glm::vec3& pos = bullet->getSprite().getPosition();
 		const glm::vec2& size = bullet->getSprite().getSize();
 		
-		quadTree->retrieve(collisionBoxes, BoundingBox(pos.x, pos.y, size.x, size.y));
+		quadTree->retrieve(tiles, BoundingBox(pos.x, pos.y, size.x, size.y));
 		//quadTree->retrieve(collisionBoxes, *(bullet->getCollisionBox()));
 
-		for (auto& tile : collisionBoxes)
+		for (auto& tile : tiles)
 		{
-			float ex = tile->x;
-			float ey = tile->y;
-			float ew = tile->width;
-			float eh = tile->height;
+			const auto& collisionBox = tile->getCollisionBox();
+			float ex = collisionBox->x;
+			float ey = collisionBox->y;
+			float ew = collisionBox->width;
+			float eh = collisionBox->height;
 
 			float sx = pos.x;
 			float sy = pos.y;
@@ -102,7 +103,7 @@ void Gun::update(Region& region, const std::unique_ptr<QTree<BoundingBox>>& quad
 
 			//if (sx > ex && sx < ex + ew && sy > ey && sy < ey + eh)
 			//if (bullet->collide(*tile))
-			if (tile->intersects(*(bullet)->getCollisionBox()))
+			if (collisionBox->intersects(*(bullet)->getCollisionBox()))
 			{
 				for (int i = 0; i < 25; i++)
 				{

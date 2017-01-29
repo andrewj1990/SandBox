@@ -8,7 +8,7 @@ Level2D::Level2D()
 	int winW = Window::Instance().getWidth();
 	int winH = Window::Instance().getHeight();
 	m_QTree = std::unique_ptr<QTree<Renderable>>(new QTree<Renderable>(0, BoundingBox(camX, camY, winW, winH)));
-	m_QuadTree = std::unique_ptr<QTree<BoundingBox>>(new QTree<BoundingBox>(0, BoundingBox(camX, camY, winW, winH)));
+	m_QuadTree = std::unique_ptr<QTree<Renderable>>(new QTree<Renderable>(0, BoundingBox(camX, camY, winW, winH)));
 	//m_ShowQuadTree = false;
 
 	init();
@@ -77,7 +77,7 @@ void Level2D::update(float timeElapsed)
 	//}
 
 	m_QTree = std::unique_ptr<QTree<Renderable>>(new QTree<Renderable>(0, BoundingBox(camX, camY, winW, winH)));
-	m_QuadTree = std::unique_ptr<QTree<BoundingBox>>(new QTree<BoundingBox>(0, BoundingBox(camX, camY, Settings::Instance().PROJECTION_WIDTH, Settings::Instance().PROJECTION_HEIGHT)));
+	m_QuadTree = std::unique_ptr<QTree<Renderable>>(new QTree<Renderable>(0, BoundingBox(camX, camY, Settings::Instance().PROJECTION_WIDTH, Settings::Instance().PROJECTION_HEIGHT)));
 
 	//m_Region.addTiles(m_QTree);
 	m_Region.addTiles(m_QuadTree);
@@ -125,11 +125,11 @@ void Level2D::render(Renderer& renderer)
 		BoundingBox mouseBoundingBox(mx-8, my-8, 16, 16);
 
 		renderer.render(mouseBoundingBox, TextureManager::get("Textures/collision_box.png"));
-		std::vector<std::shared_ptr<BoundingBox>> tiles;
+		std::vector<std::shared_ptr<Renderable>> tiles;
 		m_QuadTree->retrieve(tiles, mouseBoundingBox);
 		for (auto t : tiles)
 		{
-			renderer.render(*t, TextureManager::get("Textures/collision_box.png"));
+			renderer.render((*t->getCollisionBox()), TextureManager::get("Textures/collision_box.png"));
 		}
 	}
 

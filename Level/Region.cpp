@@ -46,13 +46,13 @@ void Region::unload(int x, int y)
 	}
 }
 
-void Region::addTiles(std::unique_ptr<QTree<BoundingBox>>& quadTree)
+void Region::addTiles(std::unique_ptr<QTree<Renderable>>& quadTree)
 {
 	for (auto& tileRegion : m_Regions)
 	{
 		for (auto& tile : tileRegion->getTiles())
 		{
-			quadTree->insert(tile->getCollisionBox());
+			quadTree->insert(tile);
 		}
 	}
 }
