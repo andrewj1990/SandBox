@@ -3,6 +3,7 @@
 void Settings::settingsToggle()
 {
 	valueToggle(GLFW_KEY_I, debugShowCollisionBoxes);
+	valueToggle(GLFW_KEY_H, debugShowLightRange);
 	valueToggle(GLFW_KEY_U, debugShowQuadTree);
 	valueToggle(GLFW_KEY_O, noClip);
 

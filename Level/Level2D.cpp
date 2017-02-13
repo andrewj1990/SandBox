@@ -50,7 +50,6 @@ void Level2D::update(float timeElapsed)
 
 	//m_Background.setPosition(cam.Position.x, cam.Position.y);
 	m_Region.update(timeElapsed);
-	//m_Player->update(timeElapsed);
 
 	int camX = Window::Instance().getCamera().Position.x;
 	int camY = Window::Instance().getCamera().Position.y;
@@ -70,45 +69,17 @@ void Level2D::update(float timeElapsed)
 		std::cout << "key y pressed\n";
 	}
 
-	//if (Window::Instance().isKeyPressed(GLFW_KEY_I) && m_Delay > 50)
-	//{
-	//	m_Delay = 0;
-	//	Settings::Instance().debugShowQuadTree = !Settings::Instance().debugShowQuadTree;
-	//}
-
 	m_QTree = std::unique_ptr<QTree<Renderable>>(new QTree<Renderable>(0, BoundingBox(camX, camY, winW, winH)));
 	m_QuadTree = std::unique_ptr<QTree<Renderable>>(new QTree<Renderable>(0, BoundingBox(camX, camY, Settings::Instance().PROJECTION_WIDTH, Settings::Instance().PROJECTION_HEIGHT)));
 
 	//m_Region.addTiles(m_QTree);
-	m_Region.addTiles(m_QuadTree);
+	//m_Region.addTiles(m_QuadTree);
 
 	std::vector<std::shared_ptr<Renderable>> m_Data;
-	m_QTree->retrieve(m_Data, m_Light.getLightRegion());
+	m_QuadTree->retrieve(m_Data, m_Light.getLightRegion());
 
 	m_Player->update(m_Region, m_QuadTree, timeElapsed);
 	m_Light.update(m_Data, timeElapsed);
-
-	//if (m_Player->isADS())
-	//{
-	//	float mx1 = Window::Instance().getMouseWorldPosX();
-	//	float mx2 = Window::Instance().getMouseWorldPosX(false);
-	//	float my1 = Window::Instance().getMouseWorldPosY();
-	//	float my2 = Window::Instance().getMouseWorldPosY(false);
-
-	//	float dx = mx2 - mx1;
-	//	float dy = my2 - my1;
-
-	//	std::cout << mx1 << ", " << my2 << " | " << mx2 << ", " << my2 << " | " << dx << ", " << dy  << "\n";
-	//	float px = m_Player->getCenterX();
-	//	float py = m_Player->getCenterY();
-	//	float ccx = px - Settings::Instance().PROJECTION_WIDTH / 2.0f;
-	//	float ccy = py - Settings::Instance().PROJECTION_HEIGHT / 2.0f;
-	//	Window::Instance().getCamera().moveCameraPosition(ccx + dx, ccy + dy);
-	//}
-	//else
-	//{
-	//	//moveCamera();
-	//}
 }
 
 void Level2D::render(Renderer& renderer)
@@ -143,6 +114,16 @@ void Level2D::render(Renderer& renderer)
 		{
 			renderer.render(bb, TextureManager::get("Textures/bbox.png"));
 		}
+	}
+
+	// light outline
+	if (Settings::Instance().debugShowLightRange)
+	{
+		for (auto& light : m_Lights)
+		{
+			renderer.render(light.getLightRegion(), TextureManager::get("Textures/bbox.png"));
+		}
+		renderer.render(m_Light.getLightRegion(), TextureManager::get("Textures/bbox.png"));
 	}
 
 }

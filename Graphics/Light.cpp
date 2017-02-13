@@ -2,7 +2,7 @@
 
 Light::Light()
 	: m_Point(glm::vec3(0, 0, 0), glm::vec2(50, 50), TextureManager::get("Textures/Bullet.png")), m_LightRegion(0, 0, 0, 0),
-	m_LightBox(glm::vec3(0, 0, 0), glm::vec2(800, 800), TextureManager::get("Textures/light.png")), m_Ray()
+	m_LightBox(glm::vec3(0, 0, 0), glm::vec2(20, 20), TextureManager::get("Textures/light.png")), m_Ray()
 {
 	m_LightRegion.width = 800;
 	m_LightRegion.height = 800;
@@ -76,7 +76,7 @@ void Light::update(const std::vector<std::shared_ptr<Renderable>>& renderables, 
 		auto& quad = m_RaySprites[i];
 		quad.setPositions(m_Point.getPosition().x, m_Point.getPosition().y, m_Point.getPosition().x, m_Point.getPosition().y, endPoint1.x, endPoint1.y, endPoint2.x, endPoint2.y);
 		quad.setLightPosition(m_Point.getPosition().x, m_Point.getPosition().y);
- 	}
+	}
 
 }
 

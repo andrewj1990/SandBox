@@ -6,14 +6,13 @@ Region::Region()
 	m_Y = Window::Instance().getCamera().getPosition().y;
 
 	// number of tiles per sub region
-
 	m_SubRegionWidth = Settings::Instance().SUB_REGION_TILE_COUNT * Settings::Instance().TILE_SIZE;
 	m_SubRegionHeight = Settings::Instance().SUB_REGION_TILE_COUNT * Settings::Instance().TILE_SIZE;
 	m_RegionWidth = Window::Instance().getWidth() + m_SubRegionWidth;
-	m_RegionHeight = Window::Instance().getHeight() + m_SubRegionHeight * 2;
+	m_RegionHeight = Window::Instance().getHeight() + m_SubRegionHeight;
 
-	m_CountX = m_RegionWidth / m_SubRegionWidth;
-	m_CountY = m_RegionHeight / m_SubRegionHeight;
+	m_CountX = (m_RegionWidth / m_SubRegionWidth);
+	m_CountY = (m_RegionHeight / m_SubRegionHeight) + 1;
 
 	for (int x = m_X; x < m_CountX; x++)
 	{
