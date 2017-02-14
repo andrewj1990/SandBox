@@ -85,10 +85,10 @@ void Boss::update(float timeElapsed)
 
 void Boss::render(Renderer& renderer)
 {
-	renderer.render(m_Bullets);
+	//renderer.render(m_Bullets);
 
 	renderer.render(m_Sprite);
-	renderer.render(m_Entities);
+	//renderer.render(m_Entities);
 }
 
 void Boss::renderLight(Renderer& renderer)

@@ -159,104 +159,6 @@ void Renderer::submit(const Renderable& renderable)
 	m_IndexCount += 6;
 }
 
-void Renderer::submit(const BoundingBox& bb, Texture* texture)
-{
-	if (m_IndexCount + 6 > RENDERER_INDICES_SIZE)
-	{
-		end();
-		flush();
-		begin();
-	}
-
-	const glm::vec3& position = glm::vec3(bb.x, bb.y, 0);
-	const glm::vec2& size = glm::vec2(bb.width, bb.height);
-	const glm::vec4& colour = glm::vec4(1);
-
-	std::vector<glm::vec4> uv;
-	float ss = 0.0f;
-	float rr = 1.0f;
-	uv.push_back(glm::vec4(ss, ss, 0, 0));
-	uv.push_back(glm::vec4(ss, rr, 0, 0));
-	uv.push_back(glm::vec4(rr, rr, 0, 0));
-	uv.push_back(glm::vec4(rr, ss, 0, 0));
-
-	const unsigned int tid = texture == nullptr ? 0 : texture->getTID();
-
-	unsigned int color = 0;
-
-	float ts = 0.0f;
-	if (tid > 0)
-	{
-		bool found = false;
-		for (int i = 0; i < m_TextureSlots.size(); ++i)
-		{
-			if (m_TextureSlots[i] == tid)
-			{
-				ts = (float)(i + 1);
-				found = true;
-				break;
-			}
-		}
-
-		if (!found)
-		{
-			if (m_TextureSlots.size() >= RENDERER_MAX_TEXTURES)
-			{
-				end();
-				flush();
-				begin();
-			}
-			m_TextureSlots.push_back(tid);
-			ts = (float)(m_TextureSlots.size());
-		}
-
-	}
-	int r = colour.x * 255;
-	int g = colour.y * 255;
-	int b = colour.z * 255;
-	int a = colour.w * 255;
-
-	color = a << 24 | b << 16 | g << 8 | r;
-
-	glm::mat4 scale = glm::mat4();
-	scale = glm::scale(scale, glm::vec3(size, 1.0f));
-
-	//m_Buffer->vertex = m_TransformationStack.back() * scale * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	m_Buffer->vertex = m_TransformationStack.back() * glm::vec4(position, 1.0f);
-	//m_Buffer->vertex = m_TransformationStack.back() * (positions.size() > 0 ? glm::vec4(positions[0], 1.0f) : glm::vec4(position, 1.0f));
-	m_Buffer->uv = uv[0];
-	m_Buffer->tid = ts;
-	m_Buffer->colour = color;
-	++m_Buffer;
-
-	//m_Buffer->vertex = m_TransformationStack.back() * scale * glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
-	m_Buffer->vertex = m_TransformationStack.back() * glm::vec4(position.x, position.y + size.y, position.z, 1.0f);
-	//m_Buffer->vertex = m_TransformationStack.back() * (positions.size() > 0 ? glm::vec4(positions[1], 1.0f) : glm::vec4(position.x, position.y + size.y, position.z, 1.0f));
-	m_Buffer->uv = uv[1];
-	m_Buffer->tid = ts;
-	m_Buffer->colour = color;
-	++m_Buffer;
-
-	//m_Buffer->vertex = m_TransformationStack.back() * scale * glm::vec4(1.0f, 1.0f, 0.0f, 1.0f);
-	m_Buffer->vertex = m_TransformationStack.back() * glm::vec4(position.x + size.x, position.y + size.y, position.z, 1.0f);
-	//m_Buffer->vertex = m_TransformationStack.back() * (positions.size() > 0 ? glm::vec4(positions[2], 1.0f) : glm::vec4(position.x + size.x, position.y + size.y, position.z, 1.0f));
-	m_Buffer->uv = uv[2];
-	m_Buffer->tid = ts;
-	m_Buffer->colour = color;
-	++m_Buffer;
-
-	//m_Buffer->vertex = m_TransformationStack.back() * scale * glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-	m_Buffer->vertex = m_TransformationStack.back() * glm::vec4(position.x + size.x, position.y, position.z, 1.0f);
-	//m_Buffer->vertex = m_TransformationStack.back() * (positions.size() > 0 ? glm::vec4(positions[3], 1.0f) : glm::vec4(position.x + size.x, position.y, position.z, 1.0f));
-	m_Buffer->uv = uv[3];
-	m_Buffer->tid = ts;
-	m_Buffer->colour = color;
-	++m_Buffer;
-
-	m_IndexCount += 6;
-}
-
-
 void Renderer::drawString(const Font& font, const std::string& text, const glm::vec3& position, const glm::vec4& colour)
 {
 	using namespace ftgl;
@@ -400,50 +302,12 @@ void Renderer::render(const Renderable& renderable)
 	flush();
 }
 
-//void Renderer::render(const BoundingBox& bb, Texture* texture)
-//{
-//	begin();
-//
-//	submit(bb, texture);
-//
-//	end();
-//	flush();
-//}
-
-void Renderer::render(const std::vector<Renderable*> renderables)
-{
-	begin();
-
-	for (Renderable* renderable : renderables)
-	{
-		renderable->submit(*this);
-	}
-
-	end();
-	flush();
-}
-
-void Renderer::render(const std::vector<Renderable>& renderables)
-{
-	begin();
-
-	for (const Renderable& renderable : renderables)
-	{
-		//submit(renderable);
-		renderable.submit(*this);
-	}
-
-	end();
-	flush();
-}
-
 void Renderer::render(const std::vector<std::unique_ptr<Renderable>>& renderables)
 {
 	begin();
 
 	for (auto& renderable : renderables)
 	{
-		//submit(renderable);
 		renderable->submit(*this);
 	}
 
@@ -451,83 +315,15 @@ void Renderer::render(const std::vector<std::unique_ptr<Renderable>>& renderable
 	flush();
 }
 
-void Renderer::render(Entity& entity)
+void Renderer::render(const std::vector<std::shared_ptr<Renderable>>& renderables)
 {
 	begin();
 
-	entity.getSprite().submit(*this);
-
-	end();
-	flush();
-}
-
-
-void Renderer::render(const std::vector<std::unique_ptr<Entity>>& entities)
-{
-	begin();
-
-	for (auto& entity : entities)
+	for (auto& renderable : renderables)
 	{
-		entity->getSprite().submit(*this);
+		renderable->submit(*this);
 	}
 
 	end();
 	flush();
 }
-
-void Renderer::render(const std::vector<std::shared_ptr<Entity>>& entities)
-{
-	begin();
-
-	for (auto& entity : entities)
-	{
-		entity->getSprite().submit(*this);
-	}
-
-	end();
-	flush();
-}
-
-void Renderer::render(const std::vector<std::shared_ptr<Renderable>>& entities)
-{
-	begin();
-
-	for (auto& entity : entities)
-	{
-		entity->submit(*this);
-	}
-
-	end();
-	flush();
-}
-
-void Renderer::render(const std::unique_ptr<Entity>& entity)
-{
-	begin();
-
-	entity->getSprite().submit(*this);
-
-	end();
-	flush();
-}
-
-void Renderer::render(const std::shared_ptr<Entity>& entity)
-{
-	begin();
-
-	entity->getSprite().submit(*this);
-
-	end();
-	flush();
-}
-
-
-glm::vec3 Renderer::multiply(const glm::mat4 & matrix, const glm::vec3 vector)
-{
-	return glm::vec3(
-		matrix[0].x * vector.x + matrix[0].y * vector.y + matrix[0].z * vector.z + matrix[0].w,
-		matrix[1].x * vector.x + matrix[1].y * vector.y + matrix[1].z * vector.z + matrix[1].w,
-		matrix[2].x * vector.x + matrix[2].y * vector.y + matrix[2].z * vector.z + matrix[2].w
-		);
-}
-

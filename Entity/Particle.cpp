@@ -56,5 +56,5 @@ void Particle::update(float timeElapsed)
 
 void Particle::render(Renderer& renderer)
 {
-	renderer.render(*this);
+	//renderer.render(*this);
 }

@@ -125,7 +125,7 @@ void Sword::render(Renderer & renderer)
 	renderer.pop();
 
 	renderer.push(glm::mat4(), true);
-	renderer.render(m_Entities);
+	//renderer.render(m_Entities);
 	renderer.pop();
 
 }

@@ -55,7 +55,7 @@ void Entity::submit(Renderer& renderer)
 
 void Entity::render(Renderer& renderer)
 {
-	renderer.render(*this);
+	//renderer.render(*this);
 }
 
 bool Entity::collide(const Entity& entity) const

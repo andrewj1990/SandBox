@@ -76,5 +76,5 @@ void BasicMob::update(float timeElapsed)
 
 void BasicMob::render(Renderer& renderer)
 {
-	renderer.render(*this);
+	//renderer.render(*this);
 }

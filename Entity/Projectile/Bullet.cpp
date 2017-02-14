@@ -37,7 +37,7 @@ void Bullet::update(float timeElapsed)
 
 void Bullet::render(Renderer& renderer)
 {
-	renderer.render(*this);
+	//renderer.render(*this);
 }
 
 void Bullet::renderLight(Renderer& renderer)
