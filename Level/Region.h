@@ -15,6 +15,7 @@ public:
 	void unload(int x, int y);
 	void addTiles(std::unique_ptr<QTree<Renderable>>& quadTree);
 	void removeTiles(float x, float y, bool exactCoord = true, bool ripple = false);
+	void getTileType(float x, float y);
 	bool emptyTile(float x, float y);
 	bool getSurfacePosition(float x, float y);
 

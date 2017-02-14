@@ -102,6 +102,17 @@ void Region::removeTiles(float x, float y, bool exactCoord, bool ripple)
 	}
 }
 
+void Region::getTileType(float x, float y)
+{
+	int ix = (int)x / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE;
+	int iy = (int)y / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE;
+
+	std::string tileGlobalPosition = std::to_string(ix) + "_" + std::to_string(iy);
+
+	auto& region = getTileRegion(ix, iy);
+	region->getTileType(ix, iy);
+}
+
 bool Region::emptyTile(float x, float y)
 {
 	auto& region = getTileRegion(x, y);
@@ -159,6 +170,16 @@ void Region::update(float timeElapsed)
 	
 		removeTiles(mx, my, false, true);
 	}
+
+	// get tile type
+	if (Window::Instance().isKeyPressed(GLFW_KEY_T))
+	{
+		float mx = Window::Instance().getMouseWorldPosX();
+		float my = Window::Instance().getMouseWorldPosY();
+
+		getTileType(mx, my);
+	}
+
 
 	for (auto it = m_Ripples.begin(); it != m_Ripples.end(); )
 	{

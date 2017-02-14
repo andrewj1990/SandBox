@@ -25,6 +25,7 @@ public:
 	void setUV(int x, int y, const std::unordered_set<std::string>& region_tiles);
 	void removeTile(int x, int y);
 	std::shared_ptr<Renderable>& getTile(int x, int y);
+	void getTileType(int x, int y);
 	std::vector<std::shared_ptr<Renderable>>::iterator getTileIterator(int x, int y);
 	bool calculateTile(float x, float y, const std::unordered_set<std::string>& region_tiles);
 	bool surfaceTile(float x, float y);
@@ -40,7 +41,6 @@ private:
 	int m_IndexY;
 	int m_X;
 	int m_Y;
-	int m_Size;
 
 	float m_SurfaceTopEdge;
 	float m_TransitionY;
@@ -48,4 +48,5 @@ private:
 
 	SimplexNoise m_Noise;
 	std::vector<std::shared_ptr<Renderable>> m_Tiles;
+	std::vector<std::shared_ptr<Renderable>> m_TempTiles;
 };
