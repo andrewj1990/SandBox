@@ -199,8 +199,21 @@ void Gun::submit(Renderer& renderer)
 void Gun::render(Renderer& renderer)
 {
 	renderer.push(glm::mat4(), true);
-	renderer.render(m_Bullets);
-	renderer.render(m_Entities);
+	renderer.begin();
+	for (auto& bullet : m_Bullets)
+	{
+		//bullet->render(renderer);
+		bullet->submit(renderer);
+	}
+	for (auto& entity : m_Entities)
+	{
+		entity->submit(renderer);
+	}
+
+	renderer.end();
+	renderer.flush();
+	//renderer.render(m_Bullets);
+	//renderer.render(m_Entities);
 
 	for (auto& text : m_DamageText)
 	{
@@ -217,14 +230,15 @@ void Gun::render(Renderer& renderer)
 	transform = glm::translate(transform, glm::vec3(-m_Sprite.getPosition().x - rtx, -m_Sprite.getPosition().y - rty, 0));
 
 	renderer.push(transform);
-	renderer.render(*this);
+	//renderer.render(*this);
+	renderer.render(m_Sprite);
 	renderer.pop();
 
 	if (Settings::Instance().debugShowCollisionBoxes)
 	{
 		for (auto& b : m_Bullets)
 		{
-			renderer.render(*(b->getCollisionBox()), TextureManager::get("Textures/collision_box.png"));
+			//renderer.render(*(b->getCollisionBox()), TextureManager::get("Textures/collision_box.png"));
 		}
 	}
 
