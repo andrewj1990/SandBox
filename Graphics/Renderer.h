@@ -60,7 +60,7 @@ public:
 	void flush(GLenum srcFactor = GL_SRC_ALPHA, GLenum blendFactor = GL_ONE_MINUS_SRC_ALPHA);
 
 	void render(const Renderable& renderable);
-	void render(const BoundingBox& bb, Texture* texture = nullptr);
+	//void render(const BoundingBox& bb, Texture* texture = nullptr);
 	void render(const std::vector<Renderable*> renderables);
 	void render(const std::vector<Renderable>& renderables);
 	void render(const std::vector<std::unique_ptr<Renderable>>& renderables);

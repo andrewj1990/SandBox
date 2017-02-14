@@ -400,15 +400,15 @@ void Renderer::render(const Renderable& renderable)
 	flush();
 }
 
-void Renderer::render(const BoundingBox& bb, Texture* texture)
-{
-	begin();
-
-	submit(bb, texture);
-
-	end();
-	flush();
-}
+//void Renderer::render(const BoundingBox& bb, Texture* texture)
+//{
+//	begin();
+//
+//	submit(bb, texture);
+//
+//	end();
+//	flush();
+//}
 
 void Renderer::render(const std::vector<Renderable*> renderables)
 {

@@ -95,12 +95,12 @@ void Level2D::render(Renderer& renderer)
 		auto my = Window::Instance().getMouseWorldPosY();
 		BoundingBox mouseBoundingBox(mx-8, my-8, 16, 16);
 
-		renderer.render(mouseBoundingBox, TextureManager::get("Textures/collision_box.png"));
+		//renderer.render(mouseBoundingBox, TextureManager::get("Textures/collision_box.png"));
 		std::vector<std::shared_ptr<Renderable>> tiles;
 		m_QuadTree->retrieve(tiles, mouseBoundingBox);
 		for (auto t : tiles)
 		{
-			renderer.render((*t->getCollisionBox()), TextureManager::get("Textures/collision_box.png"));
+			//renderer.render((*t->getCollisionBox()), TextureManager::get("Textures/collision_box.png"));
 		}
 	}
 
@@ -112,7 +112,7 @@ void Level2D::render(Renderer& renderer)
 
 		for (auto& bb : boundingBoxes)
 		{
-			renderer.render(bb, TextureManager::get("Textures/bbox.png"));
+			//renderer.render(bb, TextureManager::get("Textures/bbox.png"));
 		}
 	}
 
@@ -121,9 +121,9 @@ void Level2D::render(Renderer& renderer)
 	{
 		for (auto& light : m_Lights)
 		{
-			renderer.render(light.getLightRegion(), TextureManager::get("Textures/bbox.png"));
+			//renderer.render(light.getLightRegion(), TextureManager::get("Textures/bbox.png"));
 		}
-		renderer.render(m_Light.getLightRegion(), TextureManager::get("Textures/bbox.png"));
+		//renderer.render(m_Light.getLightRegion(), TextureManager::get("Textures/bbox.png"));
 	}
 
 }

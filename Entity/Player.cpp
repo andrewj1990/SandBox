@@ -445,7 +445,7 @@ void Player::render(Renderer& renderer)
 
 	if (Settings::Instance().debugShowCollisionBoxes)
 	{
-		renderer.render(m_CollisionBox, TextureManager::get("Textures/collision_box.png"));
+		//renderer.render(m_CollisionBox, TextureManager::get("Textures/collision_box.png"));
 	}
 
 }
