@@ -56,6 +56,20 @@ void Region::addTiles(std::unique_ptr<QTree<Sprite>>& quadTree)
 	}
 }
 
+void Region::addWaterTiles(std::unique_ptr<QTree<Sprite>>& quadTree)
+{
+	for (auto& tileRegion : m_Regions)
+	{
+		for (auto& tile : tileRegion->getTiles())
+		{
+			if (tile->getType() == TileType::SHALLOW_WATER)
+			{
+				quadTree->insert(tile);
+			}
+		}
+	}
+}
+
 void Region::removeTiles(float x, float y, bool exactCoord, bool ripple)
 {
 	int ix = (int)x / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE;
@@ -102,15 +116,15 @@ void Region::removeTiles(float x, float y, bool exactCoord, bool ripple)
 	}
 }
 
-void Region::getTileType(float x, float y)
+TileType Region::getTileType(float x, float y)
 {
 	int ix = (int)x / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE;
 	int iy = (int)y / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE;
 
 	std::string tileGlobalPosition = std::to_string(ix) + "_" + std::to_string(iy);
 
-	auto& region = getTileRegion(ix, iy);
-	region->getTileType(ix, iy);
+	const auto& region = getTileRegion(ix, iy);
+	return region->getTileType(ix, iy);
 }
 
 bool Region::emptyTile(float x, float y)

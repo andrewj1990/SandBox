@@ -11,6 +11,7 @@
 #include "..\Graphics\Light.h"
 #include "..\Utils\QTree.h"
 #include "..\Graphics\Buffers\framebuffer.h"
+#include "Effects\WaterRipple.h"
 
 class Level2D 
 {
@@ -32,15 +33,18 @@ private:
 	std::unique_ptr<Player> m_Player;
 
 	Light m_Light;
-	std::unique_ptr<QTree<Sprite>> m_QTree;
+	std::unique_ptr<QTree<Sprite>> m_WaterTilesQT;
 	std::unique_ptr<QTree<Sprite>> m_QuadTree;
 	Sprite m_Background;
 
 	std::vector<Light> m_Lights;
 	std::unordered_set<std::string> m_RegionSet;
 
+	std::vector<std::unique_ptr<WaterRipple>> m_WaterRipples;
+
 	Region m_Region;
 	//bool m_ShowQuadTree;
 
+	float m_WaterRippleTime;
 	int m_Delay;
 };

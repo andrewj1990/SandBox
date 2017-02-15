@@ -10,7 +10,6 @@ public:
 
 	void damage(int amount) override;
 
-	void update(const Terrain& terrain, float timeElapsed);
 	void update(float timeElapsed) override;
 	void render(Renderer& renderer) override;
 

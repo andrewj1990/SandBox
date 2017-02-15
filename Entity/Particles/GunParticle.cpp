@@ -16,15 +16,11 @@ GunParticle::GunParticle(float x, float y, float angle, float movespeed)
 	float velScale = scale + 0.1f;
 	scale = Utils::random(0.0f, 1.0f);
 	scaleUp(scale);
-	//m_Sprite.setSize(glm::vec2(angleOffset, angleOffset));
 
 	m_Dx = std::cosf(a) * vel * velScale;
 	m_Dy = std::sinf(a) * vel * velScale;
 	m_Dx += std::cosf(angle) * movespeed;
 	m_Dy += std::sinf(angle) * movespeed;
-
-	//m_Dx = 0;
-	//m_Dy = 0;
 
 	m_Duration = Utils::random(0.1f, 0.3f);
 }

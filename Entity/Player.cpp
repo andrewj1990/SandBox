@@ -65,7 +65,7 @@ bool Player::playerCollision(float dx, float dy, const std::unique_ptr<QTree<Spr
 	return false;
 }
 
-void Player::move(const std::unique_ptr<QTree<Sprite>>& quadTree, float timeElapsed)
+void Player::move(const std::unique_ptr<QTree<Sprite>>& quadTree, const std::unique_ptr<QTree<Sprite>>& waterQT, Region& region, float timeElapsed)
 {
 	Window& window = Window::Instance();
 
@@ -128,6 +128,12 @@ void Player::move(const std::unique_ptr<QTree<Sprite>>& quadTree, float timeElap
 		{
 			dy = 0.0f;
 		}
+	}
+
+	if (region.getTileType(getX(), getY()) == TileType::SHALLOW_WATER)
+	{
+		dx *= 0.5f;
+		dy *= 0.5f;
 	}
 
 	move(dx, dy);
@@ -252,7 +258,7 @@ void Player::move(float dx, float dy)
 	ResourceManager::getInstance().shader("lightShadow")->setUniform("view", camera.GetViewMatrix());
 }
 
-void Player::dodge(const Terrain& terrain)
+void Player::dodge()
 {
 	float dodgeDistance = 2.0f;
 	float dx = dodgeDistance * std::cosf(m_DodgeAngle);
@@ -261,22 +267,6 @@ void Player::dodge(const Terrain& terrain)
 
 	dx /= dodgeDuration;
 	dy /= dodgeDuration;
-
-	if (terrain.isSolid(getPosition().x + dx, getPosition().y) ||
-		terrain.isSolid(getPosition().x + getSize().x + dx, getPosition().y) ||
-		terrain.isSolid(getPosition().x + dx, getPosition().y + getSize().y) ||
-		terrain.isSolid(getPosition().x + getSize().x + dx, getPosition().y + getSize().y))
-	{
-		dx = 0.0f;
-	}
-
-	if (terrain.isSolid(getPosition().x, getPosition().y + dy) ||
-		terrain.isSolid(getPosition().x, getPosition().y + getSize().y + dy) ||
-		terrain.isSolid(getPosition().x + getSize().x, getPosition().y + dy) ||
-		terrain.isSolid(getPosition().x + getSize().x, getPosition().y + getSize().y + dy))
-	{
-		dy = 0.0f;
-	}
 
 	move(dx, dy);
 	
@@ -289,24 +279,15 @@ void Player::dodge(const Terrain& terrain)
 	}
 }
 
-void Player::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree, float timeElapsed)
+void Player::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree, const std::unique_ptr<QTree<Sprite>>& waterQT, float timeElapsed)
 {
 	update(timeElapsed);
-	move(quadTree, timeElapsed);
+	move(quadTree, waterQT, region, timeElapsed);
 	m_Gun.update(region, quadTree, timeElapsed);
 
 	Window& win = Window::Instance();
 
 	moveCamera();
-
-	//m_Crosshair.setPosition(win.getCamera().Position.x + win.mouseX(), win.getCamera().Position.y + (win.getHeight() - win.mouseY()));
-
-//	if (Window::Instance().isKeyPressed(GLFW_KEY_O) && m_AttackFrame > 0.5)
-//	{
-//		Settings::Instance().noClip = !Settings::Instance().noClip;
-//		m_AttackFrame = 0;
-//	}
-
 }
 
 void Player::update(float timeElapsed)

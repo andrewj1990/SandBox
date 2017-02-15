@@ -14,15 +14,14 @@ public:
 	void load(int x, int y);
 	void unload(int x, int y);
 	void addTiles(std::unique_ptr<QTree<Sprite>>& quadTree);
+	void addWaterTiles(std::unique_ptr<QTree<Sprite>>& quadTree);
 	void removeTiles(float x, float y, bool exactCoord = true, bool ripple = false);
-	void getTileType(float x, float y);
+	TileType getTileType(float x, float y);
 	bool emptyTile(float x, float y);
 	bool getSurfacePosition(float x, float y);
 
 	void update(float timeElapsed);
 	void render(Renderer& renderer);
-
-
 
 private:
 	void reloadTileUV(int x, int y);

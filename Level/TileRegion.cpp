@@ -53,24 +53,28 @@ void TileRegion::init(const std::unordered_set<std::string>& region_tiles)
 				m_Tiles.push_back(std::unique_ptr<Tile>(new Tile(glm::vec2(Settings::Instance().TILE_SIZE, Settings::Instance().TILE_SIZE))));
 				auto& t = m_Tiles.back();
 				int di = Utils::random(0, 1);
-				t->init(m_X + x * Settings::Instance().TILE_SIZE, m_Y + y * Settings::Instance().TILE_SIZE, glm::vec4(0, di, 0, 1), false, false);
+				t->init(m_X + x * Settings::Instance().TILE_SIZE, m_Y + y * Settings::Instance().TILE_SIZE, glm::vec4(0, di, 0, 1), false);
 
 				float elavation = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, (float)(m_X + x * Settings::Instance().TILE_SIZE) / m_NoiseSize, (float)(m_Y + y * Settings::Instance().TILE_SIZE) / m_NoiseSize);
 				if (elavation < 0.2)
 				{
 					t->setUV(0, 0, 16, 16);
+					t->setType(TileType::DEEP_WATER);
 				}
 				else if (elavation < 0.4)
 				{
 					t->setUV(1, 0, 16, 16);
+					t->setType(TileType::SHALLOW_WATER);
 				}
 				else if (elavation < 0.5)
 				{
 					t->setUV(3, 0, 16, 16);
+					t->setType(TileType::SAND);
 				}
 				else
 				{
 					t->setUV(2, 0, 16, 16);
+					t->setType(TileType::GRASS);
 				}
 			}
 		}
@@ -88,11 +92,6 @@ void TileRegion::submit(Renderer& renderer)
 	{
 		renderer.submit(*tile);
 	}
-
-	//for (const auto& tile : m_TempTiles)
-	//{
-	//	renderer.submit(*tile);
-	//}
 }
 
 void TileRegion::setUV(int x, int y, const std::unordered_set<std::string>& region_tiles)
@@ -112,7 +111,6 @@ void TileRegion::removeTile(int x, int y)
 	if (tileIt == m_Tiles.end()) return;
 
 	m_Tiles.erase(tileIt);
-
 }
 
 std::shared_ptr<Tile>& TileRegion::getTile(int x, int y)
@@ -131,12 +129,12 @@ std::shared_ptr<Tile>& TileRegion::getTile(int x, int y)
 	return m_Tiles[0];
 }
 
-void TileRegion::getTileType(int x, int y)
+TileType TileRegion::getTileType(int x, int y)
 {
 	auto tileIt = getTileIterator(x, y);
-	if (tileIt == m_Tiles.end()) return;
+	if (tileIt == m_Tiles.end()) return TileType::GRASS;
 
-	std::cout << (*tileIt)->getPosition().x << ", " << (*tileIt)->getPosition().y << "\n";
+	return (*tileIt)->getType();
 }
 
 std::vector<std::shared_ptr<Tile>>::iterator TileRegion::getTileIterator(int x, int y)

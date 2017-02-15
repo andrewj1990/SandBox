@@ -16,43 +16,6 @@ void BasicMob::damage(int amount)
 	m_Life -= amount;
 }
 
-void BasicMob::update(const Terrain& terrain, float timeElapsed)
-{
-	if (m_Life <= 0)
-	{
-		m_Destroy = true;
-	}
-
-	m_CumulativeTime += timeElapsed;
-	if (m_CumulativeTime > 1.0f)
-	{
-		m_CumulativeTime = 0;
-		m_Dx = Utils::random(-1.0f, 1.0f);
-		m_Dy = Utils::random(-1.0f, 1.0f);
-	}
-
-	float dx = m_Dx;
-	float dy = m_Dy;
-
-	if (terrain.isSolid(getPosition().x + dx, getPosition().y) ||
-		terrain.isSolid(getPosition().x + getSize().x + dx, getPosition().y) ||
-		terrain.isSolid(getPosition().x + dx, getPosition().y + getSize().y) ||
-		terrain.isSolid(getPosition().x + getSize().x + dx, getPosition().y + getSize().y))
-	{
-		dx = 0.0f;
-	}
-
-	if (terrain.isSolid(getPosition().x, getPosition().y + dy) ||
-		terrain.isSolid(getPosition().x, getPosition().y + getSize().y + dy) ||
-		terrain.isSolid(getPosition().x + getSize().x, getPosition().y + dy) ||
-		terrain.isSolid(getPosition().x + getSize().x, getPosition().y + getSize().y + dy))
-	{
-		dy = 0.0f;
-	}
-
-	addDirection(dx, dy);
-}
-
 void BasicMob::update(float timeElapsed)
 {
 	if (m_Life <= 0)

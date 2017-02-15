@@ -7,12 +7,13 @@ Level2D::Level2D()
 	int camY = Window::Instance().getCamera().Position.y;
 	int winW = Window::Instance().getWidth();
 	int winH = Window::Instance().getHeight();
-	m_QTree = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, winW, winH)));
+	m_WaterTilesQT = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, winW, winH)));
 	m_QuadTree = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, winW, winH)));
 	//m_ShowQuadTree = false;
 
 	init();
 
+	m_WaterRippleTime = 0; 
 	m_Delay = 0;
 }
 
@@ -69,16 +70,44 @@ void Level2D::update(float timeElapsed)
 		std::cout << "key y pressed\n";
 	}
 
-	m_QTree = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, winW, winH)));
+	m_WaterTilesQT = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, Settings::Instance().PROJECTION_WIDTH, Settings::Instance().PROJECTION_HEIGHT)));
 	m_QuadTree = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, Settings::Instance().PROJECTION_WIDTH, Settings::Instance().PROJECTION_HEIGHT)));
 
 	//m_Region.addTiles(m_QTree);
 	//m_Region.addTiles(m_QuadTree);
+	m_Region.addWaterTiles(m_WaterTilesQT);
 
 	std::vector<std::shared_ptr<Sprite>> m_Data;
 	m_QuadTree->retrieve(m_Data, m_Light.getLightRegion());
 
-	m_Player->update(m_Region, m_QuadTree, timeElapsed);
+	m_Player->update(m_Region, m_QuadTree, m_WaterTilesQT, timeElapsed);
+
+	m_WaterRippleTime += timeElapsed;
+	if (m_WaterRippleTime > 10000) m_WaterRippleTime = 0;
+	if (m_Player->isMoving() && m_WaterRippleTime > 0.3 && m_Region.getTileType(m_Player->getCenterX(), m_Player->getCenterY()) == TileType::SHALLOW_WATER)
+	{
+		m_WaterRippleTime = 0;
+		float numRipples = Utils::random(1, 4);
+		for (int i = 0; i < numRipples; i++)
+		{
+			m_WaterRipples.push_back(std::unique_ptr<WaterRipple>(new WaterRipple(m_Player->getCenterX(), m_Player->getCenterY(), Utils::random(100, 300))));
+		}
+	}
+
+
+	for (auto it = m_WaterRipples.begin(); it != m_WaterRipples.end(); )
+	{
+		if ((*it)->complete())
+		{
+			it = m_WaterRipples.erase(it);
+		}
+		else
+		{
+			(*it)->update(m_Region, timeElapsed);
+			it++;
+		}
+	}
+
 	m_Light.update(m_Data, timeElapsed);
 }
 
@@ -87,6 +116,12 @@ void Level2D::render(Renderer& renderer)
 	renderer.render(m_Background);
 
 	m_Region.render(renderer);
+
+	for (auto& waterRipple : m_WaterRipples)
+	{
+		waterRipple->render(renderer);
+	}
+
 	m_Player->render(renderer);
 
 	if (Settings::Instance().debugShowCollisionBoxes)
@@ -95,13 +130,16 @@ void Level2D::render(Renderer& renderer)
 		auto my = Window::Instance().getMouseWorldPosY();
 		BoundingBox mouseBoundingBox(mx-8, my-8, 16, 16);
 
-		//renderer.render(mouseBoundingBox, TextureManager::get("Textures/collision_box.png"));
+		renderer.render(Renderable(glm::vec3(mx - 8, my - 8, 0), glm::vec2(16), TextureManager::get("Textures/collision_box.png")));
 		std::vector<std::shared_ptr<Sprite>> tiles;
 		m_QuadTree->retrieve(tiles, mouseBoundingBox);
-		for (auto t : tiles)
+		renderer.begin();
+		for (auto& t : tiles)
 		{
-			//renderer.render((*t->getCollisionBox()), TextureManager::get("Textures/collision_box.png"));
+			renderer.submit(Renderable(glm::vec3(t->getCollisionBox()->x, t->getCollisionBox()->y, 0), glm::vec2(t->getCollisionBox()->width, t->getCollisionBox()->height), TextureManager::get("Textures/collision_box.png")));
 		}
+		renderer.end();
+		renderer.flush();
 	}
 
 	// quadtree outline

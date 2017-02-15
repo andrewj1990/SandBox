@@ -8,8 +8,6 @@
 #include "..\Utils\Utils.h"
 #include "..\Utils\BoundingBox.h"
 
-class Terrain;
-
 class Renderable
 {
 protected:
@@ -108,8 +106,10 @@ public:
 		float tw = (width / sw);
 		float th = (height / sh);
 
-		float sx = 0.2f / sw;
-		float sy = 0.3f / sh;
+		//float sx = 0.2f / sw;
+		//float sy = 0.3f / sh;
+		float sx = sw;
+		float sy = sh;
 
 		m_UV[0] = glm::vec4(tx, ty, sx, sy);
 		m_UV[1] = glm::vec4(tx, ty + th, sx, sy);

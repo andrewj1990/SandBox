@@ -3,7 +3,7 @@
 #include "..\..\Graphics\Renderer.h"
 #include "..\..\Graphics\Sprite.h"
 #include "..\..\Utils\quadTree.h"
-#include "..\Particle.h"
+#include "..\Particles\Particle.h"
 #include "..\DamageCounter.h"
 #include "..\..\Utils\ResourceManager.h"
 

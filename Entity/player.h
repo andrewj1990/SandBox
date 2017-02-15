@@ -11,7 +11,6 @@
 #include "Equipment\Gun.h"
 #include "Projectile\Bullet.h"
 #include "..\Utils\quadTree.h"
-#include "..\Level\Terrain.h"
 #include "..\Utils\QTree.h"
 #include "..\Level\Region.h"
 
@@ -28,25 +27,26 @@ public:
 	Player(float x, float y);
 
 	void move(float dx, float dy);
-	void dodge(const Terrain& terrain);
+	void dodge();
 
 	void addBuff();
 
 	void update(float timeElapsed) override;
-	void update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree, float timeElapsed);
+	void update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree, const std::unique_ptr<QTree<Sprite>>& waterQT, float timeElapsed);
 	void submit(Renderer& renderer) override;
 	void render(Renderer& renderer) override;
 
 	void renderLight(Renderer& renderer) override;
 
 	bool isADS() const { return m_AimDownSight; }
+	bool isMoving() const { return m_Moving; }
 	float getCameraOffsetX() const { return m_CameraOffsetX; }
 	float getCameraOffsetY() const { return m_CameraOffsetY; }
 
 private:
 	void init();
 	bool playerCollision(float dx, float dy, const std::unique_ptr<QTree<Sprite>>& quadTree);
-	void move(const std::unique_ptr<QTree<Sprite>>& quadTree, float timeElapsed);
+	void move(const std::unique_ptr<QTree<Sprite>>& quadTree, const std::unique_ptr<QTree<Sprite>>& waterQT, Region& region, float timeElapsed);
 	void aimDownSight(float timeElapsed);
 	void shoot(float angle, float timeElapsed);
 	void moveCamera();
