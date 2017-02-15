@@ -160,7 +160,7 @@ void Terrain::update(float timeElapsed)
 			glm::vec4 colour = r < m_FireRadius ? glm::vec4(0.2, 0.1, 0.1, 0) : getUV(groundHeight);
 			bool isSolid = colour.w == 1;
 			colour.w = 1.0f;
-			std::unique_ptr<Renderable>& tile = m_Tiles[i + j * m_Width];
+			std::unique_ptr<Tile>& tile = m_Tiles[i + j * m_Width];
 
 			float isTree = m_Noise.scaledOctaveNoise(1, 0.5, 1, 0, 1, (xp / Settings::Instance().TILE_SIZE + i), (yp / Settings::Instance().TILE_SIZE + j));
 			tile->init(xp + i * Settings::Instance().TILE_SIZE, yp + j * Settings::Instance().TILE_SIZE, colour, isSolid, isTree > 0.90);
@@ -176,7 +176,7 @@ void Terrain::update(float timeElapsed)
 void Terrain::render(Renderer& renderer)
 {
 	ResourceManager::getInstance().shader("basic_shader")->setUniform("outline", false);
-	renderer.render(m_Tiles);
+	//renderer.render(m_Tiles);
 	ResourceManager::getInstance().shader("basic_shader")->setUniform("outline", true);
 
 }

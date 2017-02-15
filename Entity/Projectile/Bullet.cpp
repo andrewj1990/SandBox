@@ -14,18 +14,13 @@ Bullet::Bullet(float x, float y, float angle)
 	m_Light = Sprite(glm::vec3(0, 0, 0), glm::vec2(32, 32), TextureManager::get("Textures/light2.png"));
 }
 
-float Bullet::getAngle() const
-{
-	return m_Angle;
-}
-
 void Bullet::update(float timeElapsed)
 {
 	m_Duration -= timeElapsed;
 
-	m_Sprite.addDirection(m_Dx * timeElapsed, m_Dy * timeElapsed);
-	m_CollisionBox->x = m_Sprite.getPosition().x;
-	m_CollisionBox->y = m_Sprite.getPosition().y;
+	addDirection(m_Dx * timeElapsed, m_Dy * timeElapsed);
+	m_CollisionBox->x = getPosition().x;
+	m_CollisionBox->y = getPosition().y;
 
 	if (m_Duration <= 0)
 	{

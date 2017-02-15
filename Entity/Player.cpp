@@ -31,26 +31,20 @@ void Player::init()
 
 	m_Moving = false;
 
-	m_Sprite.setUV(1, 0, m_TexSize, m_TexSize);
+	setUV(1, 0, m_TexSize, m_TexSize);
 
 	Camera& camera = Window::Instance().getCamera();
 	camera.Position = glm::vec3(0, 0, 0);
 }
 
-bool Player::playerCollision(float dx, float dy, const std::unique_ptr<QTree<Renderable>>& quadTree)
+bool Player::playerCollision(float dx, float dy, const std::unique_ptr<QTree<Sprite>>& quadTree)
 {
-	//float x = getX() + dx;
-	//float y = getY() + dy;
-	//float w = getSprite().getSize().x;
-	//float h = getSprite().getSize().y;
-
 	float x = m_CollisionBox.x + dx;
 	float y = m_CollisionBox.y + dy;
 	float w = m_CollisionBox.width;
 	float h = m_CollisionBox.height;
 
-	std::vector<std::shared_ptr<Renderable>> tiles;
-	//quadTree->retrieve(m_CollisionBoxes, BoundingBox(x, y, getSprite().getSize().x, getSprite().getSize().y));
+	std::vector<std::shared_ptr<Sprite>> tiles;
 	quadTree->retrieve(tiles, m_CollisionBox);
 
 	for (auto& tile : tiles)
@@ -71,7 +65,7 @@ bool Player::playerCollision(float dx, float dy, const std::unique_ptr<QTree<Ren
 	return false;
 }
 
-void Player::move(const std::unique_ptr<QTree<Renderable>>& quadTree, float timeElapsed)
+void Player::move(const std::unique_ptr<QTree<Sprite>>& quadTree, float timeElapsed)
 {
 	Window& window = Window::Instance();
 
@@ -84,7 +78,7 @@ void Player::move(const std::unique_ptr<QTree<Renderable>>& quadTree, float time
 
 	if (!m_Moving)
 	{
-		m_Sprite.setUV(0, 0, m_TexSize, m_TexSize);
+		setUV(0, 0, m_TexSize, m_TexSize);
 	}
 	else
 	{
@@ -94,7 +88,7 @@ void Player::move(const std::unique_ptr<QTree<Renderable>>& quadTree, float time
 	if (window.isKeyPressed(GLFW_KEY_W))
 	{
 		m_Row = 3;
-		m_Sprite.setUV((int)m_Anim % 6, m_Row, m_TexSize, m_TexSize);
+		setUV((int)m_Anim % 6, m_Row, m_TexSize, m_TexSize);
 		dy += m_MoveSpeed * timeElapsed * (m_CurrentAttackDuration > 0 ? m_MoveSlow : 1.0f);
 		m_Moving = true;
 	}
@@ -102,7 +96,7 @@ void Player::move(const std::unique_ptr<QTree<Renderable>>& quadTree, float time
 	if (window.isKeyPressed(GLFW_KEY_A))
 	{
 		m_Row = 2;
-		m_Sprite.setUV((int)m_Anim % 8, m_Row, m_TexSize, m_TexSize);
+		setUV((int)m_Anim % 8, m_Row, m_TexSize, m_TexSize);
 		dx -= m_MoveSpeed * timeElapsed * (m_CurrentAttackDuration > 0 ? m_MoveSlow : 1.0f);
 		m_Moving = true;
 	}
@@ -110,7 +104,7 @@ void Player::move(const std::unique_ptr<QTree<Renderable>>& quadTree, float time
 	if (window.isKeyPressed(GLFW_KEY_S))
 	{
 		m_Row = 3;
-		m_Sprite.setUV((int)m_Anim % 6, m_Row, m_TexSize, m_TexSize);
+		setUV((int)m_Anim % 6, m_Row, m_TexSize, m_TexSize);
 		dy -= m_MoveSpeed * timeElapsed * (m_CurrentAttackDuration > 0 ? m_MoveSlow : 1.0f);
 		m_Moving = true;
 	}
@@ -118,7 +112,7 @@ void Player::move(const std::unique_ptr<QTree<Renderable>>& quadTree, float time
 	if (window.isKeyPressed(GLFW_KEY_D))
 	{
 		m_Row = 1;
-		m_Sprite.setUV((int)m_Anim % 8, m_Row, m_TexSize, m_TexSize);
+		setUV((int)m_Anim % 8, m_Row, m_TexSize, m_TexSize);
 		dx += m_MoveSpeed * timeElapsed * (m_CurrentAttackDuration > 0 ? m_MoveSlow : 1.0f);
 		m_Moving = true;
 	}
@@ -182,18 +176,12 @@ void Player::shoot(float angle, float timeElapsed)
 	// fire projectile
 	if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_1))// && m_AttackFrame > m_AttackSpeed)
 	{
-		//for (int i = 3; i > 0; i--)
-		//{
-		//	m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle + glm::radians(10.0f * i));
-		//	m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle - glm::radians(10.0f * i));
-		//}
 
-		//float angleOffset = glm::radians(Utils::random(-2.5f, 2.5f));
 		if (m_AttackFrame > m_AttackSpeed)
 		{
 			float angleOffset = glm::radians(Utils::random(-m_CurrentAttackDuration, m_CurrentAttackDuration));
 			float moveSlow = Utils::lerp(1.0f, 0.3f, m_CurrentAttackDuration / 5.0f);
-			m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle + angleOffset, m_Moving ? m_MoveSpeed * moveSlow : 0.0f);
+			m_Gun.shoot(getPosition().x, getPosition().y, angle + angleOffset, m_Moving ? m_MoveSpeed * moveSlow : 0.0f);
 
 			m_AttackFrame = 0.0f;
 		}
@@ -204,13 +192,6 @@ void Player::shoot(float angle, float timeElapsed)
 	{
 		m_CurrentAttackDuration = std::fmaxf(0, m_CurrentAttackDuration - timeElapsed * 10);
 	}
-
-	//for (int i = 15; i > 0; i--)
-	//{
-	//	m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle + glm::radians(10.0f * i));
-	//	m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle - glm::radians(10.0f * i));
-	//}
-	//m_Gun.shoot(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle);
 }
 
 void Player::moveCamera()
@@ -252,27 +233,16 @@ void Player::moveCamera()
 	m_CameraOffsetY = cy;
 
 	Window::Instance().getCamera().moveCameraPosition(ccx + cx + dx, ccy + cy + dy);
-//	std::cout << mx1 << ", " << my1 << " | " << mx2 << ", " << my2 << " | " << dx << ", " << dy << "\n";
-	//if (Window::Instance().getCamera().Zoom > 0)
-	//{
-	//	//dx *= Window::Instance().getCamera().Zoom;
-	//	//dy *= Window::Instance().getCamera().Zoom;
-	//	Window::Instance().getCamera().moveCameraPosition(ccx + cx + dx, ccy + cy + dy);
-	//}
-	//else
-	//{
-	//	Window::Instance().getCamera().moveCameraPosition(ccx + cx, ccy + cy);
-	//}
 }
 
 void Player::move(float dx, float dy)
 {
-	m_Sprite.addDirection(dx, dy);
+	addDirection(dx, dy);
 	m_Shield.addDirection(dx, dy);
 	m_Sword.move(dx, dy);
 	m_Gun.move(dx, dy);
 	m_CollisionBox.x = getCenterX() - 5;
-	m_CollisionBox.y = m_Sprite.getPosition().y + 2;
+	m_CollisionBox.y = getPosition().y + 2;
 
 	Camera& camera = Window::Instance().getCamera();
 	camera.moveCamera(dx, dy);
@@ -292,34 +262,34 @@ void Player::dodge(const Terrain& terrain)
 	dx /= dodgeDuration;
 	dy /= dodgeDuration;
 
-	if (terrain.isSolid(m_Sprite.getPosition().x + dx, m_Sprite.getPosition().y) ||
-		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x + dx, m_Sprite.getPosition().y) ||
-		terrain.isSolid(m_Sprite.getPosition().x + dx, m_Sprite.getPosition().y + m_Sprite.getSize().y) ||
-		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x + dx, m_Sprite.getPosition().y + m_Sprite.getSize().y))
+	if (terrain.isSolid(getPosition().x + dx, getPosition().y) ||
+		terrain.isSolid(getPosition().x + getSize().x + dx, getPosition().y) ||
+		terrain.isSolid(getPosition().x + dx, getPosition().y + getSize().y) ||
+		terrain.isSolid(getPosition().x + getSize().x + dx, getPosition().y + getSize().y))
 	{
 		dx = 0.0f;
 	}
 
-	if (terrain.isSolid(m_Sprite.getPosition().x, m_Sprite.getPosition().y + dy) ||
-		terrain.isSolid(m_Sprite.getPosition().x, m_Sprite.getPosition().y + m_Sprite.getSize().y + dy) ||
-		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x, m_Sprite.getPosition().y + dy) ||
-		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x, m_Sprite.getPosition().y + m_Sprite.getSize().y + dy))
+	if (terrain.isSolid(getPosition().x, getPosition().y + dy) ||
+		terrain.isSolid(getPosition().x, getPosition().y + getSize().y + dy) ||
+		terrain.isSolid(getPosition().x + getSize().x, getPosition().y + dy) ||
+		terrain.isSolid(getPosition().x + getSize().x, getPosition().y + getSize().y + dy))
 	{
 		dy = 0.0f;
 	}
 
 	move(dx, dy);
 	
-	m_Sprite.setAngle(m_Sprite.getAngle() + glm::radians(-20.0f));
+	setAngle(m_Angle + glm::radians(-20.0f));
 
 	if (m_CumulativeTime >= dodgeDuration)
 	{
 		m_State = PlayerState::NORMAL;
-		m_Sprite.setAngle(0.0f);
+		setAngle(0.0f);
 	}
 }
 
-void Player::update(Region& region, const std::unique_ptr<QTree<Renderable>>& quadTree, float timeElapsed)
+void Player::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree, float timeElapsed)
 {
 	update(timeElapsed);
 	move(quadTree, timeElapsed);
@@ -366,9 +336,9 @@ void Player::update(float timeElapsed)
 void Player::submit(Renderer& renderer)
 {
 	glm::mat4 transform;
-	transform = glm::translate(transform, glm::vec3(m_Sprite.getPosition().x + m_Sprite.getSize().x / 2.0f, m_Sprite.getPosition().y + m_Sprite.getSize().y / 2.0f, 0));
-	transform = glm::rotate(transform, m_Sprite.getAngle(), glm::vec3(0, 0, 1));
-	transform = glm::translate(transform, glm::vec3(-m_Sprite.getPosition().x - m_Sprite.getSize().x / 2.0f, -m_Sprite.getPosition().y - m_Sprite.getSize().y / 2.0f, 0));
+	transform = glm::translate(transform, glm::vec3(getPosition().x + getSize().x / 2.0f, getPosition().y + getSize().y / 2.0f, 0));
+	transform = glm::rotate(transform, getAngle(), glm::vec3(0, 0, 1));
+	transform = glm::translate(transform, glm::vec3(-getPosition().x - getSize().x / 2.0f, -getPosition().y - getSize().y / 2.0f, 0));
 
 	if (m_Row == 3)
 	{
@@ -378,7 +348,7 @@ void Player::submit(Renderer& renderer)
 	renderer.push(transform);
 	renderer.end();
 	renderer.flush();
-	renderer.render(m_Sprite);
+	renderer.render(*this);
 	renderer.pop();
 	renderer.begin();
 
@@ -405,26 +375,26 @@ void Player::render(Renderer& renderer)
 	float scale = 1.1f;
 	glm::mat4 transform;
 	glm::mat4 outline;
-	outline = glm::translate(outline, glm::vec3(m_Sprite.getPosition().x + m_Sprite.getSize().x / 2.0f, m_Sprite.getPosition().y + m_Sprite.getSize().y / 2.0f, 0));
+	outline = glm::translate(outline, glm::vec3(getPosition().x + getSize().x / 2.0f, getPosition().y + getSize().y / 2.0f, 0));
 	outline = glm::scale(outline, glm::vec3(scale, scale, scale));
-	outline = glm::rotate(outline, m_Sprite.getAngle(), glm::vec3(0, 0, 1));
-	outline = glm::translate(outline, glm::vec3(-m_Sprite.getPosition().x - m_Sprite.getSize().x / 2.0f, -m_Sprite.getPosition().y - m_Sprite.getSize().y / 2.0f, 0));
+	outline = glm::rotate(outline, getAngle(), glm::vec3(0, 0, 1));
+	outline = glm::translate(outline, glm::vec3(-getPosition().x - getSize().x / 2.0f, -getPosition().y - getSize().y / 2.0f, 0));
 
-	transform = glm::translate(transform, glm::vec3(m_Sprite.getPosition().x + m_Sprite.getSize().x / 2.0f, m_Sprite.getPosition().y + m_Sprite.getSize().y / 2.0f, 0));
-	transform = glm::rotate(transform, m_Sprite.getAngle(), glm::vec3(0, 0, 1));
-	transform = glm::translate(transform, glm::vec3(-m_Sprite.getPosition().x - m_Sprite.getSize().x / 2.0f, -m_Sprite.getPosition().y - m_Sprite.getSize().y / 2.0f, 0));
+	transform = glm::translate(transform, glm::vec3(getPosition().x + getSize().x / 2.0f, getPosition().y + getSize().y / 2.0f, 0));
+	transform = glm::rotate(transform, getAngle(), glm::vec3(0, 0, 1));
+	transform = glm::translate(transform, glm::vec3(-getPosition().x - getSize().x / 2.0f, -getPosition().y - getSize().y / 2.0f, 0));
 
-	if (m_Gun.getSprite().getAngle() >= 0)
+	if (m_Gun.getAngle() >= 0)
 	{
 		m_Gun.render(renderer);
 	}
 
 	renderer.push(transform);
-	renderer.render(m_Sprite);
+	renderer.render(*this);
 	renderer.pop();
 
 	//m_Sword.render(renderer);
-	if (m_Gun.getSprite().getAngle() < 0)
+	if (m_Gun.getAngle() < 0)
 	{
 		m_Gun.render(renderer);
 	}

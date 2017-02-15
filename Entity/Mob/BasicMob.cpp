@@ -34,23 +34,23 @@ void BasicMob::update(const Terrain& terrain, float timeElapsed)
 	float dx = m_Dx;
 	float dy = m_Dy;
 
-	if (terrain.isSolid(m_Sprite.getPosition().x + dx, m_Sprite.getPosition().y) ||
-		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x + dx, m_Sprite.getPosition().y) ||
-		terrain.isSolid(m_Sprite.getPosition().x + dx, m_Sprite.getPosition().y + m_Sprite.getSize().y) ||
-		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x + dx, m_Sprite.getPosition().y + m_Sprite.getSize().y))
+	if (terrain.isSolid(getPosition().x + dx, getPosition().y) ||
+		terrain.isSolid(getPosition().x + getSize().x + dx, getPosition().y) ||
+		terrain.isSolid(getPosition().x + dx, getPosition().y + getSize().y) ||
+		terrain.isSolid(getPosition().x + getSize().x + dx, getPosition().y + getSize().y))
 	{
 		dx = 0.0f;
 	}
 
-	if (terrain.isSolid(m_Sprite.getPosition().x, m_Sprite.getPosition().y + dy) ||
-		terrain.isSolid(m_Sprite.getPosition().x, m_Sprite.getPosition().y + m_Sprite.getSize().y + dy) ||
-		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x, m_Sprite.getPosition().y + dy) ||
-		terrain.isSolid(m_Sprite.getPosition().x + m_Sprite.getSize().x, m_Sprite.getPosition().y + m_Sprite.getSize().y + dy))
+	if (terrain.isSolid(getPosition().x, getPosition().y + dy) ||
+		terrain.isSolid(getPosition().x, getPosition().y + getSize().y + dy) ||
+		terrain.isSolid(getPosition().x + getSize().x, getPosition().y + dy) ||
+		terrain.isSolid(getPosition().x + getSize().x, getPosition().y + getSize().y + dy))
 	{
 		dy = 0.0f;
 	}
 
-	m_Sprite.addDirection(dx, dy);
+	addDirection(dx, dy);
 }
 
 void BasicMob::update(float timeElapsed)
@@ -71,7 +71,7 @@ void BasicMob::update(float timeElapsed)
 	float dx = m_Dx;
 	float dy = m_Dy;
 
-	m_Sprite.addDirection(dx, dy);
+	addDirection(dx, dy);
 }
 
 void BasicMob::render(Renderer& renderer)

@@ -3,9 +3,7 @@
 Gun::Gun(float x, float y)
 	: Entity(glm::vec3(x, y, 0), glm::vec2(32, 6), TextureManager::get("Textures/Player/Gun4.png"))
 {
-	//m_Sprite.setUV(0, 0, 10, 3);
-	//m_Sprite.addDirection(10, 0);
-	m_Sprite.setUV(0, 0, 16, 3);
+	setUV(0, 0, 16, 3);
 	m_FaceRight = true;
 }
 
@@ -15,10 +13,10 @@ void Gun::shoot(float x, float y, float angle, float movespeed)
 
 	int rtx = 3;
 	int rty = 3;
-	transform = glm::translate(transform, glm::vec3(m_Sprite.getPosition().x + rtx, m_Sprite.getPosition().y + rty, 0));
-	transform = glm::rotate(transform, m_Sprite.getAngle(), glm::vec3(0, 0, 1));
-	transform = glm::translate(transform, glm::vec3(-m_Sprite.getPosition().x - rtx, -m_Sprite.getPosition().y - rty, 0));
-	const glm::vec3& pos = glm::vec3(m_Sprite.getPosition().x + m_Sprite.getSize().x - 12, m_Sprite.getPosition().y + m_Sprite.getSize().y - rty, 0);
+	transform = glm::translate(transform, glm::vec3(getPosition().x + rtx, getPosition().y + rty, 0));
+	transform = glm::rotate(transform, m_Angle, glm::vec3(0, 0, 1));
+	transform = glm::translate(transform, glm::vec3(-getPosition().x - rtx, -getPosition().y - rty, 0));
+	const glm::vec3& pos = glm::vec3(getPosition().x + getSize().x - 12, getPosition().y + getSize().y - rty, 0);
 	glm::vec4 gunPos = transform * glm::vec4(pos, 1.0f);
 
 	//float mx = Window::Instance().mouseX() + Window::Instance().getCamera().getPosition().x;
@@ -39,10 +37,10 @@ void Gun::shoot(float x, float y, float angle, float movespeed)
 
 void Gun::move(float x, float y)
 {
-	m_Sprite.addDirection(x, y);
+	addDirection(x, y);
 }
 
-void Gun::update(Region& region, const std::unique_ptr<QTree<Renderable>>& quadTree, float timeElapsed)
+void Gun::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree, float timeElapsed)
 {
 	float mx = Window::Instance().mouseX();
 	float my = Window::Instance().mouseY();
@@ -60,30 +58,30 @@ void Gun::update(Region& region, const std::unique_ptr<QTree<Renderable>>& quadT
 	if (m_FaceRight && (std::abs(glm::degrees(angle)) >= 90.0f))
 	{
 		//m_Sprite.setUV(0, 1, 10, 3);
-		m_Sprite.addDirection(5, 0);
-		m_Sprite.setUV(0, 1, 16, 3);
+		addDirection(5, 0);
+		setUV(0, 1, 16, 3);
 		m_FaceRight = false;
 	}
 	else if (!m_FaceRight && (std::abs(glm::degrees(angle)) < 90.0f))
 	{
 		//m_Sprite.setUV(0, 0, 10, 3);
-		m_Sprite.addDirection(-5, 0);
-		m_Sprite.setUV(0, 0, 16, 3);
+		addDirection(-5, 0);
+		setUV(0, 0, 16, 3);
 		m_FaceRight = true;
 	}
 
 
-	m_Sprite.setAngle(angle);
+	setAngle(angle);
 
 	//for (int i = 0; i < 150; i++) m_Entities.push_back(std::unique_ptr<GunParticle>(new GunParticle(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle)));
 
 	for (auto& bullet : m_Bullets)
 	{
 		bullet->update(timeElapsed);
-		std::vector<std::shared_ptr<Renderable>> tiles;
+		std::vector<std::shared_ptr<Sprite>> tiles;
 
-		const glm::vec3& pos = bullet->getSprite().getPosition();
-		const glm::vec2& size = bullet->getSprite().getSize();
+		const glm::vec3& pos = bullet->getPosition();
+		const glm::vec2& size = bullet->getSize();
 		
 		quadTree->retrieve(tiles, BoundingBox(pos.x, pos.y, size.x, size.y));
 		//quadTree->retrieve(collisionBoxes, *(bullet->getCollisionBox()));
@@ -187,12 +185,12 @@ void Gun::submit(Renderer& renderer)
 	renderer.pop();
 
 	glm::mat4 transform;
-	transform = glm::translate(transform, glm::vec3(m_Sprite.getPosition().x + 5, m_Sprite.getPosition().y + 5, 0));
-	transform = glm::rotate(transform, m_Sprite.getAngle(), glm::vec3(0, 0, 1));
-	transform = glm::translate(transform, glm::vec3(-m_Sprite.getPosition().x - 5, -m_Sprite.getPosition().y - 5, 0));
+	transform = glm::translate(transform, glm::vec3(getPosition().x + 5, getPosition().y + 5, 0));
+	transform = glm::rotate(transform, m_Angle, glm::vec3(0, 0, 1));
+	transform = glm::translate(transform, glm::vec3(-getPosition().x - 5, -getPosition().y - 5, 0));
 
 	renderer.push(transform);
-	renderer.submit(m_Sprite);
+	renderer.submit(*this);
 	renderer.pop();
 }
 
@@ -225,13 +223,12 @@ void Gun::render(Renderer& renderer)
 	int rtx = 3;
 	int rty = 3;
 	glm::mat4 transform;
-	transform = glm::translate(transform, glm::vec3(m_Sprite.getPosition().x + rtx, m_Sprite.getPosition().y + rty, 0));
-	transform = glm::rotate(transform, m_Sprite.getAngle(), glm::vec3(0, 0, 1));
-	transform = glm::translate(transform, glm::vec3(-m_Sprite.getPosition().x - rtx, -m_Sprite.getPosition().y - rty, 0));
+	transform = glm::translate(transform, glm::vec3(getPosition().x + rtx, getPosition().y + rty, 0));
+	transform = glm::rotate(transform, m_Angle, glm::vec3(0, 0, 1));
+	transform = glm::translate(transform, glm::vec3(-getPosition().x - rtx, -getPosition().y - rty, 0));
 
 	renderer.push(transform);
-	//renderer.render(*this);
-	renderer.render(m_Sprite);
+	renderer.render(*this);
 	renderer.pop();
 
 	if (Settings::Instance().debugShowCollisionBoxes)

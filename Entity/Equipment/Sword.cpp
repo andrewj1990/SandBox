@@ -22,7 +22,7 @@ void Sword::move(float x, float y)
 
 	for (Entity& hitBoxes : m_HitBoxes)
 	{
-		hitBoxes.getSprite().addDirection(x, y);
+		hitBoxes.addDirection(x, y);
 	}
 }
 
@@ -62,17 +62,17 @@ void Sword::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 			transform = glm::translate(transform, glm::vec3(m_Sprite.getPosition().x + 5, m_Sprite.getPosition().y + 5, 0));
 			transform = glm::rotate(transform, m_Sprite.getAngle(), glm::vec3(0, 0, 1));
 			transform = glm::translate(transform, glm::vec3(-m_Sprite.getPosition().x - 5, -m_Sprite.getPosition().y - 5, 0));
-			const glm::vec3& pos = swordHitBox.getSprite().getPosition();
+			const glm::vec3& pos = swordHitBox.getPosition();
 			glm::vec4 swordPos = transform * glm::vec4(pos, 1.0f);
 
 			quadTree->retrieve(enemies, swordPos.x, swordPos.y, swordHitBox.getWidth(), swordHitBox.getHeight());
 
 			for (Entity* enemy : enemies)
 			{
-				float ex = enemy->getSprite().getPosition().x;
-				float ey = enemy->getSprite().getPosition().y;
-				float ew = enemy->getSprite().getSize().x;
-				float eh = enemy->getSprite().getSize().y;
+				float ex = enemy->getPosition().x;
+				float ey = enemy->getPosition().y;
+				float ew = enemy->getSize().x;
+				float eh = enemy->getSize().y;
 
 				float sx = swordPos.x;
 				float sy = swordPos.y;

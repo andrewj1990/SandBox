@@ -16,7 +16,6 @@ protected:
 	Renderable()
 		: m_Position(glm::vec3(0, 0, 0)), m_Size(32, 32), m_Colour(glm::vec4(1, 1, 1, 1)), m_Texture(nullptr)
 	{
-		m_CollisionBox = std::shared_ptr<BoundingBox>(new BoundingBox(0, 0, 32, 32));
 		setUVDefaults();
 	}
 
@@ -24,38 +23,29 @@ public:
 	Renderable(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color = glm::vec4(1, 1, 1, 1))
 		: m_Position(position), m_Size(size), m_Colour(color), m_Texture(nullptr)
 	{
-		m_CollisionBox = std::shared_ptr<BoundingBox>(new BoundingBox(position.x, position.y, size.x, size.y));
-		m_Solid = false;
 		setUVDefaults();
 	}
 
 	Renderable(const glm::vec3& position, const glm::vec2& size, Texture* texture)
 		: m_Position(position), m_Size(size), m_Colour(glm::vec4(1, 1, 1, 1)), m_Texture(texture)
 	{
-		m_CollisionBox = std::shared_ptr<BoundingBox>(new BoundingBox(position.x, position.y, size.x, size.y));
-		m_Solid = false;
 		setUVDefaults();
 	}
 
 	// quad in ccw position where x0,y0 is bottom left
-	Renderable(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3, const glm::vec4& color = glm::vec4(1, 1, 1, 1))
-		: m_Colour(color), m_Texture(nullptr)
-	{
-		m_CollisionBox = std::shared_ptr<BoundingBox>(new BoundingBox(0, 0, 32, 32));
+	//Renderable(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3, const glm::vec4& color = glm::vec4(1, 1, 1, 1))
+	//	: m_Colour(color), m_Texture(nullptr)
+	//{
+	//	m_CollisionBox = std::shared_ptr<BoundingBox>(new BoundingBox(0, 0, 32, 32));
 
-		m_Solid = false;
-		setPositions(x0, y0, x1, y1, x2, y2, x3, y3);
-		setUVDefaults();
-	}
+	//	m_Solid = false;
+	//	//setPositions(x0, y0, x1, y1, x2, y2, x3, y3);
+	//	setUVDefaults();
+	//}
 
 	virtual ~Renderable()
 	{
-		//m_Texture = nullptr;
-		//delete m_Texture;
-		//delete m_CollisionBox;
 	}
-
-	virtual void init(float x, float y, const glm::vec4& colour, bool solid, bool treeTile) {}
 
 	virtual void submit(Renderer& renderer) const
 	{
@@ -84,7 +74,7 @@ public:
 		m_Size = size;
 	}
 
-	void scale(float scale)
+	void scaleUp(float scale)
 	{
 		m_Size *= scale;
 	}
@@ -137,31 +127,26 @@ public:
 		return m_Texture == nullptr ? 0.0f : m_Texture->getHeight();
 	}
 
-	void setPositions(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3)
-	{
-		m_Positions.clear();
-		m_Positions.push_back(glm::vec3(x0, y0, 0));
-		m_Positions.push_back(glm::vec3(x1, y1, 0));
-		m_Positions.push_back(glm::vec3(x2, y2, 0));
-		m_Positions.push_back(glm::vec3(x3, y3, 0));
-	}
+	//void setPositions(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3)
+	//{
+	//	m_Positions.clear();
+	//	m_Positions.push_back(glm::vec3(x0, y0, 0));
+	//	m_Positions.push_back(glm::vec3(x1, y1, 0));
+	//	m_Positions.push_back(glm::vec3(x2, y2, 0));
+	//	m_Positions.push_back(glm::vec3(x3, y3, 0));
+	//}
 
 	void setTexture(Texture* texture) { m_Texture = texture; m_UV = m_Texture->getUVs(); }
 
 	virtual std::shared_ptr<Entity> getTree() { return nullptr; }
 	void setPosition(const glm::vec3& position) { m_Position = position; }
 	inline const glm::vec3& getPosition() const { return m_Position; }
-	inline const std::vector<glm::vec3>& getPositions() const { return m_Positions; }
+	//inline const std::vector<glm::vec3>& getPositions() const { return m_Positions; }
 	inline const glm::vec2& getSize() const { return m_Size; }
 	inline const glm::vec4& getColour() const { return m_Colour; }
-	inline void setSolid(bool solid) { m_Solid = solid; }
-	inline bool isSolid() const { return m_Solid; }
 	virtual bool isTreeTile() const { return false; }
 	inline const std::vector<glm::vec4>& getUV() const { return m_UV; }
 	inline unsigned int getTID() const { return m_Texture == nullptr ? 0 : m_Texture->getTID(); }
-	std::shared_ptr<BoundingBox> getCollisionBox() { return m_CollisionBox; }
-
-protected:
 
 private:
 	void setUVDefaults()
@@ -193,17 +178,11 @@ private:
 		m_UV.push_back(glm::vec4(tx + tw, ty, 0, 0));
 	}
 
-
 protected:
 	glm::vec3 m_Position;
-	std::vector<glm::vec3> m_Positions;
 	glm::vec2 m_Size;
 	glm::vec4 m_Colour;
 	std::vector<glm::vec4> m_UV;
-	bool m_Solid;
 
 	Texture* m_Texture;
-	std::shared_ptr<BoundingBox> m_CollisionBox;
-	//std::shared_ptr<Texture> m_Texture;
-
 };

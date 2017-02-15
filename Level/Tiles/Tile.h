@@ -3,14 +3,14 @@
 #include "..\..\Graphics\renderable.h"
 #include "..\..\Entity\Entity.h"
 
-class Tile : public Renderable
+class Tile : public Sprite
 {
 public:
 	Tile();
 	Tile(const glm::vec2& size);
 	Tile(const std::string& tilesheet);
 
-	void init(float x, float y, const glm::vec4& colour, bool solid, bool treeTile) override;
+	void init(float x, float y, const glm::vec4& colour, bool solid, bool treeTile);
 
 	void submit(Renderer& renderer) const override;
 

@@ -32,8 +32,8 @@ private:
 	std::unique_ptr<Player> m_Player;
 
 	Light m_Light;
-	std::unique_ptr<QTree<Renderable>> m_QTree;
-	std::unique_ptr<QTree<Renderable>> m_QuadTree;
+	std::unique_ptr<QTree<Sprite>> m_QTree;
+	std::unique_ptr<QTree<Sprite>> m_QuadTree;
 	Sprite m_Background;
 
 	std::vector<Light> m_Lights;

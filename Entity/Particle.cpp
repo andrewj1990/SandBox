@@ -3,7 +3,7 @@
 Particle::Particle(float x, float y)
 	: Entity(glm::vec3(x, y, 0.0f), glm::vec2(5, 5), TextureManager::get("Textures/Player/Particle.png"))
 {
-	m_Sprite.setColor(glm::vec4(1, 1, 1, Utils::random(0.0f, 1.0f)));
+	setColor(glm::vec4(1, 1, 1, Utils::random(0.0f, 1.0f)));
 	m_Dx = Utils::random(-1.0f, 1.0f);
 	m_Dy = Utils::random(-1.0f, 1.0f);
 
@@ -44,7 +44,7 @@ Particle::Particle(float x, float y, float size, float angle)
 
 void Particle::update(float timeElapsed)
 {
-	m_Sprite.addDirection(m_Dx * timeElapsed, m_Dy * timeElapsed);
+	addDirection(m_Dx * timeElapsed, m_Dy * timeElapsed);
 
 	m_Duration -= timeElapsed;
 
@@ -52,6 +52,7 @@ void Particle::update(float timeElapsed)
 	{
 		m_Destroy = true;
 	}
+
 }
 
 void Particle::render(Renderer& renderer)

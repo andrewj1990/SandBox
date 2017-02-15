@@ -45,7 +45,7 @@ void Region::unload(int x, int y)
 	}
 }
 
-void Region::addTiles(std::unique_ptr<QTree<Renderable>>& quadTree)
+void Region::addTiles(std::unique_ptr<QTree<Sprite>>& quadTree)
 {
 	for (auto& tileRegion : m_Regions)
 	{

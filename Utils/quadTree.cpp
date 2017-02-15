@@ -70,10 +70,10 @@ int QuadTree::getIndex(Entity* data)
 	double vmid = m_Bounds.x + (m_Bounds.width / 2);
 	double hmid = m_Bounds.y + (m_Bounds.height / 2);
 
-	bool topQuad = data->getSprite().getPosition().y < hmid;// && data->getSprite().getPosition().y + data->getSprite().getSize().y < hmid;
-	bool botQuad = data->getSprite().getPosition().y >= hmid;
+	bool topQuad = data->getPosition().y < hmid;// && data->getSprite().getPosition().y + data->getSprite().getSize().y < hmid;
+	bool botQuad = data->getPosition().y >= hmid;
 
-	if (data->getSprite().getPosition().x < vmid)// && data->getSprite().getPosition().x + data->getSprite().getSize().x < vmid)
+	if (data->getPosition().x < vmid)// && data->getSprite().getPosition().x + data->getSprite().getSize().x < vmid)
 	{
 		if (topQuad)
 		{
@@ -84,7 +84,7 @@ int QuadTree::getIndex(Entity* data)
 			index = 2;
 		}
 	}
-	else if (data->getSprite().getPosition().x >= vmid)
+	else if (data->getPosition().x >= vmid)
 	{
 		if (topQuad)
 		{

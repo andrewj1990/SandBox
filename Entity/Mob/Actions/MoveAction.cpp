@@ -36,7 +36,7 @@ void MoveAction::play(Entity& mob, Entity& player, float timeElapsed)
 	}
 	else
 	{
-		mob.getSprite().addDirection(std::cosf(m_Angle), std::sinf(m_Angle));
+		mob.addDirection(std::cosf(m_Angle), std::sinf(m_Angle));
 	}
 
 }

@@ -7,7 +7,7 @@ Boss::Boss(std::shared_ptr<Player> player, float x, float y)
 
 	m_Actions = Utils::getRandomActionList(3);
 
-	m_Sprite.setUV(0, 0, 10, 10);
+	setUV(0, 0, 10, 10);
 	m_Light = Sprite(glm::vec3(x, y, 0), glm::vec2(256, 256), TextureManager::get("Textures/light.png"));
 }
 
@@ -15,7 +15,7 @@ void Boss::damage(int amount)
 {
 }
 
-void Boss::update(const Terrain& terrain, float timeElapsed)
+void Boss::update(float timeElapsed)
 {
 	// use random action
 	if (m_ActionIndex == -1 && m_Actions.size() > 0)
@@ -79,15 +79,11 @@ void Boss::update(const Terrain& terrain, float timeElapsed)
 
 }
 
-void Boss::update(float timeElapsed)
-{
-}
-
 void Boss::render(Renderer& renderer)
 {
 	//renderer.render(m_Bullets);
 
-	renderer.render(m_Sprite);
+	renderer.render(*this);
 	//renderer.render(m_Entities);
 }
 

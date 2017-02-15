@@ -33,18 +33,18 @@ void Level::init()
 
 void Level::update(float timeElapsed)
 {
-	m_QuadTree = std::unique_ptr<QuadTree>(new QuadTree(0, BoundingBox(m_PlayerPtr->getSprite().getPosition().x - Window::Instance().getWidth() / 2 + 16.0f, m_PlayerPtr->getSprite().getPosition().y - Window::Instance().getHeight() / 2 + 16.0f, Window::Instance().getWidth(), Window::Instance().getHeight())));
+	m_QuadTree = std::unique_ptr<QuadTree>(new QuadTree(0, BoundingBox(m_PlayerPtr->getPosition().x - Window::Instance().getWidth() / 2 + 16.0f, m_PlayerPtr->getPosition().y - Window::Instance().getHeight() / 2 + 16.0f, Window::Instance().getWidth(), Window::Instance().getHeight())));
 	
 	for (auto it = m_Enemies.begin(); it != m_Enemies.end(); )
 	{
 		if ((*it)->shouldDestroy())
 		{
-			spawnItem((*it)->getSprite().getPosition());
+			spawnItem((*it)->getPosition());
 			it = m_Enemies.erase(it);
 		}
 		else
 		{
-			(*it)->update(m_Terrain, timeElapsed);
+			(*it)->update(timeElapsed);
 			m_QuadTree->insert((*it).get());
 			++it;
 		}
@@ -54,12 +54,12 @@ void Level::update(float timeElapsed)
 	{
 		if ((*it)->shouldDestroy())
 		{
-			spawnItem((*it)->getSprite().getPosition());
+			spawnItem((*it)->getPosition());
 			it = m_Entities.erase(it);
 		}
 		else
 		{
-			(*it)->update(m_Terrain, m_QuadTree, timeElapsed);
+			(*it)->update(timeElapsed);
 			++it;
 		}
 	}

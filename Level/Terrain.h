@@ -41,6 +41,6 @@ private:
 
 	float m_NoiseSize;
 
-	std::vector<std::unique_ptr<Renderable>> m_Tiles;
+	std::vector<std::unique_ptr<Tile>> m_Tiles;
 	std::vector<std::shared_ptr<Entity>> m_Objects;
 };

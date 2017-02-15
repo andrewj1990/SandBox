@@ -46,56 +46,40 @@ void TileRegion::init(const std::unordered_set<std::string>& region_tiles)
 	{
 		for (int y = 0; y < Settings::Instance().SUB_REGION_TILE_COUNT; y++)
 		{
-			m_Tiles.push_back(std::unique_ptr<Tile>(new Tile(glm::vec2(Settings::Instance().TILE_SIZE, Settings::Instance().TILE_SIZE))));
-			auto& t = m_Tiles.back();
-			int di = Utils::random(0, 1);
-			t->init(m_X + x * Settings::Instance().TILE_SIZE, m_Y + y * Settings::Instance().TILE_SIZE, glm::vec4(0, di, 0, 1), false, false);
+			std::string positionInRegion = std::to_string(m_X + x * Settings::Instance().TILE_SIZE) + "_" + std::to_string(m_Y + y * Settings::Instance().TILE_SIZE);
+			auto it = region_tiles.find(positionInRegion);
+			if (it == region_tiles.end())
+			{
+				m_Tiles.push_back(std::unique_ptr<Tile>(new Tile(glm::vec2(Settings::Instance().TILE_SIZE, Settings::Instance().TILE_SIZE))));
+				auto& t = m_Tiles.back();
+				int di = Utils::random(0, 1);
+				t->init(m_X + x * Settings::Instance().TILE_SIZE, m_Y + y * Settings::Instance().TILE_SIZE, glm::vec4(0, di, 0, 1), false, false);
 
-			float elavation = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, (float)(m_X + x * Settings::Instance().TILE_SIZE) / m_NoiseSize, (float)(m_Y + y * Settings::Instance().TILE_SIZE) / m_NoiseSize);
-			if (elavation < 0.2)
-			{
-				t->setUV(0, 0, 16, 16);
-			}
-			else if (elavation < 0.4)
-			{
-				t->setUV(1, 0, 16, 16);
-			}
-			else if (elavation < 0.5)
-			{
-				t->setUV(3, 0, 16, 16);
-			}
-			else
-			{
-				t->setUV(2, 0, 16, 16);
-			}
-		}
-	}
-
-	m_SurfaceTopEdge = 1500.0f;
-	m_TransitionY = -1000.0f;
-	for (int x = 0; x < Settings::Instance().SUB_REGION_TILE_COUNT; x++)
-	{
-		for (int y = 0; y < Settings::Instance().SUB_REGION_TILE_COUNT; y++)
-		{
-			if (calculateTile(m_X + x * Settings::Instance().TILE_SIZE, m_Y + y * Settings::Instance().TILE_SIZE, region_tiles))
-			{
-				std::string positionInRegion = std::to_string(m_X + x * Settings::Instance().TILE_SIZE) + "_" + std::to_string(m_Y + y * Settings::Instance().TILE_SIZE);
-				auto it = region_tiles.find(positionInRegion);
-				if (it == region_tiles.end())
+				float elavation = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, (float)(m_X + x * Settings::Instance().TILE_SIZE) / m_NoiseSize, (float)(m_Y + y * Settings::Instance().TILE_SIZE) / m_NoiseSize);
+				if (elavation < 0.2)
 				{
-					m_TempTiles.push_back(std::unique_ptr<Tile>(new Tile(glm::vec2(Settings::Instance().TILE_SIZE, Settings::Instance().TILE_SIZE))));
-					auto& t = m_TempTiles.back();
-					int di = Utils::random(0, 1);
-					t->init(m_X + x * Settings::Instance().TILE_SIZE, m_Y + y * Settings::Instance().TILE_SIZE, glm::vec4(0, di, 0, 1), false, false);
+					t->setUV(0, 0, 16, 16);
+				}
+				else if (elavation < 0.4)
+				{
+					t->setUV(1, 0, 16, 16);
+				}
+				else if (elavation < 0.5)
+				{
+					t->setUV(3, 0, 16, 16);
+				}
+				else
+				{
+					t->setUV(2, 0, 16, 16);
 				}
 			}
 		}
 	}
 
-	for (auto& tile : m_TempTiles) 
-	{
-		setTileUV(tile, region_tiles);
-	}
+	//for (auto& tile : m_TempTiles) 
+	//{
+	//	setTileUV(tile, region_tiles);
+	//}
 }
 
 void TileRegion::submit(Renderer& renderer)
@@ -105,16 +89,10 @@ void TileRegion::submit(Renderer& renderer)
 		renderer.submit(*tile);
 	}
 
-	for (const auto& tile : m_TempTiles)
-	{
-		renderer.submit(*tile);
-	}
-}
-
-void TileRegion::render(Renderer& renderer)
-{
-	renderer.render(m_Tiles);
-	renderer.render(m_TempTiles);
+	//for (const auto& tile : m_TempTiles)
+	//{
+	//	renderer.submit(*tile);
+	//}
 }
 
 void TileRegion::setUV(int x, int y, const std::unordered_set<std::string>& region_tiles)
@@ -137,7 +115,7 @@ void TileRegion::removeTile(int x, int y)
 
 }
 
-std::shared_ptr<Renderable>& TileRegion::getTile(int x, int y)
+std::shared_ptr<Tile>& TileRegion::getTile(int x, int y)
 {
 	int px = x - (m_IndexX * (Settings::Instance().SUB_REGION_TILE_COUNT - Settings::Instance().TILE_SIZE));
 	int py = y - (m_IndexY * (Settings::Instance().SUB_REGION_TILE_COUNT - Settings::Instance().TILE_SIZE));
@@ -161,12 +139,12 @@ void TileRegion::getTileType(int x, int y)
 	std::cout << (*tileIt)->getPosition().x << ", " << (*tileIt)->getPosition().y << "\n";
 }
 
-std::vector<std::shared_ptr<Renderable>>::iterator TileRegion::getTileIterator(int x, int y)
+std::vector<std::shared_ptr<Tile>>::iterator TileRegion::getTileIterator(int x, int y)
 {
 	return std::find_if(m_Tiles.begin(), m_Tiles.end(), [x, y](const auto& tile) { return (tile->getPosition().x == x && tile->getPosition().y == y); });
 }
 
-void TileRegion::setTileUV(std::shared_ptr<Renderable>& tile, const std::unordered_set<std::string>& region_tiles)
+void TileRegion::setTileUV(std::shared_ptr<Tile>& tile, const std::unordered_set<std::string>& region_tiles)
 {
 	float rightTileX = tile->getPosition().x + Settings::Instance().TILE_SIZE;
 	float leftTileX = tile->getPosition().x - Settings::Instance().TILE_SIZE;

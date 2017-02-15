@@ -33,7 +33,7 @@ public:
 	void addBuff();
 
 	void update(float timeElapsed) override;
-	void update(Region& region, const std::unique_ptr<QTree<Renderable>>& quadTree, float timeElapsed);
+	void update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree, float timeElapsed);
 	void submit(Renderer& renderer) override;
 	void render(Renderer& renderer) override;
 
@@ -45,8 +45,8 @@ public:
 
 private:
 	void init();
-	bool playerCollision(float dx, float dy, const std::unique_ptr<QTree<Renderable>>& quadTree);
-	void move(const std::unique_ptr<QTree<Renderable>>& quadTree, float timeElapsed);
+	bool playerCollision(float dx, float dy, const std::unique_ptr<QTree<Sprite>>& quadTree);
+	void move(const std::unique_ptr<QTree<Sprite>>& quadTree, float timeElapsed);
 	void aimDownSight(float timeElapsed);
 	void shoot(float angle, float timeElapsed);
 	void moveCamera();
@@ -63,7 +63,6 @@ private:
 
 	bool m_ShieldActive;
 	Sprite m_Shield;
-	//Sprite m_Crosshair;
 	Sword m_Sword;
 	Gun m_Gun;
 
@@ -84,7 +83,4 @@ private:
 
 	float m_CameraOffsetX;
 	float m_CameraOffsetY;
-
-	//bool m_NoClip;
-
 };
