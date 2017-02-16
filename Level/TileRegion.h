@@ -25,6 +25,7 @@ public:
 	void removeTile(int x, int y);
 	std::shared_ptr<Tile>& getTile(int x, int y);
 	TileType getTileType(int x, int y);
+	TileType calculateTileType(int x, int y);
 	std::vector<std::shared_ptr<Tile>>::iterator getTileIterator(int x, int y);
 	bool calculateTile(float x, float y, const std::unordered_set<std::string>& region_tiles);
 	bool surfaceTile(float x, float y);

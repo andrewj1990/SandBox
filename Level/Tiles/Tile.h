@@ -8,7 +8,8 @@ enum TileType
 	GRASS,
 	SHALLOW_WATER,
 	DEEP_WATER,
-	SAND
+	SAND,
+	VOID
 };
 
 class Tile : public Sprite

@@ -3,10 +3,10 @@
 Level2D::Level2D()
 	: m_Light(), m_Background(glm::vec3(0, 0, 0), glm::vec2(Window::Instance().getWidth(), Window::Instance().getHeight()), TextureManager::get("Textures/Level/bg.png")), m_Region()
 {
-	int camX = Window::Instance().getCamera().Position.x;
-	int camY = Window::Instance().getCamera().Position.y;
-	int winW = Window::Instance().getWidth();
-	int winH = Window::Instance().getHeight();
+	int camX = (int)Window::Instance().getCamera().Position.x;
+	int camY = (int)Window::Instance().getCamera().Position.y;
+	int winW = (int)Window::Instance().getWidth();
+	int winH = (int)Window::Instance().getHeight();
 	m_WaterTilesQT = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, winW, winH)));
 	m_QuadTree = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, winW, winH)));
 	//m_ShowQuadTree = false;
@@ -82,18 +82,26 @@ void Level2D::update(float timeElapsed)
 
 	m_Player->update(m_Region, m_QuadTree, m_WaterTilesQT, timeElapsed);
 
+	// water ripples
 	m_WaterRippleTime += timeElapsed;
-	if (m_WaterRippleTime > 10000) m_WaterRippleTime = 0;
-	if (m_Player->isMoving() && m_WaterRippleTime > 0.3 && m_Region.getTileType(m_Player->getCenterX(), m_Player->getCenterY()) == TileType::SHALLOW_WATER)
+	if (m_WaterRippleTime > 10000.0f) m_WaterRippleTime = 0.0f;
+	if (m_Region.getTileType(m_Player->getCenterX(), m_Player->getCenterY()) == TileType::SHALLOW_WATER)
 	{
-		m_WaterRippleTime = 0;
-		float numRipples = Utils::random(1, 4);
-		for (int i = 0; i < numRipples; i++)
+		if (m_Player->isMoving() && m_WaterRippleTime > 0.1f)
 		{
-			m_WaterRipples.push_back(std::unique_ptr<WaterRipple>(new WaterRipple(m_Player->getCenterX(), m_Player->getCenterY(), Utils::random(100, 300))));
+			m_WaterRippleTime = 0.0f;
+			float numRipples = Utils::random(1, 4);
+			for (int i = 0; i < numRipples; i++)
+			{
+				m_WaterRipples.push_back(std::unique_ptr<WaterRipple>(new WaterRipple(m_Player->getCenterX(), m_Player->getCenterY(), Utils::random(100, 300))));
+			}
+		}
+		else if (m_WaterRippleTime > 0.7f)
+		{
+			m_WaterRippleTime = 0.0f;
+			m_WaterRipples.push_back(std::unique_ptr<WaterRipple>(new WaterRipple(m_Player->getCenterX(), m_Player->getCenterY(), Utils::random(30, 50))));
 		}
 	}
-
 
 	for (auto it = m_WaterRipples.begin(); it != m_WaterRipples.end(); )
 	{
@@ -163,7 +171,6 @@ void Level2D::render(Renderer& renderer)
 		}
 		//renderer.render(m_Light.getLightRegion(), TextureManager::get("Textures/bbox.png"));
 	}
-
 }
 
 void Level2D::renderLights(Renderer& renderer)
@@ -182,6 +189,15 @@ void Level2D::renderLights(Renderer& renderer)
 	renderer.flush(GL_SRC_ALPHA, GL_ONE);
 
 	ResourceManager::getInstance().shader("basic_shader")->use();
+}
+
+void Level2D::waterRipple(int x, int y)
+{
+	float numRipples = Utils::random(1, 4);
+	for (int i = 0; i < numRipples; i++)
+	{
+		m_WaterRipples.push_back(std::unique_ptr<WaterRipple>(new WaterRipple(x, y, Utils::random(100, 300))));
+	}
 }
 
 void Level2D::moveCamera()

@@ -119,21 +119,22 @@ void Player::move(const std::unique_ptr<QTree<Sprite>>& quadTree, const std::uni
 
 	if (!Settings::Instance().noClip)
 	{
-		if (playerCollision(dx, 0, quadTree))
+		if (playerCollision(dx, 0, quadTree) || region.getTileType(getCenterX() + dx, getY()) == TileType::VOID)
 		{
 			dx = 0.0f;
 		}
 
-		if (playerCollision(0, dy, quadTree))
+		if (playerCollision(0, dy, quadTree) || region.getTileType(getCenterX(), getY() + dy) == TileType::VOID)
 		{
 			dy = 0.0f;
 		}
 	}
 
-	if (region.getTileType(getX(), getY()) == TileType::SHALLOW_WATER)
+	if (region.getTileType(getCenterX(), getCenterY()) == TileType::SHALLOW_WATER)
 	{
 		dx *= 0.5f;
 		dy *= 0.5f;
+		setUV(4, 0, m_TexSize, m_TexSize);
 	}
 
 	move(dx, dy);

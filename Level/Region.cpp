@@ -118,10 +118,9 @@ void Region::removeTiles(float x, float y, bool exactCoord, bool ripple)
 
 TileType Region::getTileType(float x, float y)
 {
-	int ix = (int)x / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE;
-	int iy = (int)y / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE;
-
-	std::string tileGlobalPosition = std::to_string(ix) + "_" + std::to_string(iy);
+	int ix = x < 0 ? (int)(x - Settings::Instance().TILE_SIZE) / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE : (int)x / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE;
+	int iy = y < 0 ? (int)(y - Settings::Instance().TILE_SIZE) / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE : (int)y / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE;
+	//int iy = (int)y / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE;
 
 	const auto& region = getTileRegion(ix, iy);
 	return region->getTileType(ix, iy);
@@ -130,7 +129,7 @@ TileType Region::getTileType(float x, float y)
 bool Region::emptyTile(float x, float y)
 {
 	auto& region = getTileRegion(x, y);
-	return !region->calculateTile(x, y, m_Tiles);
+	return region->calculateTile(x, y, m_Tiles);
 }
 
 bool Region::getSurfacePosition(float x, float y)
@@ -181,7 +180,7 @@ void Region::update(float timeElapsed)
 		//float my = camY + (Window::Instance().getHeight() - Window::Instance().mouseY());
 		float mx = Window::Instance().getMouseWorldPosX();
 		float my = Window::Instance().getMouseWorldPosY();
-	
+
 		removeTiles(mx, my, false, true);
 	}
 

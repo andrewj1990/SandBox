@@ -12,8 +12,8 @@ TileRegion::TileRegion(int x, int y)
 TileRegion::TileRegion(int x, int y, int size)
 	: m_IndexX(x), m_IndexY(y), m_Noise()
 {
-	m_X = x * (Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE);
-	m_Y = y * (Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE);
+	m_X = x * (size * size);
+	m_Y = y * (size * size);
 
 	m_NoiseSize = 0.0f;
 }
@@ -55,35 +55,17 @@ void TileRegion::init(const std::unordered_set<std::string>& region_tiles)
 				int di = Utils::random(0, 1);
 				t->init(m_X + x * Settings::Instance().TILE_SIZE, m_Y + y * Settings::Instance().TILE_SIZE, glm::vec4(0, di, 0, 1), false);
 
-				float elavation = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, (float)(m_X + x * Settings::Instance().TILE_SIZE) / m_NoiseSize, (float)(m_Y + y * Settings::Instance().TILE_SIZE) / m_NoiseSize);
-				if (elavation < 0.2)
-				{
-					t->setUV(0, 0, 16, 16);
-					t->setType(TileType::DEEP_WATER);
-				}
-				else if (elavation < 0.4)
-				{
-					t->setUV(1, 0, 16, 16);
-					t->setType(TileType::SHALLOW_WATER);
-				}
-				else if (elavation < 0.5)
-				{
-					t->setUV(3, 0, 16, 16);
-					t->setType(TileType::SAND);
-				}
-				else
-				{
-					t->setUV(2, 0, 16, 16);
-					t->setType(TileType::GRASS);
-				}
+				auto tileType = calculateTileType(m_X + x * Settings::Instance().TILE_SIZE, m_Y + y * Settings::Instance().TILE_SIZE);
+				t->setUV(0, tileType, 16, 16);
+				t->setType(tileType);
 			}
 		}
 	}
 
-	//for (auto& tile : m_TempTiles) 
-	//{
-	//	setTileUV(tile, region_tiles);
-	//}
+	for (auto& tile : m_Tiles) 
+	{
+		setTileUV(tile, region_tiles);
+	}
 }
 
 void TileRegion::submit(Renderer& renderer)
@@ -110,6 +92,9 @@ void TileRegion::removeTile(int x, int y)
 	auto tileIt = getTileIterator(x, y);
 	if (tileIt == m_Tiles.end()) return;
 
+	//std::cout << "tile type : " << (*tileIt)->getType() << "\n";
+	//(*tileIt)->setType(TileType::VOID);
+
 	m_Tiles.erase(tileIt);
 }
 
@@ -123,7 +108,7 @@ std::shared_ptr<Tile>& TileRegion::getTile(int x, int y)
 		if ((int)tile->getPosition().x == px && (int)tile->getPosition().y == py)
 		{
 			return tile;
-		}
+		}	
 	}
 
 	return m_Tiles[0];
@@ -132,9 +117,32 @@ std::shared_ptr<Tile>& TileRegion::getTile(int x, int y)
 TileType TileRegion::getTileType(int x, int y)
 {
 	auto tileIt = getTileIterator(x, y);
-	if (tileIt == m_Tiles.end()) return TileType::GRASS;
+	if (tileIt == m_Tiles.end()) return TileType::VOID;
 
 	return (*tileIt)->getType();
+}
+
+TileType TileRegion::calculateTileType(int x, int y)
+{
+	float elavation = m_Noise.scaledOctaveNoise(5, 0.5, 1, 0, 1, (float)(x) / m_NoiseSize, (float)(y) / m_NoiseSize);
+	if (elavation < 0.2)
+	{
+		return TileType::DEEP_WATER;
+	}
+	else if (elavation < 0.4)
+	{
+		return TileType::SHALLOW_WATER;
+	}
+	else if (elavation < 0.5)
+	{
+		return TileType::SAND;
+	}
+	else
+	{
+		return TileType::GRASS;
+	}
+
+	return TileType::VOID;
 }
 
 std::vector<std::shared_ptr<Tile>>::iterator TileRegion::getTileIterator(int x, int y)
@@ -144,27 +152,24 @@ std::vector<std::shared_ptr<Tile>>::iterator TileRegion::getTileIterator(int x, 
 
 void TileRegion::setTileUV(std::shared_ptr<Tile>& tile, const std::unordered_set<std::string>& region_tiles)
 {
-	float rightTileX = tile->getPosition().x + Settings::Instance().TILE_SIZE;
-	float leftTileX = tile->getPosition().x - Settings::Instance().TILE_SIZE;
-	float aboveTileY = tile->getPosition().y + Settings::Instance().TILE_SIZE;
-	float belowTileY = tile->getPosition().y - Settings::Instance().TILE_SIZE;
-
-	bool above = calculateTile(tile->getPosition().x, aboveTileY, region_tiles);
-	bool below = calculateTile(tile->getPosition().x, belowTileY, region_tiles);
-	bool right = calculateTile(rightTileX, tile->getPosition().y, region_tiles);
-	bool left = calculateTile(leftTileX, tile->getPosition().y, region_tiles);
-
 	float sum = 0;
-	if (above) sum += 1.0f;
-	if (left)  sum += 2.0f;
-	if (below) sum += 4.0f;
-	if (right) sum += 8.0f;
-	//if (topRight) sum += 2;
-	//if (botRight) sum += 8;
-	//if (botLeft) sum += 32;
-	//if (topLeft) sum += 128;
 
-	tile->setUV(sum, 0, 16, 16);
+	float rightTileX = tile->getX() + Settings::Instance().TILE_SIZE;
+	float leftTileX = tile->getX() - Settings::Instance().TILE_SIZE;
+	float aboveTileY = tile->getY() + Settings::Instance().TILE_SIZE;
+	float bottomTileY = tile->getY() - Settings::Instance().TILE_SIZE;
+
+	auto aboveTileType = calculateTile(tile->getX(), aboveTileY, region_tiles);
+	auto rightTileType = calculateTile(rightTileX, tile->getY(), region_tiles);
+	auto bottomTileType = calculateTile(tile->getX(), bottomTileY,	 region_tiles);
+	auto leftTileType = calculateTile(leftTileX, tile->getY(), region_tiles);
+
+	if (aboveTileType) sum += 1.0f;
+	if (rightTileType)  sum += 2.0f;
+	if (bottomTileType) sum += 4.0f;
+	if (leftTileType) sum += 8.0f;
+
+	tile->setUV(sum, tile->getType(), 16, 16);
 }
 
 float TileRegion::noiseHeight(float x, float y)
@@ -178,23 +183,11 @@ bool TileRegion::calculateTile(float x, float y, const std::unordered_set<std::s
 	auto it = region_tiles.find(std::to_string((int)x) + "_" + std::to_string((int)y));
 	if (it != region_tiles.end())
 	{
-		return false;
+		return true;
 	}
 
-	//return caveTile(x, y);
-
-	if (y > 0) 
-	{
-		return surfaceTile(x, y);
-	}
-	else if (y > m_TransitionY)
-	{
-		return transitionTile(x, y);
-	}
-	else
-	{
-		return caveTile(x, y);
-	}
+	auto tileType = calculateTileType(x, y);
+	if (tileType == TileType::VOID) return true;
 
 	return false;
 }

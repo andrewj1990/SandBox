@@ -3,7 +3,7 @@
 #include "TileRegion.h"
 #include "..\Utils\QTree.h"
 #include "..\Settings.h"
-#include "TileRipple.h"
+#include "Effects\TileRipple.h"
 
 class Region
 {

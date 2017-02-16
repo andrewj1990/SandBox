@@ -21,15 +21,17 @@ WaterParticle::WaterParticle(float x, float y, float angleDeg, float vel)
 
 void WaterParticle::update(Region& region, float timeElapsed)
 {
-	m_Dx *= 0.99f;
-	m_Dy *= 0.99f;
-
-	addDirection(m_Dx * timeElapsed, m_Dy * timeElapsed);
-
-	m_Duration -= timeElapsed;
-
 	if (m_Duration <= 0 || region.getTileType(getCenterX(), getCenterY()) != TileType::SHALLOW_WATER)
 	{
 		m_Destroy = true;
+		return;
 	}
+
+	m_Dx *= 0.99f;
+	m_Dy *= 0.99f;
+	fade();
+
+	addDirection(m_Dx * timeElapsed, m_Dy * timeElapsed);
+	m_Duration -= timeElapsed;
+
 }

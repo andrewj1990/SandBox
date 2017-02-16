@@ -25,11 +25,13 @@ public:
 	void renderLights(Renderer& renderer);
 
 	const std::unique_ptr<Player>& getPlayerPtr() { return m_Player; }
+	void waterRipple(int x, int y);
 
 private:
 	void moveCamera();
 	
 private:
+
 	std::unique_ptr<Player> m_Player;
 
 	Light m_Light;

@@ -2,6 +2,7 @@
 
 #include "Particle.h"
 #include "..\..\Level\Region.h"
+#include <functional>
 
 class WaterParticle : public Particle
 {

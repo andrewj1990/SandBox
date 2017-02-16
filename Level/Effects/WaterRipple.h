@@ -2,6 +2,7 @@
 
 #include "..\..\Entity\Particles\WaterParticle.h"
 #include "..\Region.h"
+#include <functional>
 
 class WaterRipple
 {
