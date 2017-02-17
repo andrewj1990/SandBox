@@ -1,7 +1,7 @@
 #include "player.h"
 
 Player::Player(float x, float y)
-	: Entity(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/player_anim.png")), 
+	: Entity(glm::vec3(x, y, y), glm::vec2(32, 32), TextureManager::get("Textures/Player/player_anim.png")), 
 	m_Sword(x + 2, y + 8), m_Gun(x + 10, y + 12), m_CollisionBox(x, y, 10, 22)
 {
 	m_Light = Sprite(glm::vec3(0, 0, 0), glm::vec2(256, 256), TextureManager::get("Textures/light2.png"));
@@ -135,6 +135,18 @@ void Player::move(const std::unique_ptr<QTree<Sprite>>& quadTree, const std::uni
 		dx *= 0.5f;
 		dy *= 0.5f;
 		setUV(4, 0, m_TexSize, m_TexSize);
+	}
+
+	if (window.isKeyPressed(GLFW_KEY_LEFT_SHIFT))
+	{
+		dx *= 10.0f;
+		dy *= 10.0f;
+	}
+
+	if (window.isKeyPressed(GLFW_KEY_LEFT_CONTROL))
+	{
+		dx *= 0.1f;
+		dy *= 0.1f;
 	}
 
 	move(dx, dy);
@@ -286,8 +298,19 @@ void Player::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTr
 	move(quadTree, waterQT, region, timeElapsed);
 	m_Gun.update(region, quadTree, timeElapsed);
 
+	if (m_Gun.getAngle() < 0)
+	{
+		m_Gun.setDepth(m_Position.z + 1);
+	}
+	else
+	{
+		m_Gun.setDepth(m_Position.z - 1);
+	}
+
 	Window& win = Window::Instance();
 
+	m_Position.z = -m_Position.y;
+	//std::cout << m_Position.z << "\n";
 	moveCamera();
 }
 
@@ -317,39 +340,27 @@ void Player::update(float timeElapsed)
 
 void Player::submit(Renderer& renderer)
 {
-	glm::mat4 transform;
-	transform = glm::translate(transform, glm::vec3(getPosition().x + getSize().x / 2.0f, getPosition().y + getSize().y / 2.0f, 0));
-	transform = glm::rotate(transform, getAngle(), glm::vec3(0, 0, 1));
-	transform = glm::translate(transform, glm::vec3(-getPosition().x - getSize().x / 2.0f, -getPosition().y - getSize().y / 2.0f, 0));
+	//glm::mat4 transform;
+	//transform = glm::translate(transform, glm::vec3(getPosition().x + getSize().x / 2.0f, getPosition().y + getSize().y / 2.0f, 0));
+	//transform = glm::rotate(transform, getAngle(), glm::vec3(0, 0, 1));
+	//transform = glm::translate(transform, glm::vec3(-getPosition().x - getSize().x / 2.0f, -getPosition().y - getSize().y / 2.0f, 0));
 
-	if (m_Row == 3)
-	{
-		m_Gun.submit(renderer);
-	}
-
-	renderer.push(transform);
-	renderer.end();
-	renderer.flush();
-	renderer.render(*this);
-	renderer.pop();
-	renderer.begin();
-
-	if (m_Row != 3)
-	{
-		m_Gun.submit(renderer);
-	}
-
-	//if (m_ShieldActive)
+	//if (m_Row == 3)
 	//{
-	//	transform = glm::mat4();
-	//	transform = glm::translate(transform, glm::vec3(m_Shield.getPosition().x + m_Shield.getSize().x / 2.0f, m_Shield.getPosition().y + m_Shield.getSize().y / 2.0f, 0));
-	//	transform = glm::rotate(transform, m_Shield.getAngle(), glm::vec3(0, 0, 1));
-	//	transform = glm::translate(transform, glm::vec3(-m_Shield.getPosition().x - m_Shield.getSize().x / 2.0f, -m_Shield.getPosition().y - m_Shield.getSize().y / 2.0f, 0));
-	//	renderer.push(transform);
-	//	renderer.render(m_Shield);
-	//	renderer.pop();
+	//	m_Gun.submit(renderer);
 	//}
 
+	//renderer.push(transform);
+	//renderer.end();
+	//renderer.flush();
+	//renderer.render(*this);
+	//renderer.pop();
+	//renderer.begin();
+
+	//if (m_Row != 3)
+	//{
+	//	m_Gun.submit(renderer);
+	//}
 }
 
 void Player::render(Renderer& renderer)
@@ -366,20 +377,11 @@ void Player::render(Renderer& renderer)
 	transform = glm::rotate(transform, getAngle(), glm::vec3(0, 0, 1));
 	transform = glm::translate(transform, glm::vec3(-getPosition().x - getSize().x / 2.0f, -getPosition().y - getSize().y / 2.0f, 0));
 
-	if (m_Gun.getAngle() >= 0)
-	{
-		m_Gun.render(renderer);
-	}
-
 	renderer.push(transform);
 	renderer.render(*this);
 	renderer.pop();
 
-	//m_Sword.render(renderer);
-	if (m_Gun.getAngle() < 0)
-	{
-		m_Gun.render(renderer);
-	}
+	m_Gun.render(renderer);
 
 	//if (m_ShieldActive)
 	//{

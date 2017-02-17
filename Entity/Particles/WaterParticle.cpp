@@ -3,6 +3,7 @@
 WaterParticle::WaterParticle(float x, float y, float angleDeg, float vel)
 	: Particle(x, y, 4, angleDeg)
 {
+	m_Position.z = -(Settings::Instance().Z_PLANE) + 100;
 	float a = glm::radians(angleDeg);
 
 	float colour = Utils::random(0.7f, 1.0f);

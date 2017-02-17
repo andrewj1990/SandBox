@@ -66,7 +66,7 @@ int main()
 	std::vector<Renderable> sprites;
 
 	FontManager::add(new Font("Arial", "arial.ttf", 30));
-	Label label("Altitude : ", 0, 0, FontManager::get("Arial"), glm::vec4(1, 1, 1, 1));
+	Label label("Text test!", 0, 0, FontManager::get("Arial"), glm::vec4(1, 1, 1, 1));
 
 	glm::mat4 projection = glm::ortho(0.0f, Settings::Instance().PROJECTION_WIDTH, 0.0f, Settings::Instance().PROJECTION_HEIGHT, -1.0f, 1.0f);
 	ResourceManager::getInstance().shader("basic_shader")->setUniform("projection", projection);
@@ -135,7 +135,7 @@ int main()
 		}
 
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT/* | GL_DEPTH_BUFFER_BIT*/);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		if (Window::Instance().isKeyPressed(GLFW_KEY_ESCAPE))
 		{
@@ -199,8 +199,6 @@ int main()
 
 		fbo->bind();
 		ResourceManager::getInstance().shader("basic_shader")->use();
-		//if (LEVEL) level->render(batchrenderer);
-		//else 
 		level2d->render(batchrenderer);
 
 		batchrenderer.render(label);

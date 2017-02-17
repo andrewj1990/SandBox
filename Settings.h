@@ -19,6 +19,8 @@ public:
 	const float PROJECTION_WIDTH = 1280.0f;	// width and height of projection matrix
 	const float PROJECTION_HEIGHT = 720.0f;
 
+	const float Z_PLANE = (float)(1 << 23);
+
 	bool debugShowQuadTree = false;
 	bool debugShowCollisionBoxes = false;
 	bool debugShowLightRange = false;

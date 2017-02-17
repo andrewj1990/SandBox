@@ -8,7 +8,7 @@ Tile::Tile()
 }
 
 Tile::Tile(const glm::vec2& size)
-	: Sprite(glm::vec3(0, 0, 0), size)
+	: Sprite(glm::vec3(0, 0, -(Settings::Instance().Z_PLANE) + 11), size)
 {
 	m_Texture = TextureManager::get("Textures/Level/level.png");
 	setUV(0, 0, 16, 16);

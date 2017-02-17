@@ -209,7 +209,7 @@ void Gun::render(Renderer& renderer)
 	}
 
 	renderer.end();
-	renderer.flush();
+	renderer.flush(true);
 	//renderer.render(m_Bullets);
 	//renderer.render(m_Entities);
 

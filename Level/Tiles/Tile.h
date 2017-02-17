@@ -17,6 +17,7 @@ class Tile : public Sprite
 public:
 	Tile();
 	Tile(const glm::vec2& size);
+	virtual ~Tile() {}
 
 	void init(float x, float y, const glm::vec4& colour, bool solid);
 	void submit(Renderer& renderer) const override;

@@ -1,7 +1,7 @@
 #include "Particle.h"
 
 Particle::Particle(float x, float y, float size, float angleDeg)
-	: Entity(glm::vec3(x, y, 0.0f), glm::vec2(size, size), glm::vec4(1, 0, 0, rand() % 1000 / 1000.0f))
+	: Entity(glm::vec3(x, y, 1000.0f), glm::vec2(size, size), glm::vec4(1, 0, 0, rand() % 1000 / 1000.0f))
 {
 	float angleOffset = Utils::random(-20.0f, 20.0f);
 

@@ -77,6 +77,11 @@ public:
 		m_Size *= scale;
 	}
 
+	void setDepth(int depth)
+	{
+		m_Position.z = depth;
+	}
+
 	void addDirection(float dx, float dy)
 	{
 		m_Position.x += dx;

@@ -38,5 +38,5 @@ void WaterRipple::render(Renderer& renderer)
 		waterParticle->submit(renderer);
 	}
 	renderer.end();
-	renderer.flush();
+	renderer.flush(true);
 }

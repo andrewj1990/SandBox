@@ -1,7 +1,7 @@
 #include "Level2D.h"
 
 Level2D::Level2D()
-	: m_Light(), m_Background(glm::vec3(0, 0, 0), glm::vec2(Window::Instance().getWidth(), Window::Instance().getHeight()), TextureManager::get("Textures/Level/bg.png")), m_Region()
+	: m_Light(), m_Background(glm::vec3(0, 0, -(Settings::Instance().Z_PLANE) + 10), glm::vec2(Window::Instance().getWidth(), Window::Instance().getHeight()), TextureManager::get("Textures/Level/bg.png")), m_Region()
 {
 	int camX = (int)Window::Instance().getCamera().Position.x;
 	int camY = (int)Window::Instance().getCamera().Position.y;

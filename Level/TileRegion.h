@@ -48,4 +48,5 @@ private:
 
 	SimplexNoise m_Noise;
 	std::vector<std::shared_ptr<Tile>> m_Tiles;
+	std::vector<std::shared_ptr<Sprite>> m_Objects;
 };

@@ -92,7 +92,8 @@ public:
 		OrthoPos = glm::vec2(posX, posY);
 		OrthoSize = glm::vec2(width, height);
 
-		return glm::ortho(posX, posX + width, posY, posY + height, -1.0f, 1.0f);
+		return glm::ortho(posX, posX + width, posY, posY + height, -(float)(1<<23), (float)(1<<23));
+		//return glm::ortho(posX, posX + width, posY, posY + height, -1.0f, 1.0f);
 	}
 
 	void moveCamera(float dx, float dy)

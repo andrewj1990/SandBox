@@ -55,7 +55,7 @@ public:
 	void submit(const Renderable& renderable);
 	void drawString(const Font& font, const std::string& text, const glm::vec3& position, const glm::vec4& colour);
 	void end();
-	void flush(GLenum srcFactor = GL_SRC_ALPHA, GLenum blendFactor = GL_ONE_MINUS_SRC_ALPHA);
+	void flush(bool alphaTest = false, GLenum srcFactor = GL_SRC_ALPHA, GLenum blendFactor = GL_ONE_MINUS_SRC_ALPHA);
 
 	void render(const Renderable& renderable);
 	void render(const std::vector<std::unique_ptr<Renderable>>& renderables);

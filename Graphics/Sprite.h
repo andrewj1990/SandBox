@@ -9,6 +9,7 @@ public:
 	Sprite();
 	Sprite(const glm::vec3& position, const glm::vec2 size, const glm::vec4& colour = glm::vec4(1.0));
 	Sprite(const glm::vec3& position, const glm::vec2 size, Texture* texture);
+	virtual ~Sprite() {}
 
 	virtual void init();
 

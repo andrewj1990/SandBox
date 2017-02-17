@@ -262,7 +262,7 @@ void Renderer::end()
 }
 
 // draw the quads in the buffer
-void Renderer::flush(GLenum srcFactor, GLenum blendFactor)
+void Renderer::flush(bool alphaTest, GLenum srcFactor, GLenum blendFactor)
 {
 	//glEnable(GL_TEXTURE_2D);
 	for (int i = 0; i < m_TextureSlots.size(); ++i)
@@ -275,6 +275,13 @@ void Renderer::flush(GLenum srcFactor, GLenum blendFactor)
 	m_IBO->bind();
 
 	glEnable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+	if (!alphaTest)
+	{
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER, 0.9f);			// http://gamedev.stackexchange.com/questions/134809/getting-draw-depth-order-right-in-opengl-tile-engine/134931
+	}
+
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE);	// additive blending
 	//glBlendFunc(GL_ONE, GL_ONE);
 	glBlendFunc(srcFactor, blendFactor);
@@ -282,6 +289,8 @@ void Renderer::flush(GLenum srcFactor, GLenum blendFactor)
 	glDrawElements(GL_TRIANGLES, m_IndexCount, GL_UNSIGNED_INT, NULL);
 
 	glDisable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
+	if (!alphaTest) glDisable(GL_ALPHA_TEST);
 	glDisable(GL_TEXTURE_2D);
 
 	m_IBO->unbind();
