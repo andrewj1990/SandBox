@@ -39,6 +39,30 @@ float Utils::lerp(float a, float b, float t)
 	return a + (b - a) * t;
 }
 
+float Utils::calcAngleDeg(float fromX, float fromY, float toX, float toY)
+{
+	float dx = toX - fromX;
+	float dy = toY - fromY;
+
+	return glm::degrees(std::atan2f(dy, dx));
+}
+
+float Utils::calcAngleRad(float fromX, float fromY, float toX, float toY)
+{
+	float dx = toX - fromX;
+	float dy = toY - fromY;
+
+	return std::atan2f(dy, dx);
+}
+
+bool Utils::inRange(float px, float py, float tx, float ty, float radius)
+{
+	float dx = tx - px;
+	float dy = ty - py;
+	float dist = dx * dx + dy * dy;
+	return (dist < (radius * radius));
+}
+
 bool Utils::quadCollision(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2)
 {
 	//if ((x1 > x2 && x1 < x2 + w2 && y1 > y2 && y1 < y2 + h2) ||

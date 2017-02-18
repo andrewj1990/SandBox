@@ -1,7 +1,7 @@
 #include "Level2D.h"
 
 Level2D::Level2D()
-	: m_Light(), m_PointLight(), m_Background(glm::vec3(0, 0, -(Settings::Instance().Z_PLANE) + 10), glm::vec2(Window::Instance().getWidth(), Window::Instance().getHeight()), TextureManager::get("Textures/Level/bg.png")), m_Region()
+	: m_PointLight(), m_Background(glm::vec3(0, 0, -(Settings::Instance().Z_PLANE) + 10), glm::vec2(Window::Instance().getWidth(), Window::Instance().getHeight()), TextureManager::get("Textures/Level/bg.png")), m_Region()
 {
 	int camX = (int)Window::Instance().getCamera().Position.x;
 	int camY = (int)Window::Instance().getCamera().Position.y;
@@ -10,8 +10,7 @@ Level2D::Level2D()
 	m_WaterTilesQT = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, winW, winH)));
 	m_QuadTree = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, winW, winH)));
 	m_ObjectsQT = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, winW, winH)));
-	//m_ShowQuadTree = false;
-
+	
 	init();
 
 	m_WaterRippleTime = 0; 
@@ -57,17 +56,16 @@ void Level2D::update(float timeElapsed)
 	int camY = Window::Instance().getCamera().Position.y;
 	int winW = Window::Instance().getWidth();
 	int winH = Window::Instance().getHeight();
-	m_Light.update(m_Player->getCenterX(), m_Player->getCenterY(), timeElapsed);
 
 	m_Delay++;
 	if (Window::Instance().isKeyTyped(GLFW_KEY_J))
 	{
-		m_Lights.push_back(Light(m_Light));
+		//m_Lights.push_back(Light(m_Light));
 		std::cout << "key j pressed\n";
 	}
 	if (Window::Instance().isKeyPressed(GLFW_KEY_Y))
 	{
-		m_Lights.push_back(Light(m_Light));
+		//m_Lights.push_back(Light(m_Light));
 		std::cout << "key y pressed\n";
 	}
 
@@ -80,8 +78,6 @@ void Level2D::update(float timeElapsed)
 	m_Region.addObjects(m_ObjectsQT);
 	m_Region.addWaterTiles(m_WaterTilesQT);
 
-	std::vector<std::shared_ptr<Sprite>> m_Data;
-	m_ObjectsQT->retrieve(m_Data, m_Light.getLightRegion());
 
 	m_Player->update(m_Region, m_ObjectsQT, m_WaterTilesQT, timeElapsed);
 
@@ -119,8 +115,10 @@ void Level2D::update(float timeElapsed)
 		}
 	}
 
-	m_Light.update(m_Data, timeElapsed);
-	m_PointLight.update(m_Player->getCenterX(), m_Player->getCenterY(), m_Data, timeElapsed);
+
+	std::vector<std::shared_ptr<Sprite>> m_Data;
+	m_ObjectsQT->retrieve(m_Data, m_PointLight.getLightRegion());
+	m_PointLight.update(m_Player->getCenterX(), m_Player->getY() + 3, m_Data, timeElapsed);
 }
 
 void Level2D::render(Renderer& renderer)
@@ -158,11 +156,19 @@ void Level2D::render(Renderer& renderer)
 	if (Settings::Instance().debugShowQuadTree)
 	{
 		std::vector<BoundingBox> boundingBoxes;
-		m_QuadTree->getBounds(boundingBoxes);
+		m_ObjectsQT->getBounds(boundingBoxes);
 
 		for (auto& bb : boundingBoxes)
 		{
-			//renderer.render(bb, TextureManager::get("Textures/bbox.png"));
+			renderer.debugRender(bb, TextureManager::get("Textures/bbox.png"));
+		}
+
+		std::vector<std::shared_ptr<Sprite>> m_Data;
+		m_ObjectsQT->retrieve(m_Data, m_PointLight.getLightRegion());
+
+		for (auto sprite : m_Data)
+		{
+			renderer.debugRender(*(sprite->getCollisionBox()), TextureManager::get("Textures/collision_box.png"));
 		}
 	}
 
@@ -173,7 +179,7 @@ void Level2D::render(Renderer& renderer)
 		{
 			//renderer.render(light.getLightRegion(), TextureManager::get("Textures/bbox.png"));
 		}
-		//renderer.render(m_Light.getLightRegion(), TextureManager::get("Textures/bbox.png"));
+		renderer.debugRender(m_PointLight.getLightRegion(), TextureManager::get("Textures/bbox.png"));
 	}
 }
 
@@ -204,44 +210,4 @@ void Level2D::waterRipple(int x, int y)
 	{
 		m_WaterRipples.push_back(std::unique_ptr<WaterRipple>(new WaterRipple(x, y, Utils::random(100, 300))));
 	}
-}
-
-void Level2D::moveCamera()
-{
-	// move camera based on player position and mouse
-	float px = m_Player->getCenterX();// *1280.0f / Window::Instance().getWidth();
-	float py = m_Player->getCenterY();// *720.0f / Window::Instance().getHeight();
-									  //float mx = cam.getPosition().x + Window::Instance().mouseX();
-									  //float my = cam.getPosition().y + Window::Instance().mouseY();
-
-	float mx = Window::Instance().getMouseWorldPosX();
-	float my = Window::Instance().getMouseWorldPosY();
-
-	float mcw = 500.0f;
-	float mch = 500.0f;
-	float dcx = mx - px;
-	float dcy = my - py;
-
-	//float cx = mcw < std::abs(dcx) ? mcw : dcx;
-	//float cy = mch < std::abs(dcy) ? mch : dcy;
-
-	float cx = std::max(-mcw, std::min(dcx, mcw));
-	float cy = std::max(-mch, std::min(dcy, mch));
-
-	cx /= (mcw / 100.0f);
-	cy /= (mcw / 100.0f);
-
-	//float ccx = px - Window::Instance().getWidth() / 2.0f;
-	//float ccy = py - Window::Instance().getHeight() / 2.0f;
-	//float ccx = px - Settings::Instance().PROJECTION_WIDTH / 2.0f;
-	//float ccy = py - Settings::Instance().PROJECTION_HEIGHT / 2.0f;
-	float ccx = px - Settings::Instance().PROJECTION_WIDTH / 2.0f;
-	float ccy = py - Settings::Instance().PROJECTION_HEIGHT / 2.0f;
-
-	Window::Instance().getCamera().moveCameraPosition(ccx + cx, ccy + cy);
-
-	//std::cout << Window::Instance().getMouseWorldPosX() << ", " << Window::Instance().getMouseWorldPosY() << "\n";
-	//std::cout << Window::Instance().mouseX() << ", " << Window::Instance().mouseY() << "\n";
-	//std::cout << cam.Position.x << ", " << cam.Position.y << "\n";
-	//cam.moveCamera(cx, cy);
 }

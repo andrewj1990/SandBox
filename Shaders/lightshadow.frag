@@ -21,7 +21,7 @@ uniform sampler2D textures[32];
 void main()
 {
 	float a = 0.0;
-	float radius = 400;
+	float radius = fs_in.uv.z * 2;
 	float distance = length(fs_in.position.xy - fs_in.uv.xy);
 
 	float att = clamp(1.0 - distance*distance/(radius*radius), 0.0, 1.0); 

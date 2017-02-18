@@ -336,3 +336,13 @@ void Renderer::render(const std::vector<std::shared_ptr<Renderable>>& renderable
 	end();
 	flush();
 }
+
+void Renderer::debugRender(const BoundingBox& bbox, Texture* texture)
+{
+	begin();
+
+	submit(Sprite(glm::vec3(bbox.x, bbox.y, Settings::Instance().Z_PLANE), glm::vec2(bbox.width, bbox.height), texture));
+
+	end();
+	flush();
+}

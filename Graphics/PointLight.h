@@ -16,7 +16,9 @@ public:
 	PointLight(const PointLight& other);
 	~PointLight() {}
 
-	void update(float x, float y, const std::vector<std::shared_ptr<Sprite>>& renderables, float timeElapsed);
+	void createRays(const std::vector<std::shared_ptr<Sprite>>& sprites);
+
+	void update(float x, float y, const std::vector<std::shared_ptr<Sprite>>& sprites, float timeElapsed);
 	void render(Renderer& renderer);
 
 	int getX() { return m_Position.x; }
@@ -26,10 +28,8 @@ public:
 
 private:
 	glm::vec2 m_Position;
-	Sprite m_LightBox;
 	BoundingBox m_LightRegion;
 
-	std::vector<Ray> m_Rays;
-	std::vector<Renderable> m_RaySprites;
-
+	std::vector<std::unique_ptr<Ray>> m_Rays;
+	std::vector<std::unique_ptr<Renderable>> m_LightQuads;
 };

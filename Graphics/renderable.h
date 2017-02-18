@@ -86,12 +86,12 @@ public:
 	}
 
 	// store light position in uv
-	void setLightPosition(float x, float y)
+	void setLightPosition(float x, float y, float radius)
 	{
-		m_UV[0] = glm::vec4(x, y, 0, 0);
-		m_UV[1] = glm::vec4(x, y, 0, 0);
-		m_UV[2] = glm::vec4(x, y, 0, 0);
-		m_UV[3] = glm::vec4(x, y, 0, 0);
+		m_UV[0] = glm::vec4(x, y, radius, 0);
+		m_UV[1] = glm::vec4(x, y, radius, 0);
+		m_UV[2] = glm::vec4(x, y, radius, 0);
+		m_UV[3] = glm::vec4(x, y, radius, 0);
 	}
 
 	void setUV(float x, float y, float width, float height)

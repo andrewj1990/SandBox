@@ -1,13 +1,13 @@
 #include "Ray.h"
 
-Ray::Ray(glm::vec2 startPoint, float angleDeg)
-	: m_StartPoint(startPoint), m_EndPoint(0, 0), m_AngleRad(glm::radians(angleDeg)), m_T1(INT_MAX)
+Ray::Ray(glm::vec2 startPoint, float angleRad)
+	: m_StartPoint(startPoint), m_EndPoint(0, 0), m_AngleRad(angleRad), m_T1(INT_MAX)
 {
 	m_Direction.x = std::cosf(m_AngleRad);
 	m_Direction.y = std::sinf(m_AngleRad);
 }
 
-void Ray::intersect(const std::vector<std::shared_ptr<Sprite>>& sprites, const BoundingBox& bbox)
+void Ray::intersect(const std::vector<std::shared_ptr<Sprite>>& sprites, const BoundingBox& bbox, float radius)
 {
 	m_T1 = INT_MAX;
 	for (const auto& sprite : sprites)
@@ -17,6 +17,8 @@ void Ray::intersect(const std::vector<std::shared_ptr<Sprite>>& sprites, const B
 		int y = sprite->getCollisionBox()->y;
 		int w = sprite->getCollisionBox()->width;
 		int h = sprite->getCollisionBox()->height;
+
+		if (!Utils::inRange(m_StartPoint.x, m_StartPoint.y, x, y, (radius / 2.0f))) continue;
 
 		// find the end point
 		intersect(x    , y	  , x + w, y    );
@@ -42,8 +44,6 @@ void Ray::intersect(float sx, float sy, float ex, float ey)
 {
 	float dx = ex - sx;
 	float dy = ey - sy;
-	//float rdx = std::cosf(m_AngleRad);
-	//float rdy = std::sinf(m_AngleRad);
 	
 	float t2 = (m_Direction.x * (sy - m_StartPoint.y) + m_Direction.y * (m_StartPoint.x - sx)) / (dx * m_Direction.y - dy * m_Direction.x);
 	float t1 = (sx + dx * t2 - m_StartPoint.x) / m_Direction.x;

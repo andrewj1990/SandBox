@@ -60,6 +60,8 @@ public:
 	void render(const Renderable& renderable);
 	void render(const std::vector<std::unique_ptr<Renderable>>& renderables);
 	void render(const std::vector<std::shared_ptr<Renderable>>& renderables);
+
+	void debugRender(const BoundingBox& bbox, Texture* texture = nullptr);
 	
 	void push(const glm::mat4& matrix, bool override = false)
 	{

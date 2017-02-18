@@ -1,59 +1,93 @@
 #include "PointLight.h"
 
 PointLight::PointLight()
-	: m_Position(0, 0), m_LightRegion(0, 0, 0, 0), m_LightBox(glm::vec3(0, 0, 0), glm::vec2(200, 200), TextureManager::get("Textures/light.png"))
+	: m_Position(0, 0), m_LightRegion(0, 0, 0, 0)
 {
-	m_LightRegion.width = 200;
-	m_LightRegion.height = 200;
-
-	for (int i = 0; i < 360; i += 7)
-	{
-		m_Rays.push_back(Ray(glm::vec2(m_Position.x, m_Position.y), i));
-		m_RaySprites.push_back(Renderable(0, 0, 0, 0, 0, 0, 0, 0, glm::vec4(1, 1, 1, 1)));
-	}
+	m_LightRegion.width = 400;		// diameter
+	m_LightRegion.height = m_LightRegion.width;
 }
 
 PointLight::PointLight(const PointLight& other)
-	: m_Position(other.m_Position), m_LightBox(other.m_LightBox), m_LightRegion(other.m_LightRegion), m_Rays(other.m_Rays), m_RaySprites(other.m_RaySprites)
+	: m_Position(other.m_Position), m_LightRegion(other.m_LightRegion)/*, m_Rays(other.m_Rays), m_LightQuads(other.m_LightQuads)*/
 {
 }
 
-void PointLight::update(float x, float y, const std::vector<std::shared_ptr<Sprite>>& renderables, float timeElapsed)
+void PointLight::createRays(const std::vector<std::shared_ptr<Sprite>>& sprites)
 {
-	const Camera& cam = Window::Instance().getCamera();
+	m_Rays = std::vector<std::unique_ptr<Ray>>();
+
+	// add rays for each sprite
+	for (const auto& sprite : sprites)
+	{
+		int sx = sprite->getCollisionBox()->x;
+		int sy = sprite->getCollisionBox()->y;
+		int sw = sprite->getCollisionBox()->width;
+		int sh = sprite->getCollisionBox()->height;
+
+		if (!Utils::inRange(m_Position.x, m_Position.y, sx, sy, (m_LightRegion.width / 2.0f) + std::max(sw, sh))) continue;
+
+		m_Rays.push_back(std::unique_ptr<Ray>(new Ray(glm::vec2(m_Position.x, m_Position.y), Utils::calcAngleRad(m_Position.x, m_Position.y, sx     , sy	 ) + 0.00001f)));
+		m_Rays.push_back(std::unique_ptr<Ray>(new Ray(glm::vec2(m_Position.x, m_Position.y), Utils::calcAngleRad(m_Position.x, m_Position.y, sx + sw, sy	 ) + 0.00001f)));
+		m_Rays.push_back(std::unique_ptr<Ray>(new Ray(glm::vec2(m_Position.x, m_Position.y), Utils::calcAngleRad(m_Position.x, m_Position.y, sx + sw, sy + sh) + 0.00001f)));
+		m_Rays.push_back(std::unique_ptr<Ray>(new Ray(glm::vec2(m_Position.x, m_Position.y), Utils::calcAngleRad(m_Position.x, m_Position.y, sx     , sy + sh) + 0.00001f)));
+
+		m_Rays.push_back(std::unique_ptr<Ray>(new Ray(glm::vec2(m_Position.x, m_Position.y), Utils::calcAngleRad(m_Position.x, m_Position.y, sx     , sy	 ) - 0.00001f)));
+		m_Rays.push_back(std::unique_ptr<Ray>(new Ray(glm::vec2(m_Position.x, m_Position.y), Utils::calcAngleRad(m_Position.x, m_Position.y, sx + sw, sy	 ) - 0.00001f)));
+		m_Rays.push_back(std::unique_ptr<Ray>(new Ray(glm::vec2(m_Position.x, m_Position.y), Utils::calcAngleRad(m_Position.x, m_Position.y, sx + sw, sy + sh) - 0.00001f)));
+		m_Rays.push_back(std::unique_ptr<Ray>(new Ray(glm::vec2(m_Position.x, m_Position.y), Utils::calcAngleRad(m_Position.x, m_Position.y, sx     , sy + sh) - 0.00001f)));
+	}
+	
+	// add bounding box rays
+	int sx = m_LightRegion.x;
+	int sy = m_LightRegion.y;
+	int sw = m_LightRegion.width;
+	int sh = m_LightRegion.width;
+
+	m_Rays.push_back(std::unique_ptr<Ray>(new Ray(glm::vec2(m_Position.x, m_Position.y), Utils::calcAngleRad(m_Position.x, m_Position.y, sx     , sy	 ) + 0.00001f)));
+	m_Rays.push_back(std::unique_ptr<Ray>(new Ray(glm::vec2(m_Position.x, m_Position.y), Utils::calcAngleRad(m_Position.x, m_Position.y, sx + sw, sy	 ) + 0.00001f)));
+	m_Rays.push_back(std::unique_ptr<Ray>(new Ray(glm::vec2(m_Position.x, m_Position.y), Utils::calcAngleRad(m_Position.x, m_Position.y, sx + sw, sy + sh) + 0.00001f)));
+	m_Rays.push_back(std::unique_ptr<Ray>(new Ray(glm::vec2(m_Position.x, m_Position.y), Utils::calcAngleRad(m_Position.x, m_Position.y, sx     , sy + sh) + 0.00001f)));
+
+	m_Rays.push_back(std::unique_ptr<Ray>(new Ray(glm::vec2(m_Position.x, m_Position.y), Utils::calcAngleRad(m_Position.x, m_Position.y, sx     , sy	 ) - 0.00001f)));
+	m_Rays.push_back(std::unique_ptr<Ray>(new Ray(glm::vec2(m_Position.x, m_Position.y), Utils::calcAngleRad(m_Position.x, m_Position.y, sx + sw, sy	 ) - 0.00001f)));
+	m_Rays.push_back(std::unique_ptr<Ray>(new Ray(glm::vec2(m_Position.x, m_Position.y), Utils::calcAngleRad(m_Position.x, m_Position.y, sx + sw, sy + sh) - 0.00001f)));
+	m_Rays.push_back(std::unique_ptr<Ray>(new Ray(glm::vec2(m_Position.x, m_Position.y), Utils::calcAngleRad(m_Position.x, m_Position.y, sx     , sy + sh) - 0.00001f)));
+	
+}
+
+void PointLight::update(float x, float y, const std::vector<std::shared_ptr<Sprite>>& sprites, float timeElapsed)
+{
 	m_Position.x = x;
 	m_Position.y = y;
 
 	m_LightRegion.x = m_Position.x - m_LightRegion.width / 2;
-	m_LightRegion.y = m_Position.y - m_LightRegion.height / 2;
+	m_LightRegion.y = m_Position.y - m_LightRegion.width / 2;
 
-	m_LightBox.setPosition(m_LightRegion.x, m_LightRegion.y);
+	m_LightQuads = std::vector<std::unique_ptr<Renderable>>();
+
+	createRays(sprites);
 
 	for (auto& ray : m_Rays)
 	{
-		ray.setPosition(glm::vec2(m_Position.x, m_Position.y));
+		ray->intersect(sprites, m_LightRegion, m_LightRegion.width);
 	}
-	
-	for (auto& ray : m_Rays)
-	{
-		ray.intersect(renderables, m_LightRegion);
-	}
+
+	std::sort(m_Rays.begin(), m_Rays.end(), [](const auto& a, const auto& b) { return a->getAngle() < b->getAngle(); });
 
 	for (int i = 0; i < m_Rays.size(); i++)
 	{
-		const auto& endPoint1 = m_Rays[i].getEndPoint();
-		const auto& endPoint2 = m_Rays[(i + 1) % m_Rays.size()].getEndPoint();
+		const auto& endPoint1 = m_Rays[i]->getEndPoint();
+		const auto& endPoint2 = m_Rays[(i + 1) % m_Rays.size()]->getEndPoint();
 
-		auto& quad = m_RaySprites[i];
-		quad.setPositions(m_Position.x, m_Position.y, m_Position.x, m_Position.y, endPoint1.x, endPoint1.y, endPoint2.x, endPoint2.y);
-		quad.setLightPosition(m_Position.x, m_Position.y);
+		m_LightQuads.push_back(std::unique_ptr<Renderable>(new Renderable(m_Position.x, m_Position.y, m_Position.x, m_Position.y, endPoint1.x, endPoint1.y, endPoint2.x, endPoint2.y, glm::vec4(1, 1, 1, 1))));
+		m_LightQuads.back()->setLightPosition(m_Position.x, m_Position.y, m_LightRegion.width);
 	}
 }
 
 void PointLight::render(Renderer& renderer)
 {
-	for (auto quad : m_RaySprites)
+	for (auto& quad : m_LightQuads)
 	{
-		renderer.submit(quad);
+		renderer.submit(*quad);
 	}
 }

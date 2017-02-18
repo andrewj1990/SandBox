@@ -27,15 +27,11 @@ public:
 
 	const std::unique_ptr<Player>& getPlayerPtr() { return m_Player; }
 	void waterRipple(int x, int y);
-
-private:
-	void moveCamera();
 	
 private:
 
 	std::unique_ptr<Player> m_Player;
 
-	Light m_Light;
 	PointLight m_PointLight;
 	std::unique_ptr<QTree<Sprite>> m_WaterTilesQT;
 	std::unique_ptr<QTree<Sprite>> m_QuadTree;
@@ -48,7 +44,6 @@ private:
 	std::vector<std::unique_ptr<WaterRipple>> m_WaterRipples;
 
 	Region m_Region;
-	//bool m_ShowQuadTree;
 
 	float m_WaterRippleTime;
 	int m_Delay;

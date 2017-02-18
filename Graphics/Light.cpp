@@ -66,7 +66,7 @@ void Light::update(const std::vector<std::shared_ptr<Sprite>>& renderables, floa
 
 		auto& quad = m_RaySprites[i];
 		quad.setPositions(m_Point.getPosition().x, m_Point.getPosition().y, m_Point.getPosition().x, m_Point.getPosition().y, endPoint1.x, endPoint1.y, endPoint2.x, endPoint2.y);
-		quad.setLightPosition(m_Point.getPosition().x, m_Point.getPosition().y);
+		quad.setLightPosition(m_Point.getPosition().x, m_Point.getPosition().y, m_LightRegion.width);
 	}
 
 }
