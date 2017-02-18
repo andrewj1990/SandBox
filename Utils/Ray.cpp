@@ -18,7 +18,7 @@ void Ray::intersect(const std::vector<std::shared_ptr<Sprite>>& sprites, const B
 		int w = sprite->getCollisionBox()->width;
 		int h = sprite->getCollisionBox()->height;
 
-		if (!Utils::inRange(m_StartPoint.x, m_StartPoint.y, x, y, (radius / 2.0f))) continue;
+		if (!Utils::inRange(m_StartPoint.x, m_StartPoint.y, x, y, radius)) continue;
 
 		// find the end point
 		intersect(x    , y	  , x + w, y    );

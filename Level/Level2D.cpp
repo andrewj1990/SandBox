@@ -115,10 +115,7 @@ void Level2D::update(float timeElapsed)
 		}
 	}
 
-
-	std::vector<std::shared_ptr<Sprite>> m_Data;
-	m_ObjectsQT->retrieve(m_Data, m_PointLight.getLightRegion());
-	m_PointLight.update(m_Player->getCenterX(), m_Player->getY() + 3, m_Data, timeElapsed);
+	m_PointLight.update(m_Player->getCenterX(), m_Player->getY() + 3, m_ObjectsQT, timeElapsed);
 }
 
 void Level2D::render(Renderer& renderer)
@@ -190,7 +187,6 @@ void Level2D::renderLights(Renderer& renderer)
 	renderer.begin();
 
 	m_PointLight.render(renderer);
-	//m_Light.renderShadow(renderer);
 
 	for (auto& light : m_Lights)
 	{
@@ -198,7 +194,7 @@ void Level2D::renderLights(Renderer& renderer)
 	}
 
 	renderer.end();
-	renderer.flush(false, GL_SRC_ALPHA, GL_ONE);
+	renderer.flush(true, GL_SRC_ALPHA, GL_ONE);
 
 	ResourceManager::getInstance().shader("basic_shader")->use();
 }

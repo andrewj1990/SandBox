@@ -60,7 +60,7 @@ void TileRegion::init(const std::unordered_set<std::string>& region_tiles)
 				t->setType(tileType);
 
 				// add objects to tile
-				if (tileType == TileType::GRASS && Utils::chance(70))
+				if (tileType == TileType::GRASS && Utils::chance(50))
 				{
 					m_Objects.push_back(std::shared_ptr<Sprite>(new Tree(m_X + x * Settings::Instance().TILE_SIZE, m_Y + y * Settings::Instance().TILE_SIZE)));
 					//m_Objects.push_back(std::shared_ptr<Sprite>(new Sprite(glm::vec3(m_X + x * Settings::Instance().TILE_SIZE, m_Y + y * Settings::Instance().TILE_SIZE, -(m_Y + y * Settings::Instance().TILE_SIZE)), glm::vec2(32, 32), TextureManager::get("Textures/Tree.png"))));

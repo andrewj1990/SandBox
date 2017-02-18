@@ -154,7 +154,7 @@ int main()
 		}
 		if (Window::Instance().isKeyPressed(GLFW_KEY_X))
 		{
-			Window::Instance().getCamera().processZoom(-0.0005);
+			Window::Instance().getCamera().processZoom(-0.5);
 		}
 
 		float mx = Window::Instance().mouseX();

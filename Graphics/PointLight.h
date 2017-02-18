@@ -18,7 +18,7 @@ public:
 
 	void createRays(const std::vector<std::shared_ptr<Sprite>>& sprites);
 
-	void update(float x, float y, const std::vector<std::shared_ptr<Sprite>>& sprites, float timeElapsed);
+	void update(float x, float y, const std::unique_ptr<QTree<Sprite>>& objectsQT, float timeElapsed);
 	void render(Renderer& renderer);
 
 	int getX() { return m_Position.x; }

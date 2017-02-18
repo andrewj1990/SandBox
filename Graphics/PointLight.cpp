@@ -24,7 +24,7 @@ void PointLight::createRays(const std::vector<std::shared_ptr<Sprite>>& sprites)
 		int sw = sprite->getCollisionBox()->width;
 		int sh = sprite->getCollisionBox()->height;
 
-		if (!Utils::inRange(m_Position.x, m_Position.y, sx, sy, (m_LightRegion.width / 2.0f) + std::max(sw, sh))) continue;
+		if (!Utils::inRange(m_Position.x, m_Position.y, sx, sy, (m_LightRegion.width / 2.0f))) continue;
 
 		m_Rays.push_back(std::unique_ptr<Ray>(new Ray(glm::vec2(m_Position.x, m_Position.y), Utils::calcAngleRad(m_Position.x, m_Position.y, sx     , sy	 ) + 0.00001f)));
 		m_Rays.push_back(std::unique_ptr<Ray>(new Ray(glm::vec2(m_Position.x, m_Position.y), Utils::calcAngleRad(m_Position.x, m_Position.y, sx + sw, sy	 ) + 0.00001f)));
@@ -55,8 +55,11 @@ void PointLight::createRays(const std::vector<std::shared_ptr<Sprite>>& sprites)
 	
 }
 
-void PointLight::update(float x, float y, const std::vector<std::shared_ptr<Sprite>>& sprites, float timeElapsed)
+void PointLight::update(float x, float y, const std::unique_ptr<QTree<Sprite>>& objectsQT, float timeElapsed)
 {
+	std::vector<std::shared_ptr<Sprite>> sprites;
+	objectsQT->retrieve(sprites, m_LightRegion);
+
 	m_Position.x = x;
 	m_Position.y = y;
 
@@ -69,7 +72,7 @@ void PointLight::update(float x, float y, const std::vector<std::shared_ptr<Spri
 
 	for (auto& ray : m_Rays)
 	{
-		ray->intersect(sprites, m_LightRegion, m_LightRegion.width);
+		ray->intersect(sprites, m_LightRegion, m_LightRegion.width / 2);
 	}
 
 	std::sort(m_Rays.begin(), m_Rays.end(), [](const auto& a, const auto& b) { return a->getAngle() < b->getAngle(); });
@@ -80,7 +83,7 @@ void PointLight::update(float x, float y, const std::vector<std::shared_ptr<Spri
 		const auto& endPoint2 = m_Rays[(i + 1) % m_Rays.size()]->getEndPoint();
 
 		m_LightQuads.push_back(std::unique_ptr<Renderable>(new Renderable(m_Position.x, m_Position.y, m_Position.x, m_Position.y, endPoint1.x, endPoint1.y, endPoint2.x, endPoint2.y, glm::vec4(1, 1, 1, 1))));
-		m_LightQuads.back()->setLightPosition(m_Position.x, m_Position.y, m_LightRegion.width);
+		m_LightQuads.back()->setLightPosition(m_Position.x, m_Position.y, m_LightRegion.width / 2);
 	}
 }
 

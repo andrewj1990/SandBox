@@ -37,5 +37,6 @@ private:
 	GLuint m_Texture;
 	GLuint m_VAO;
 	GLuint m_VBO;
+	GLuint m_RBO;
 
 };
