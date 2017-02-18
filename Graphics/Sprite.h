@@ -16,7 +16,7 @@ public:
 	void setPosition(float x, float y);
 	void fade(float fadeAmount = 0.01f);
 	void setAngle(float angle) { m_Angle = angle; }
-	float getAngle() const { return m_Angle; }
+	virtual float getAngle() const { return m_Angle; }
 	bool isSolid() const { return m_Solid; }
 
 	void setDestroy(bool flag) { m_Destroy = flag; }

@@ -5,7 +5,7 @@
 class Tree : public Entity
 {
 public:
-	Tree();
+	Tree(int x, int y);
 
 	void update(float timeElapsed) override;
 	void render(Renderer& renderer) override;

@@ -26,7 +26,7 @@ public:
 
 	virtual void shoot(float angle) {}
 	float getAngle(const Entity& entity);
-	virtual float getAngle() const { return m_Angle; }
+	float getAngle() const override { return m_Angle; }
 	virtual void damage(int amount) {}
 
 private:

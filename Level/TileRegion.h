@@ -6,6 +6,7 @@
 #include "Tiles\Tile.h"
 #include "..\Utils\simplexNoise.h"
 #include "..\Settings.h"
+#include "Objects\Tree.h"
 
 class TileRegion {
 public:
@@ -20,6 +21,7 @@ public:
 	int indexX() { return m_IndexX; }
 	int indexY() { return m_IndexY; }
 	const std::vector<std::shared_ptr<Tile>>& getTiles() { return m_Tiles; }
+	std::vector<std::shared_ptr<Sprite>>& getObjects() { return m_Objects; }
 
 	void setUV(int x, int y, const std::unordered_set<std::string>& region_tiles);
 	void removeTile(int x, int y);

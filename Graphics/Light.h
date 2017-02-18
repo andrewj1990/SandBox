@@ -8,15 +8,15 @@
 #include "Sprite.h"
 #include "..\Utils\QTree.h"
 
-class Ray
+class LineRay
 {
 public:
-	Ray()
+	LineRay()
 		: m_Position(glm::vec2(0, 0)), m_Direction(glm::vec2(0, 0)), m_Angle(0), m_Sprite(glm::vec3(0, 0, 0), glm::vec2(0, 0), glm::vec4(0, 1, 0, 1))
 	{
 	}
 
-	Ray(glm::vec2 position, float angle)
+	LineRay(glm::vec2 position, float angle)
 		: m_Position(position), m_Direction(glm::vec2(0, 0)), m_Sprite(glm::vec3(position, 0), glm::vec2(0, 0), glm::vec4(0, 1, 0, 1))
 	{
 		m_Angle = glm::radians(angle);
@@ -38,10 +38,10 @@ public:
 		for (auto renderable : renderables)
 		{
 			// calculate intersection on each line segment in the renderable
-			int x = renderable->getPosition().x;
-			int y = renderable->getPosition().y;
-			int w = renderable->getSize().x;
-			int h = renderable->getSize().y;
+			int x = renderable->getCollisionBox()->x;
+			int y = renderable->getCollisionBox()->y;
+			int w = renderable->getCollisionBox()->width;
+			int h = renderable->getCollisionBox()->height;
 
 			temp = intersection(x, y, x + w, y);
 			if (intersection(temp.x, temp.y))
@@ -228,8 +228,8 @@ private:
 	Sprite m_LightBox;
 	BoundingBox m_LightRegion;
 
-	Ray m_Ray;
-	std::vector<Ray> m_Rays;
+	LineRay m_Ray;
+	std::vector<LineRay> m_Rays;
 	std::vector<Renderable> m_RaySprites;
 
 };

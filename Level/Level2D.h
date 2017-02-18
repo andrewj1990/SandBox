@@ -9,6 +9,7 @@
 #include "TileRegion.h"
 #include "..\Entity\player.h"
 #include "..\Graphics\Light.h"
+#include "..\Graphics\PointLight.h"
 #include "..\Utils\QTree.h"
 #include "..\Graphics\Buffers\framebuffer.h"
 #include "Effects\WaterRipple.h"
@@ -35,8 +36,10 @@ private:
 	std::unique_ptr<Player> m_Player;
 
 	Light m_Light;
+	PointLight m_PointLight;
 	std::unique_ptr<QTree<Sprite>> m_WaterTilesQT;
 	std::unique_ptr<QTree<Sprite>> m_QuadTree;
+	std::unique_ptr<QTree<Sprite>> m_ObjectsQT;
 	Sprite m_Background;
 
 	std::vector<Light> m_Lights;

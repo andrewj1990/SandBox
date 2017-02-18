@@ -19,6 +19,7 @@ public:
 	static float random();
 	static int random(int lowerBound, int upperBound);
 	static float random(float lowerBound, float upperBound);
+	static bool chance(int percent);
 	static int fastFloor(float v);
 	static float lerp(float a, float b, float t);
 

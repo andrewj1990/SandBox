@@ -19,6 +19,11 @@ float Utils::random(float lowerBound, float upperBound)
 	return r;
 }
 
+bool Utils::chance(int percent)
+{
+	return Utils::random(0, 100) < percent;
+}
+
 int Utils::fastFloor(float v)
 {
 	return v >= 0 ? (int)v : (int)v - 1;

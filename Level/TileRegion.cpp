@@ -60,9 +60,10 @@ void TileRegion::init(const std::unordered_set<std::string>& region_tiles)
 				t->setType(tileType);
 
 				// add objects to tile
-				if (tileType == TileType::GRASS && Utils::random(0.0f, 1.0f) < 0.3f)
+				if (tileType == TileType::GRASS && Utils::chance(5))
 				{
-					m_Objects.push_back(std::shared_ptr<Sprite>(new Sprite(glm::vec3(m_X + x * Settings::Instance().TILE_SIZE, m_Y + y * Settings::Instance().TILE_SIZE, -(m_Y + y * Settings::Instance().TILE_SIZE)), glm::vec2(32, 32), TextureManager::get("Textures/Tree.png"))));
+					m_Objects.push_back(std::shared_ptr<Sprite>(new Tree(m_X + x * Settings::Instance().TILE_SIZE, m_Y + y * Settings::Instance().TILE_SIZE)));
+					//m_Objects.push_back(std::shared_ptr<Sprite>(new Sprite(glm::vec3(m_X + x * Settings::Instance().TILE_SIZE, m_Y + y * Settings::Instance().TILE_SIZE, -(m_Y + y * Settings::Instance().TILE_SIZE)), glm::vec2(32, 32), TextureManager::get("Textures/Tree.png"))));
 				}
 			}
 		}
@@ -83,7 +84,7 @@ void TileRegion::submit(Renderer& renderer)
 
 	for (const auto& object : m_Objects)
 	{
-		renderer.submit(*object);
+		object->submit(renderer);
 	}
 }
 

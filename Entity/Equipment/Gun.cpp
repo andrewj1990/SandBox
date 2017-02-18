@@ -73,45 +73,29 @@ void Gun::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree,
 
 	setAngle(angle);
 
-	//for (int i = 0; i < 150; i++) m_Entities.push_back(std::unique_ptr<GunParticle>(new GunParticle(m_Sprite.getPosition().x, m_Sprite.getPosition().y, angle)));
-
+	// collision
 	for (auto& bullet : m_Bullets)
 	{
 		bullet->update(timeElapsed);
-		std::vector<std::shared_ptr<Sprite>> tiles;
+		std::vector<std::shared_ptr<Sprite>> objects;
 
 		const glm::vec3& pos = bullet->getPosition();
 		const glm::vec2& size = bullet->getSize();
 		
-		quadTree->retrieve(tiles, BoundingBox(pos.x, pos.y, size.x, size.y));
-		//quadTree->retrieve(collisionBoxes, *(bullet->getCollisionBox()));
-
-		for (auto& tile : tiles)
+		quadTree->retrieve(objects, BoundingBox(pos.x, pos.y, size.x, size.y));
+		for (auto& object : objects)
 		{
-			const auto& collisionBox = tile->getCollisionBox();
-			float ex = collisionBox->x;
-			float ey = collisionBox->y;
-			float ew = collisionBox->width;
-			float eh = collisionBox->height;
+			const auto& collisionBox = object->getCollisionBox();
 
-			float sx = pos.x;
-			float sy = pos.y;
-			float sw = size.x;
-			float sh = size.y;
-
-			//if (sx > ex && sx < ex + ew && sy > ey && sy < ey + eh)
-			//if (bullet->collide(*tile))
 			if (collisionBox->intersects(*(bullet)->getCollisionBox()))
 			{
 				for (int i = 0; i < 25; i++)
 				{
-					m_Entities.push_back(std::unique_ptr<Particle>(new Particle(sx, sy, bullet->getAngle())));
+					m_Entities.push_back(std::unique_ptr<Particle>(new Particle(pos.x, pos.y, 5.0f, glm::degrees(bullet->getAngle()))));
 				}
-				//enemy->damage(10);
-				//m_DamageText.push_back(std::unique_ptr<DamageCounter>(new DamageCounter("1", sx, sy)));
 
-
-				region.removeTiles(ex, ey, true, true);
+				//region.removeTiles(collisionBox->x, collisionBox->y, true, true);
+				object->setDestroy(true);
 				bullet->setDestroy(true);
 				break;
 			}

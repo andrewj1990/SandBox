@@ -1,7 +1,7 @@
 #include "Level2D.h"
 
 Level2D::Level2D()
-	: m_Light(), m_Background(glm::vec3(0, 0, -(Settings::Instance().Z_PLANE) + 10), glm::vec2(Window::Instance().getWidth(), Window::Instance().getHeight()), TextureManager::get("Textures/Level/bg.png")), m_Region()
+	: m_Light(), m_PointLight(), m_Background(glm::vec3(0, 0, -(Settings::Instance().Z_PLANE) + 10), glm::vec2(Window::Instance().getWidth(), Window::Instance().getHeight()), TextureManager::get("Textures/Level/bg.png")), m_Region()
 {
 	int camX = (int)Window::Instance().getCamera().Position.x;
 	int camY = (int)Window::Instance().getCamera().Position.y;
@@ -9,6 +9,7 @@ Level2D::Level2D()
 	int winH = (int)Window::Instance().getHeight();
 	m_WaterTilesQT = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, winW, winH)));
 	m_QuadTree = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, winW, winH)));
+	m_ObjectsQT = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, winW, winH)));
 	//m_ShowQuadTree = false;
 
 	init();
@@ -72,15 +73,17 @@ void Level2D::update(float timeElapsed)
 
 	m_WaterTilesQT = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, Settings::Instance().PROJECTION_WIDTH, Settings::Instance().PROJECTION_HEIGHT)));
 	m_QuadTree = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, Settings::Instance().PROJECTION_WIDTH, Settings::Instance().PROJECTION_HEIGHT)));
+	m_ObjectsQT = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, Settings::Instance().PROJECTION_WIDTH, Settings::Instance().PROJECTION_HEIGHT)));
 
 	//m_Region.addTiles(m_QTree);
 	//m_Region.addTiles(m_QuadTree);
+	m_Region.addObjects(m_ObjectsQT);
 	m_Region.addWaterTiles(m_WaterTilesQT);
 
 	std::vector<std::shared_ptr<Sprite>> m_Data;
-	m_QuadTree->retrieve(m_Data, m_Light.getLightRegion());
+	m_ObjectsQT->retrieve(m_Data, m_Light.getLightRegion());
 
-	m_Player->update(m_Region, m_QuadTree, m_WaterTilesQT, timeElapsed);
+	m_Player->update(m_Region, m_ObjectsQT, m_WaterTilesQT, timeElapsed);
 
 	// water ripples
 	m_WaterRippleTime += timeElapsed;
@@ -117,6 +120,7 @@ void Level2D::update(float timeElapsed)
 	}
 
 	m_Light.update(m_Data, timeElapsed);
+	m_PointLight.update(m_Player->getCenterX(), m_Player->getCenterY(), m_Data, timeElapsed);
 }
 
 void Level2D::render(Renderer& renderer)
@@ -178,7 +182,9 @@ void Level2D::renderLights(Renderer& renderer)
 	ResourceManager::getInstance().shader("lightShadow")->use();
 
 	renderer.begin();
-	m_Light.renderShadow(renderer);
+
+	m_PointLight.render(renderer);
+	//m_Light.renderShadow(renderer);
 
 	for (auto& light : m_Lights)
 	{
@@ -186,7 +192,7 @@ void Level2D::renderLights(Renderer& renderer)
 	}
 
 	renderer.end();
-	renderer.flush(GL_SRC_ALPHA, GL_ONE);
+	renderer.flush(false, GL_SRC_ALPHA, GL_ONE);
 
 	ResourceManager::getInstance().shader("basic_shader")->use();
 }

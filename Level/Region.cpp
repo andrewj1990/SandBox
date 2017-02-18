@@ -70,6 +70,17 @@ void Region::addWaterTiles(std::unique_ptr<QTree<Sprite>>& quadTree)
 	}
 }
 
+void Region::addObjects(std::unique_ptr<QTree<Sprite>>& quadTree)
+{
+	for (auto& tileRegion : m_Regions)
+	{
+		for (auto& object : tileRegion->getObjects())
+		{
+			quadTree->insert(object);
+		}
+	}
+}
+
 void Region::removeTiles(float x, float y, bool exactCoord, bool ripple)
 {
 	int ix = (int)x / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE;
@@ -205,15 +216,26 @@ void Region::update(float timeElapsed)
 			it++;
 		}
 	}
+
+	for (auto& tileRegion : m_Regions)
+	{
+		auto& objects = tileRegion->getObjects();
+		for (auto it = objects.begin(); it != objects.end(); )
+		{
+			if ((*it)->shouldDestroy())
+			{
+				it = objects.erase(it);
+			}
+			else
+			{
+				it++;
+			}
+		}
+	}
 }
 
 void Region::render(Renderer& renderer)
 {
-	//for (auto& tileRegion : m_Regions)
-	//{
-	//	tileRegion->render(renderer);
-	//}
-
 	renderer.begin();
 	for (auto& tileRegion : m_Regions)
 	{

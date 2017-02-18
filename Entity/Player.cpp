@@ -17,7 +17,6 @@ void Player::init()
 	m_State = PlayerState::NORMAL;
 	m_Row = 0;
 	m_CumulativeTime = 0.0f;
-	//m_NoClip = false;
 
 	m_MoveSpeed = 280.0f;
 	m_AttackSpeed = 0.0f;//0.1f;
@@ -39,10 +38,10 @@ void Player::init()
 
 bool Player::playerCollision(float dx, float dy, const std::unique_ptr<QTree<Sprite>>& quadTree)
 {
-	float x = m_CollisionBox.x + dx;
+	float x = m_CollisionBox.x + 2 + dx;
 	float y = m_CollisionBox.y + dy;
-	float w = m_CollisionBox.width;
-	float h = m_CollisionBox.height;
+	float w = m_CollisionBox.width - 5;
+	float h = 1;			// collision with feet only for movement
 
 	std::vector<std::shared_ptr<Sprite>> tiles;
 	quadTree->retrieve(tiles, m_CollisionBox);
@@ -298,18 +297,17 @@ void Player::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTr
 	move(quadTree, waterQT, region, timeElapsed);
 	m_Gun.update(region, quadTree, timeElapsed);
 
+	m_Position.z = -m_Position.y;
 	if (m_Gun.getAngle() < 0)
 	{
-		m_Gun.setDepth(m_Position.z + 1);
+		m_Gun.setDepth(m_Position.z + 0.5f);
 	}
 	else
 	{
-		m_Gun.setDepth(m_Position.z - 1);
+		m_Gun.setDepth(m_Position.z - 0.5f);
 	}
 
 	Window& win = Window::Instance();
-
-	m_Position.z = -m_Position.y;
 	//std::cout << m_Position.z << "\n";
 	moveCamera();
 }
@@ -400,6 +398,7 @@ void Player::render(Renderer& renderer)
 	if (Settings::Instance().debugShowCollisionBoxes)
 	{
 		//renderer.render(m_CollisionBox, TextureManager::get("Textures/collision_box.png"));
+		renderer.render(Sprite(glm::vec3(m_CollisionBox.x, m_CollisionBox.y, getY() + 1), glm::vec2(m_CollisionBox.width, m_CollisionBox.height), TextureManager::get("Textures/collision_box.png")));
 	}
 
 }
