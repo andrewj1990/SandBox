@@ -75,8 +75,8 @@ int main()
 	std::unique_ptr<FrameBuffer> shadowFBO = std::unique_ptr<FrameBuffer>(new FrameBuffer());
 	std::unique_ptr<FrameBuffer> bufferFBO = std::unique_ptr<FrameBuffer>(new FrameBuffer());
 
-	float lightIntensity = 0.0f;
-	float ambientIntensity = 0.9f;
+	float lightIntensity = 0.3f;
+	float ambientIntensity = 0.6f;
 
 	float a = 1280.0f;
 	float b = 720.0f;

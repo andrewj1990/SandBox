@@ -45,5 +45,4 @@ private:
 	Region m_Region;
 
 	float m_WaterRippleTime;
-	int m_Delay;
 };

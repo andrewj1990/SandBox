@@ -31,9 +31,7 @@ public:
 
 	void addBuff();
 
-	void update(float timeElapsed) override;
 	void update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree, const std::unique_ptr<QTree<Sprite>>& waterQT, float timeElapsed);
-	void submit(Renderer& renderer) override;
 	void render(Renderer& renderer) override;
 
 	void renderLight(Renderer& renderer) override;
@@ -61,14 +59,9 @@ private:
 	float m_CumulativeTime;
 	float m_DodgeAngle;
 
-	bool m_ShieldActive;
-	Sprite m_Shield;
-	Sword m_Sword;
 	Gun m_Gun;
 
 	BoundingBox m_CollisionBox;
-
-	Sprite m_Light;
 
 	float m_MoveSpeed;
 	float m_MoveSlow;

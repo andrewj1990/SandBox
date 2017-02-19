@@ -14,29 +14,12 @@ Level2D::Level2D()
 	init();
 
 	m_WaterRippleTime = 0; 
-	m_Delay = 0;
 }
 
 void Level2D::init()
 {
 	const Camera& cam = Window::Instance().getCamera();
 	m_Player = std::unique_ptr<Player>(new Player(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f));
-
-	// move player to surface
-	while (true)
-	{
-		if (m_Region.getSurfacePosition(m_Player->getX(), m_Player->getY()))
-		{
-			m_Player->move(0, Settings::Instance().TILE_SIZE);
-			m_Region.update(0);
-		}
-		else
-		{
-			m_Player->move(0, Settings::Instance().TILE_SIZE);
-			m_Region.update(0);
-			break;
-		}
-	}
 }
 
 void Level2D::update(float timeElapsed)
@@ -49,7 +32,6 @@ void Level2D::update(float timeElapsed)
 	float ccy = py - Settings::Instance().PROJECTION_HEIGHT / 2.0f;
 	m_Background.setPosition(ccx + m_Player->getCameraOffsetX(), ccy + m_Player->getCameraOffsetY());
 
-	//m_Background.setPosition(cam.Position.x, cam.Position.y);
 	m_Region.update(timeElapsed);
 
 	int camX = Window::Instance().getCamera().Position.x;
@@ -57,7 +39,6 @@ void Level2D::update(float timeElapsed)
 	int winW = Window::Instance().getWidth();
 	int winH = Window::Instance().getHeight();
 
-	m_Delay++;
 	if (Window::Instance().isKeyTyped(GLFW_KEY_J))
 	{
 		m_PointLights.push_back(PointLight(m_PointLight));
@@ -77,6 +58,7 @@ void Level2D::update(float timeElapsed)
 	m_Region.addWaterTiles(m_WaterTilesQT);
 
 	m_Player->update(m_Region, m_ObjectsQT, m_WaterTilesQT, timeElapsed);
+	m_PointLight.update(m_Player->getCenterX(), m_Player->getY() + 3, m_ObjectsQT, timeElapsed);
 
 	// water ripples
 	m_WaterRippleTime += timeElapsed;
@@ -111,20 +93,14 @@ void Level2D::update(float timeElapsed)
 			it++;
 		}
 	}
-
-	m_PointLight.update(m_Player->getCenterX(), m_Player->getY() + 3, m_ObjectsQT, timeElapsed);
 }
 
 void Level2D::render(Renderer& renderer)
 {
 	renderer.render(m_Background);
-
 	m_Region.render(renderer);
 
-	for (auto& waterRipple : m_WaterRipples)
-	{
-		waterRipple->render(renderer);
-	}
+	for (auto& waterRipple : m_WaterRipples) waterRipple->render(renderer);
 
 	m_Player->render(renderer);
 
@@ -169,10 +145,6 @@ void Level2D::render(Renderer& renderer)
 	// light outline
 	if (Settings::Instance().debugShowLightRange)
 	{
-		for (auto& pointLight : m_PointLights)
-		{
-			//renderer.render(light.getLightRegion(), TextureManager::get("Textures/bbox.png"));
-		}
 		renderer.debugRender(m_PointLight.getLightRegion(), TextureManager::get("Textures/bbox.png"));
 	}
 }

@@ -19,6 +19,7 @@ void Bullet::update(float timeElapsed)
 	m_Duration -= timeElapsed;
 
 	addDirection(m_Dx * timeElapsed, m_Dy * timeElapsed);
+	m_Position.z = -m_Position.y;
 	m_CollisionBox->x = getPosition().x;
 	m_CollisionBox->y = getPosition().y;
 

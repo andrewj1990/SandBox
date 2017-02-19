@@ -1,7 +1,7 @@
 #include "Gun.h"
 
 Gun::Gun(float x, float y)
-	: Entity(glm::vec3(x, y, 0), glm::vec2(32, 6), TextureManager::get("Textures/Player/Gun4.png"))
+	: Entity(glm::vec3(x, y, 0), glm::vec2(Settings::Instance().TILE_SIZE, Settings::Instance().TILE_SIZE / 5), TextureManager::get("Textures/Player/Gun4.png"))
 {
 	setUV(0, 0, 16, 3);
 	m_FaceRight = true;
@@ -19,18 +19,6 @@ void Gun::shoot(float x, float y, float angle, float movespeed)
 	const glm::vec3& pos = glm::vec3(getPosition().x + getSize().x - 12, getPosition().y + getSize().y - rty, 0);
 	glm::vec4 gunPos = transform * glm::vec4(pos, 1.0f);
 
-	//float mx = Window::Instance().mouseX() + Window::Instance().getCamera().getPosition().x;
-	//float my = Window::Instance().mouseY() + Window::Instance().getCamera().getPosition().y;
-	float mx = Window::Instance().getMouseWorldPosX();
-	float my = Window::Instance().getMouseWorldPosY();
-
-	//std::cout << gunPos.x << ", " << gunPos.y << "\n";
-
-	float dx = mx - gunPos.x;
-	float dy = my - gunPos.y;
-
-	float a = std::atan2f(dy, dx);
-
 	for (int i = 0; i < 150; i++) m_Entities.push_back(std::unique_ptr<GunParticle>(new GunParticle(gunPos.x, gunPos.y, angle, movespeed)));
 	m_Bullets.push_back(std::unique_ptr<Bullet>(new Bullet(gunPos.x, gunPos.y, angle)));
 }
@@ -42,36 +30,23 @@ void Gun::move(float x, float y)
 
 void Gun::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree, float timeElapsed)
 {
-	float mx = Window::Instance().mouseX();
-	float my = Window::Instance().mouseY();
+	float mx = Window::Instance().getMouseWorldPosX();
+	float my = Window::Instance().getMouseWorldPosY();
 
-	float dx = mx - Window::Instance().getWidth() / 2 - 16.0f + 2;
-	float dy = my - Window::Instance().getHeight() / 2 - 16.0f + 8;
-	float angle = -std::atan2f(dy, dx);// -glm::radians(45.0f);
+	m_Angle = Utils::calcAngleRad(getCenterX(), getCenterY(), mx, my);
 
-	mx = Window::Instance().getMouseWorldPosX();
-	my = Window::Instance().getMouseWorldPosY();
-	dx = mx - getCenterX();
-	dy = my - getCenterY();
-	angle = std::atan2f(dy, dx);
-
-	if (m_FaceRight && (std::abs(glm::degrees(angle)) >= 90.0f))
+	if (m_FaceRight && (std::abs(glm::degrees(m_Angle)) >= 90.0f))
 	{
-		//m_Sprite.setUV(0, 1, 10, 3);
 		addDirection(5, 0);
 		setUV(0, 1, 16, 3);
 		m_FaceRight = false;
 	}
-	else if (!m_FaceRight && (std::abs(glm::degrees(angle)) < 90.0f))
+	else if (!m_FaceRight && (std::abs(glm::degrees(m_Angle)) < 90.0f))
 	{
-		//m_Sprite.setUV(0, 0, 10, 3);
 		addDirection(-5, 0);
 		setUV(0, 0, 16, 3);
 		m_FaceRight = true;
 	}
-
-
-	setAngle(angle);
 
 	// collision
 	for (auto& bullet : m_Bullets)
@@ -102,6 +77,7 @@ void Gun::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree,
 		}
 	}
 
+	// entity updates
 	for (auto it = m_Entities.begin(); it != m_Entities.end(); )
 	{
 		if ((*it)->shouldDestroy())
@@ -149,57 +125,20 @@ void Gun::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree,
 	}
 }
 
-void Gun::submit(Renderer& renderer)
-{
-	renderer.push(glm::mat4(), true);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	for (auto& bullet : m_Bullets) bullet->submit(renderer);
-	for (auto& entity : m_Entities) entity->submit(renderer);
-	//renderer.end();
-	//renderer.flush();
-	//renderer.begin();
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	for (auto& text : m_DamageText)
-	{
-		text->render(renderer);
-	}
-
-	renderer.pop();
-
-	glm::mat4 transform;
-	transform = glm::translate(transform, glm::vec3(getPosition().x + 5, getPosition().y + 5, 0));
-	transform = glm::rotate(transform, m_Angle, glm::vec3(0, 0, 1));
-	transform = glm::translate(transform, glm::vec3(-getPosition().x - 5, -getPosition().y - 5, 0));
-
-	renderer.push(transform);
-	renderer.submit(*this);
-	renderer.pop();
-}
-
 void Gun::render(Renderer& renderer)
 {
 	renderer.push(glm::mat4(), true);
 	renderer.begin();
-	renderer.m_AlphaTest = false;
-	for (auto& bullet : m_Bullets)
-	{
-		bullet->submit(renderer);
-	}
-	for (auto& entity : m_Entities)
-	{
-		entity->submit(renderer);
-	}
+	//renderer.m_AlphaTest = false;
+
+	for (auto& bullet : m_Bullets) bullet->submit(renderer);
+	for (auto& entity : m_Entities) entity->submit(renderer);
 
 	renderer.end();
 	renderer.flush();
-	renderer.m_AlphaTest = true;
+	//renderer.m_AlphaTest = true;
 
-	for (auto& text : m_DamageText)
-	{
-		text->render(renderer);
-	}
+	for (auto& text : m_DamageText) text->render(renderer);
 
 	renderer.pop();
 
@@ -213,15 +152,6 @@ void Gun::render(Renderer& renderer)
 	renderer.push(transform);
 	renderer.render(*this);
 	renderer.pop();
-
-	if (Settings::Instance().debugShowCollisionBoxes)
-	{
-		for (auto& b : m_Bullets)
-		{
-			//renderer.render(*(b->getCollisionBox()), TextureManager::get("Textures/collision_box.png"));
-		}
-	}
-
 }
 
 void Gun::renderLight(Renderer& renderer)

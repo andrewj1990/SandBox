@@ -85,7 +85,7 @@ void Region::removeTiles(float x, float y, bool exactCoord, bool ripple)
 {
 	int ix = (int)x / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE;
 	int iy = (int)y / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE;
-	//std::cout << "x : " << x << ", " << y << "\n";
+
 	if (!exactCoord)
 	{
 		ix = x < 0 ? ix - Settings::Instance().TILE_SIZE : ix;
@@ -98,14 +98,6 @@ void Region::removeTiles(float x, float y, bool exactCoord, bool ripple)
 	if (it == m_Tiles.end())
 	{
 		m_Tiles.insert(tileGlobalPosition);
-
-		//// remove the tile from the region
-		//int rx = std::floor(x / m_SubRegionWidth);
-		//int ry = std::floor(y / m_SubRegionHeight);
-
-		//// reload the region
-		//unload(rx, ry);
-		//load(rx, ry);
 
 		auto& region = getTileRegion(ix, iy);
 		region->removeTile(ix, iy);
@@ -131,7 +123,6 @@ TileType Region::getTileType(float x, float y)
 {
 	int ix = x < 0 ? (int)(x - Settings::Instance().TILE_SIZE) / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE : (int)x / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE;
 	int iy = y < 0 ? (int)(y - Settings::Instance().TILE_SIZE) / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE : (int)y / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE;
-	//int iy = (int)y / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE;
 
 	const auto& region = getTileRegion(ix, iy);
 	return region->getTileType(ix, iy);
@@ -182,13 +173,9 @@ void Region::update(float timeElapsed)
 		m_Y = y;
 	}
 
-	float camX = Window::Instance().getCamera().Position.x;
-	float camY = Window::Instance().getCamera().Position.y;
 	// remove the tile
 	if (Window::Instance().isKeyPressed(GLFW_KEY_H))
 	{
-		//float mx = camX + Window::Instance().mouseX();
-		//float my = camY + (Window::Instance().getHeight() - Window::Instance().mouseY());
 		float mx = Window::Instance().getMouseWorldPosX();
 		float my = Window::Instance().getMouseWorldPosY();
 

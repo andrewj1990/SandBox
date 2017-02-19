@@ -308,7 +308,6 @@ void Renderer::render(const Renderable& renderable)
 	begin();
 
 	renderable.submit(*this);
-	//submit(renderable);
 
 	end();
 	flush();

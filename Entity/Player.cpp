@@ -1,12 +1,9 @@
 #include "player.h"
 
 Player::Player(float x, float y)
-	: Entity(glm::vec3(x, y, y), glm::vec2(32, 32), TextureManager::get("Textures/Player/player_anim.png")), 
-	m_Sword(x + 2, y + 8), m_Gun(x + 10, y + 12), m_CollisionBox(x, y, 10, 22)
+	: Entity(glm::vec3(x, y, y), glm::vec2(Settings::Instance().TILE_SIZE, Settings::Instance().TILE_SIZE), TextureManager::get("Textures/Player/player_anim.png")),
+	m_Gun(x + (getWidth() / 16.0f) * 5, y + (getHeight() / 16.0f) * 6), m_CollisionBox(x, y, (getWidth() / 16.0f) * 4, (getHeight() / 16.0f) * 11)
 {
-	m_Light = Sprite(glm::vec3(0, 0, 0), glm::vec2(256, 256), TextureManager::get("Textures/light2.png"));
-	m_Shield = Sprite(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/Shield.png"));
-	//m_Crosshair = Sprite(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/crosshair.png"));
 	m_TexSize = 16;
 
 	init();
@@ -54,7 +51,6 @@ bool Player::playerCollision(float dx, float dy, const std::unique_ptr<QTree<Spr
 		float tw = collisionBox->width;
 		float th = collisionBox->height;
 
-		//if (tile->intersects(m_CollisionBox))
 		if (Utils::quadCollision(x, y, w, h, tx, ty, tw, th))
 		{
 			return true;
@@ -68,12 +64,11 @@ void Player::move(const std::unique_ptr<QTree<Sprite>>& quadTree, const std::uni
 {
 	Window& window = Window::Instance();
 
-	//float moveSlow = 0.4f;
 	float m_MoveSlow = Utils::lerp(1.0f, 0.3f, m_CurrentAttackDuration / 5.0f);
 	m_Anim += timeElapsed * 25.0f * (m_CurrentAttackDuration > 0 ? m_MoveSlow: 1.0f);
 
 	float dx = 0.0f;
-	float dy = 0.0f;//-200.0f * timeElapsed;
+	float dy = 0.0f;
 
 	if (!m_Moving)
 	{
@@ -149,8 +144,6 @@ void Player::move(const std::unique_ptr<QTree<Sprite>>& quadTree, const std::uni
 	}
 
 	move(dx, dy);
-
-	m_Light.setPosition(getCenterX() - m_Light.getSize().x / 2, getCenterY() - m_Light.getSize().y / 2);
 }
 
 void Player::aimDownSight(float timeElapsed)
@@ -171,19 +164,6 @@ void Player::aimDownSight(float timeElapsed)
 	{
 		float zoom = Utils::lerp(0.0f, 0.20f, m_AimDownSightTime / ADSTotalTime);
 		Window::Instance().getCamera().Zoom = zoom;
-
-		if (m_AimDownSight)
-		{
-			//float zoom = Utils::lerp(0.0f, 0.35f, m_AimDownSightTime / 2.0f);
-			//Window::Instance().getCamera().Zoom = zoom;
-			//Window::Instance().getCamera().processZoom(0.05);
-		}
-		else
-		{
-			//float zoom = Utils::lerp(0.35f, 0.0f, m_AimDownSightTime / 2.0f);
-			//Window::Instance().getCamera().Zoom = zoom;
-			//Window::Instance().getCamera().processZoom(-0.05);
-		}
 	}
 }
 
@@ -215,8 +195,8 @@ void Player::shoot(float angle, float timeElapsed)
 void Player::moveCamera()
 {
 	// move camera based on player position and mouse
-	float px = getCenterX();// *1280.0f / Window::Instance().getWidth();
-	float py = getCenterY();// *720.0f / Window::Instance().getHeight();
+	float px = getCenterX();
+	float py = getCenterY();
 
 	float mx = Window::Instance().getMouseWorldPosX();
 	float my = Window::Instance().getMouseWorldPosY();
@@ -237,8 +217,6 @@ void Player::moveCamera()
 
 	Window::Instance().getCamera().Offset = glm::vec2(cx, cy);
 
-	//Window::Instance().getCamera().moveCameraPosition(ccx + cx, ccy + cy);
-
 	float mx1 = Window::Instance().getMouseWorldPosX();
 	float mx2 = Window::Instance().getMouseWorldPosX(false);
 	float my1 = Window::Instance().getMouseWorldPosY();
@@ -256,11 +234,11 @@ void Player::moveCamera()
 void Player::move(float dx, float dy)
 {
 	addDirection(dx, dy);
-	m_Shield.addDirection(dx, dy);
-	m_Sword.move(dx, dy);
 	m_Gun.move(dx, dy);
-	m_CollisionBox.x = getCenterX() - 5;
-	m_CollisionBox.y = getPosition().y + 2;
+
+	float sizeFactorX = getWidth() / 16.0f;
+	m_CollisionBox.x = m_Position.x + (sizeFactorX * 6);
+	m_CollisionBox.y = m_Position.y + 2;
 
 	Camera& camera = Window::Instance().getCamera();
 	camera.moveCamera(dx, dy);
@@ -293,8 +271,14 @@ void Player::dodge()
 
 void Player::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree, const std::unique_ptr<QTree<Sprite>>& waterQT, float timeElapsed)
 {
-	update(timeElapsed);
+	Window& window = Window::Instance();
+	float angle = Utils::calcAngleRad(getCenterX(), getCenterY(), window.getMouseWorldPosX(), window.getMouseWorldPosY());
+
+	aimDownSight(timeElapsed);
+	shoot(angle, timeElapsed);
+
 	move(quadTree, waterQT, region, timeElapsed);
+	moveCamera();
 	m_Gun.update(region, quadTree, timeElapsed);
 
 	m_Position.z = -m_Position.y;
@@ -307,58 +291,6 @@ void Player::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTr
 		m_Gun.setDepth(m_Position.z - 0.5f);
 	}
 
-	Window& win = Window::Instance();
-	//std::cout << m_Position.z << "\n";
-	moveCamera();
-}
-
-void Player::update(float timeElapsed)
-{
-	Window& window = Window::Instance();
-	float mouseX = Window::Instance().mouseX();
-	float mouseY = Window::Instance().mouseY();
-
-	//float dx = mouseX - m_X;
-	//float dy = mouseY - m_Y;
-	//float angle = -std::atan2f(dy, dx);
-
-	float dx = mouseX - Window::Instance().getWidth() / 2 - 16.0f + 2;
-	float dy = mouseY - Window::Instance().getHeight() / 2 - 16.0f + 8;
-	float angle = -std::atan2f(dy, dx);// -glm::radians(45.0f);
-
-	float mx = Window::Instance().getMouseWorldPosX();
-	float my = Window::Instance().getMouseWorldPosY();
-	dx = mx - getCenterX();
-	dy = my - getCenterY();
-	angle = std::atan2f(dy, dx);
-
-	aimDownSight(timeElapsed);
-	shoot(angle, timeElapsed);
-}
-
-void Player::submit(Renderer& renderer)
-{
-	//glm::mat4 transform;
-	//transform = glm::translate(transform, glm::vec3(getPosition().x + getSize().x / 2.0f, getPosition().y + getSize().y / 2.0f, 0));
-	//transform = glm::rotate(transform, getAngle(), glm::vec3(0, 0, 1));
-	//transform = glm::translate(transform, glm::vec3(-getPosition().x - getSize().x / 2.0f, -getPosition().y - getSize().y / 2.0f, 0));
-
-	//if (m_Row == 3)
-	//{
-	//	m_Gun.submit(renderer);
-	//}
-
-	//renderer.push(transform);
-	//renderer.end();
-	//renderer.flush();
-	//renderer.render(*this);
-	//renderer.pop();
-	//renderer.begin();
-
-	//if (m_Row != 3)
-	//{
-	//	m_Gun.submit(renderer);
-	//}
 }
 
 void Player::render(Renderer& renderer)
@@ -381,32 +313,13 @@ void Player::render(Renderer& renderer)
 
 	m_Gun.render(renderer);
 
-	//if (m_ShieldActive)
-	//{
-	//	transform = glm::mat4();
-	//	transform = glm::translate(transform, glm::vec3(m_Shield.getPosition().x + m_Shield.getSize().x / 2.0f, m_Shield.getPosition().y + m_Shield.getSize().y / 2.0f, 0));
-	//	transform = glm::rotate(transform, m_Shield.getAngle(), glm::vec3(0, 0, 1));
-	//	transform = glm::translate(transform, glm::vec3(-m_Shield.getPosition().x - m_Shield.getSize().x / 2.0f, -m_Shield.getPosition().y - m_Shield.getSize().y / 2.0f, 0));
-	//	renderer.push(transform);
-	//	renderer.render(m_Shield);
-	//	renderer.pop();
-	//}
-
 	ResourceManager::getInstance().shader("basic_shader")->use();
-	//renderer.render(m_Crosshair);
-
 	if (Settings::Instance().debugShowCollisionBoxes)
 	{
-		//renderer.render(m_CollisionBox, TextureManager::get("Textures/collision_box.png"));
 		renderer.render(Sprite(glm::vec3(m_CollisionBox.x, m_CollisionBox.y, getY() + 1), glm::vec2(m_CollisionBox.width, m_CollisionBox.height), TextureManager::get("Textures/collision_box.png")));
 	}
-
 }
 
 void Player::renderLight(Renderer& renderer)
 {
-	renderer.submit(m_Light);
-
-	m_Gun.renderLight(renderer);
-
 }

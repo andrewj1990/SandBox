@@ -20,9 +20,7 @@ public:
 	void shoot(float x, float y, float angle, float movespeed = 0.0f);
 	void move(float x, float y);
 
-	//void update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed);
 	void update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree, float timeElapsed);
-	void submit(Renderer& renderer) override;
 	void render(Renderer& renderer) override;
 
 	void renderLight(Renderer& renderer) override;
