@@ -54,8 +54,10 @@ void main()
 //    light = vec4(1.0) - vec4(col, 1.0);// * light;
     light = vec4(col, 1.0);// * light;
 	vec3 intensity = ambient + vec3(light);
-	vec3 finalColor = diffuseColor.rgb * intensity;
+	vec3 finalColor = clamp(diffuseColor.rgb * intensity, 0.0, 1.0); 
+//	vec3 finalColor = diffuseColor.rgb * intensity;
 
     color = vec4(finalColor, diffuseColor.a);
+	//color = vec4(light.x, 0, 0, 1);
 	//color = diffuseColor;
 }

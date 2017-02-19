@@ -182,9 +182,9 @@ void Gun::render(Renderer& renderer)
 {
 	renderer.push(glm::mat4(), true);
 	renderer.begin();
+	renderer.m_AlphaTest = false;
 	for (auto& bullet : m_Bullets)
 	{
-		//bullet->render(renderer);
 		bullet->submit(renderer);
 	}
 	for (auto& entity : m_Entities)
@@ -193,9 +193,8 @@ void Gun::render(Renderer& renderer)
 	}
 
 	renderer.end();
-	renderer.flush(true);
-	//renderer.render(m_Bullets);
-	//renderer.render(m_Entities);
+	renderer.flush();
+	renderer.m_AlphaTest = true;
 
 	for (auto& text : m_DamageText)
 	{

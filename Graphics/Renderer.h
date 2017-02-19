@@ -37,16 +37,6 @@ constexpr int SHADER_COLOUR_INDEX	= 3;
 
 class Renderer
 {
-private:
-	GLuint m_VAO;
-	GLuint m_BO;
-	VertexData* m_Buffer;
-	std::unique_ptr<IndexBuffer> m_IBO;
-	GLsizei m_IndexCount;
-
-	std::vector<GLuint> m_TextureSlots;
-	std::vector<glm::mat4> m_TransformationStack;
-
 public:
 	Renderer();
 	~Renderer();
@@ -55,7 +45,7 @@ public:
 	void submit(const Renderable& renderable);
 	void drawString(const Font& font, const std::string& text, const glm::vec3& position, const glm::vec4& colour);
 	void end();
-	void flush(bool alphaTest = false, GLenum srcFactor = GL_SRC_ALPHA, GLenum blendFactor = GL_ONE_MINUS_SRC_ALPHA);
+	void flush();
 
 	void render(const Renderable& renderable);
 	void render(const std::vector<std::unique_ptr<Renderable>>& renderables);
@@ -83,8 +73,23 @@ public:
 		}
 	}
 
+	GLenum m_SrcFactor = GL_SRC_ALPHA;
+	GLenum m_BlendFactor = GL_ONE_MINUS_SRC_ALPHA;
+	bool m_AlphaTest = true;
+
 private:
 	void init();
+
+private:
+	GLuint m_VAO;
+	GLuint m_BO;
+	VertexData* m_Buffer;
+	std::unique_ptr<IndexBuffer> m_IBO;
+	GLsizei m_IndexCount;
+
+	std::vector<GLuint> m_TextureSlots;
+	std::vector<glm::mat4> m_TransformationStack;
+
 
 };
 

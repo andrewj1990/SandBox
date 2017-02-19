@@ -262,9 +262,9 @@ void Renderer::end()
 }
 
 // draw the quads in the buffer
-void Renderer::flush(bool alphaTest, GLenum srcFactor, GLenum blendFactor)
+void Renderer::flush()
 {
-	//glEnable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_2D);
 	for (int i = 0; i < m_TextureSlots.size(); ++i)
 	{
 		glActiveTexture(GL_TEXTURE0 + i);
@@ -275,7 +275,7 @@ void Renderer::flush(bool alphaTest, GLenum srcFactor, GLenum blendFactor)
 	m_IBO->bind();
 
 	glEnable(GL_BLEND);
-	if (!alphaTest)
+	if (m_AlphaTest)
 	{
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_ALPHA_TEST);
@@ -284,12 +284,12 @@ void Renderer::flush(bool alphaTest, GLenum srcFactor, GLenum blendFactor)
 
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE);	// additive blending
 	//glBlendFunc(GL_ONE, GL_ONE);
-	glBlendFunc(srcFactor, blendFactor);
+	glBlendFunc(m_SrcFactor, m_BlendFactor);
 
 	glDrawElements(GL_TRIANGLES, m_IndexCount, GL_UNSIGNED_INT, NULL);
 
 	glDisable(GL_BLEND);
-	if (!alphaTest)
+	if (m_AlphaTest)
 	{
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_ALPHA_TEST);

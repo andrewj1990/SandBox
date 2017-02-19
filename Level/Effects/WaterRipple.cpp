@@ -33,10 +33,12 @@ void WaterRipple::update(Region& region, float timeElapsed)
 void WaterRipple::render(Renderer& renderer)
 {
 	renderer.begin();
+	renderer.m_AlphaTest = false;
 	for (auto& waterParticle : m_WaterParticles)
 	{
 		waterParticle->submit(renderer);
 	}
 	renderer.end();
-	renderer.flush(true);
+	renderer.flush();
+	renderer.m_AlphaTest = true;
 }

@@ -61,12 +61,10 @@ void Level2D::update(float timeElapsed)
 	if (Window::Instance().isKeyTyped(GLFW_KEY_J))
 	{
 		m_PointLights.push_back(PointLight(m_PointLight));
-		std::cout << "key j pressed\n";
 	}
 	if (Window::Instance().isKeyPressed(GLFW_KEY_Y))
 	{
 		m_PointLights.push_back(PointLight(m_PointLight));
-		std::cout << "key y pressed\n";
 	}
 
 	m_WaterTilesQT = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, Settings::Instance().PROJECTION_WIDTH, Settings::Instance().PROJECTION_HEIGHT)));
@@ -184,6 +182,8 @@ void Level2D::renderLights(Renderer& renderer)
 	ResourceManager::getInstance().shader("lightShadow")->use();
 
 	renderer.begin();
+	renderer.m_BlendFactor = GL_ONE;
+	renderer.m_AlphaTest = false;
 
 	m_PointLight.render(renderer);
 
@@ -193,7 +193,10 @@ void Level2D::renderLights(Renderer& renderer)
 	}
 
 	renderer.end();
-	renderer.flush(true, GL_SRC_ALPHA, GL_ONE);
+	renderer.flush();
+	
+	renderer.m_BlendFactor = GL_ONE_MINUS_SRC_ALPHA;
+	renderer.m_AlphaTest = true;
 
 	ResourceManager::getInstance().shader("basic_shader")->use();
 }

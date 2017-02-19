@@ -8,7 +8,7 @@ PointLight::PointLight()
 }
 
 PointLight::PointLight(const PointLight& other)
-	: m_Position(other.m_Position), m_LightRegion(other.m_LightRegion)/*, m_Rays(other.m_Rays), m_LightQuads(other.m_LightQuads)*/
+	: m_Position(other.m_Position), m_LightRegion(other.m_LightRegion)
 {
 	for (const auto& quads : other.m_LightQuads)
 	{
