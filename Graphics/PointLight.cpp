@@ -10,6 +10,12 @@ PointLight::PointLight()
 PointLight::PointLight(const PointLight& other)
 	: m_Position(other.m_Position), m_LightRegion(other.m_LightRegion)/*, m_Rays(other.m_Rays), m_LightQuads(other.m_LightQuads)*/
 {
+	for (const auto& quads : other.m_LightQuads)
+	{
+		m_LightQuads.push_back(std::unique_ptr<Renderable>(new Renderable(other.m_Position.x, other.m_Position.y, other.m_Position.x, other.m_Position.y,
+			quads->getPositions()[2].x, quads->getPositions()[2].y, quads->getPositions()[3].x, quads->getPositions()[3].y, glm::vec4(1, 1, 1, 1))));
+		m_LightQuads.back()->setLightPosition(m_Position.x, m_Position.y, m_LightRegion.width / 2);
+	}
 }
 
 void PointLight::createRays(const std::vector<std::shared_ptr<Sprite>>& sprites)
@@ -72,7 +78,7 @@ void PointLight::update(float x, float y, const std::unique_ptr<QTree<Sprite>>& 
 
 	for (auto& ray : m_Rays)
 	{
-		ray->intersect(sprites, m_LightRegion, m_LightRegion.width / 2);
+		ray->findIntersections(sprites, m_LightRegion, m_LightRegion.width / 2);
 	}
 
 	std::sort(m_Rays.begin(), m_Rays.end(), [](const auto& a, const auto& b) { return a->getAngle() < b->getAngle(); });

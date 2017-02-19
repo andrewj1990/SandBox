@@ -60,12 +60,12 @@ void Level2D::update(float timeElapsed)
 	m_Delay++;
 	if (Window::Instance().isKeyTyped(GLFW_KEY_J))
 	{
-		//m_Lights.push_back(Light(m_Light));
+		m_PointLights.push_back(PointLight(m_PointLight));
 		std::cout << "key j pressed\n";
 	}
 	if (Window::Instance().isKeyPressed(GLFW_KEY_Y))
 	{
-		//m_Lights.push_back(Light(m_Light));
+		m_PointLights.push_back(PointLight(m_PointLight));
 		std::cout << "key y pressed\n";
 	}
 
@@ -77,7 +77,6 @@ void Level2D::update(float timeElapsed)
 	//m_Region.addTiles(m_QuadTree);
 	m_Region.addObjects(m_ObjectsQT);
 	m_Region.addWaterTiles(m_WaterTilesQT);
-
 
 	m_Player->update(m_Region, m_ObjectsQT, m_WaterTilesQT, timeElapsed);
 
@@ -172,7 +171,7 @@ void Level2D::render(Renderer& renderer)
 	// light outline
 	if (Settings::Instance().debugShowLightRange)
 	{
-		for (auto& light : m_Lights)
+		for (auto& pointLight : m_PointLights)
 		{
 			//renderer.render(light.getLightRegion(), TextureManager::get("Textures/bbox.png"));
 		}
@@ -188,9 +187,9 @@ void Level2D::renderLights(Renderer& renderer)
 
 	m_PointLight.render(renderer);
 
-	for (auto& light : m_Lights)
+	for (auto& pointLight : m_PointLights)
 	{
-		light.renderShadow(renderer);
+		pointLight.render(renderer);
 	}
 
 	renderer.end();

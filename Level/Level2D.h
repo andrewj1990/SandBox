@@ -8,7 +8,6 @@
 #include "Region.h"
 #include "TileRegion.h"
 #include "..\Entity\player.h"
-#include "..\Graphics\Light.h"
 #include "..\Graphics\PointLight.h"
 #include "..\Utils\QTree.h"
 #include "..\Graphics\Buffers\framebuffer.h"
@@ -38,7 +37,7 @@ private:
 	std::unique_ptr<QTree<Sprite>> m_ObjectsQT;
 	Sprite m_Background;
 
-	std::vector<Light> m_Lights;
+	std::vector<PointLight> m_PointLights;
 	std::unordered_set<std::string> m_RegionSet;
 
 	std::vector<std::unique_ptr<WaterRipple>> m_WaterRipples;

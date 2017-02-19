@@ -275,9 +275,9 @@ void Renderer::flush(bool alphaTest, GLenum srcFactor, GLenum blendFactor)
 	m_IBO->bind();
 
 	glEnable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
 	if (!alphaTest)
 	{
+		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_ALPHA_TEST);
 		glAlphaFunc(GL_GREATER, 0.9f);			// http://gamedev.stackexchange.com/questions/134809/getting-draw-depth-order-right-in-opengl-tile-engine/134931
 	}
@@ -289,8 +289,11 @@ void Renderer::flush(bool alphaTest, GLenum srcFactor, GLenum blendFactor)
 	glDrawElements(GL_TRIANGLES, m_IndexCount, GL_UNSIGNED_INT, NULL);
 
 	glDisable(GL_BLEND);
-	glDisable(GL_DEPTH_TEST);
-	if (!alphaTest) glDisable(GL_ALPHA_TEST);
+	if (!alphaTest)
+	{
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_ALPHA_TEST);
+	}
 	glDisable(GL_TEXTURE_2D);
 
 	m_IBO->unbind();
