@@ -1,5 +1,4 @@
 #include "BasicMob.h"
-#include "..\..\Level\Terrain.h"
 
 BasicMob::BasicMob(float x, float y)
 	: Entity(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/PlayerSpritesheet10.png"))

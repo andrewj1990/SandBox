@@ -10,15 +10,12 @@
 #include "Utils\Camera.h"
 #include "SkeletalAnimation\Skeleton.h"
 #include "Entity\player.h"
-#include "Level\Level.h"
 #include "Level\Level2D.h"
 #include "UI\PlayerUI.h"
 
 #include "Graphics\label.h"
 #include "Utils\timer.h"
 #include "Settings.h"
-
-#define LEVEL 0
 
 void movement(const Window& window, Camera& camera, float deltaTime)
 {
@@ -186,10 +183,7 @@ int main()
 
 		while (accumulator >= dt)
 		{
-			//if (LEVEL) level->update(dt);
-			//else 
 			level2d->update(dt);
-			//playerUI.update();
 			++updates;
 			updateTimer += tick;
 
