@@ -93,6 +93,8 @@ void Level2D::update(float timeElapsed)
 			it++;
 		}
 	}
+
+	std::cout << m_Player->getCenterX() << ", " << m_Player->getCenterY() << "\n";
 }
 
 void Level2D::render(Renderer& renderer)

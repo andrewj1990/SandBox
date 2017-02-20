@@ -48,7 +48,7 @@ void Gun::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree,
 		m_FaceRight = true;
 	}
 
-	// collision
+	// bullet collision and updates
 	for (auto& bullet : m_Bullets)
 	{
 		bullet->update(timeElapsed);
@@ -56,11 +56,17 @@ void Gun::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree,
 
 		std::vector<std::shared_ptr<Sprite>> objects;
 
-		const glm::vec3& pos = bullet->getPosition();
-		const glm::vec2& size = bullet->getSize();
-		
-		quadTree->retrieve(objects, BoundingBox(pos.x, pos.y, size.x, size.y));
-		quadTree->retrieve(objects, BoundingBox(pos.x - bullet->m_Dx * timeElapsed, pos.y - bullet->m_Dy * timeElapsed, size.x, size.y));
+		float bx = bullet->getCollisionBox()->x;
+		float by = bullet->getCollisionBox()->y;
+		float bw = bullet->getCollisionBox()->width;
+		float bh = bullet->getCollisionBox()->height;
+		//float bx = bullet->getPosition().x;
+		//float by = bullet->getPosition().y;
+		//float bw = bullet->getSize().x;
+		//float bh = bullet->getSize().y;
+
+		quadTree->retrieve(objects, BoundingBox(bx, by, bx, by));
+		quadTree->retrieve(objects, BoundingBox(bx - bullet->m_Dx * timeElapsed, by - bullet->m_Dy * timeElapsed, bx, by));
 		for (auto& object : objects)
 		{
 			const auto& collisionBox = object->getCollisionBox();
@@ -71,8 +77,8 @@ void Gun::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree,
 			float ch = collisionBox->height;
 
 			//if (collisionBox->intersects(*(bullet)->getCollisionBox()))
-			if (Utils::lineIntersection(glm::vec4(pos.x, pos.y, pos.x - bullet->m_Dx * timeElapsed, pos.y - bullet->m_Dy * timeElapsed), glm::vec4(cx, cy, cx + cw, cy + ch)) ||
-				Utils::lineIntersection(glm::vec4(pos.x, pos.y, pos.x - bullet->m_Dx * timeElapsed, pos.y - bullet->m_Dy * timeElapsed), glm::vec4(cx, cy + ch, cx + cw, cy))
+			if (Utils::lineIntersection(glm::vec4(bx, by, bx - bullet->m_Dx * timeElapsed, by - bullet->m_Dy * timeElapsed), glm::vec4(cx, cy, cx + cw, cy + ch)) ||
+				Utils::lineIntersection(glm::vec4(bx, by, bx - bullet->m_Dx * timeElapsed, by - bullet->m_Dy * timeElapsed), glm::vec4(cx, cy + ch, cx + cw, cy))
 				)
 			{
 				for (int i = 0; i < 25; i++)

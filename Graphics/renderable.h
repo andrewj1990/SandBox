@@ -83,6 +83,7 @@ public:
 	{
 		m_Position.x += dx;
 		m_Position.y += dy;
+		m_Position.z = -m_Position.y;
 	}
 
 	// store light position in uv

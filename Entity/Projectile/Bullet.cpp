@@ -16,18 +16,22 @@ Bullet::Bullet(float x, float y, float angle)
 
 void Bullet::update(float timeElapsed)
 {
+	// bullet tracer effect
 	if (m_Destroy)
 	{
 		m_Size.x -= 30;
 		return;
 	}
+	m_Size.x += 30;
 
 	m_Duration -= timeElapsed;
 
-	m_Size.x += 30;
 
 	addDirection(m_Dx * timeElapsed, m_Dy * timeElapsed);
-	m_Position.z = -m_Position.y;
+
+	// use tail end of bullet trail if shooting downwards
+	if (glm::degrees(m_Angle) < 0) m_Position.z = -m_Position.y - m_Size.x;
+
 	m_CollisionBox->x = getPosition().x;
 	m_CollisionBox->y = getPosition().y;
 
@@ -41,7 +45,6 @@ void Bullet::update(float timeElapsed)
 
 void Bullet::submit(Renderer& renderer)
 {
-	//glm::mat4 transform = Utils::calcTransformMat(m_Position.x, m_Position.y, m_Size.x, m_Size.y, m_Angle);
 	glm::mat4 transform;
 	transform = glm::translate(transform, glm::vec3(m_Position.x, m_Position.y + m_Size.y / 2.0f, 0));
 	transform = glm::rotate(transform, m_Angle + glm::radians(180.0f), glm::vec3(0, 0, 1));
