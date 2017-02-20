@@ -93,8 +93,6 @@ void Level2D::update(float timeElapsed)
 			it++;
 		}
 	}
-
-	std::cout << m_Player->getCenterX() << ", " << m_Player->getCenterY() << "\n";
 }
 
 void Level2D::render(Renderer& renderer)
@@ -156,7 +154,7 @@ void Level2D::render(Renderer& renderer)
 	std::vector<std::shared_ptr<Sprite>> objects;
 	auto mx = Window::Instance().getMouseWorldPosX();
 	auto my = Window::Instance().getMouseWorldPosY();
-	BoundingBox mouseBoundingBox(mx - 8, my - 8, 16, 16);
+	BoundingBox mouseBoundingBox(mx - 8, my - 8, 2, 2);
 	m_ObjectsQT->retrieve(objects, mouseBoundingBox);
 	renderer.begin();
 	for (auto& object : objects)
@@ -172,7 +170,7 @@ void Level2D::render(Renderer& renderer)
 			Utils::lineIntersection(glm::vec4(m_Player->getCenterX(), m_Player->getCenterY(), mx, my), glm::vec4(cx, cy + ch, cx + cw, cy))
 			)
 		{
-			renderer.submit(Renderable(glm::vec3(cx, cy, 0), glm::vec2(cw, ch), TextureManager::get("Textures/collision_box.png")));
+			renderer.submit(Renderable(glm::vec3(cx, cy, (1 << 23) - 1000), glm::vec2(cw, ch), TextureManager::get("Textures/collision_box.png")));
 		}
 	}
 	renderer.end();
