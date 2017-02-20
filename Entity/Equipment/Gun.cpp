@@ -61,8 +61,11 @@ void Gun::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree,
 		float bw = bullet->getCollisionBox()->width;
 		float bh = bullet->getCollisionBox()->height;
 
-		quadTree->retrieve(objects, BoundingBox(bx, by, bw, bh));
-		quadTree->retrieve(objects, BoundingBox(bx - bullet->m_Dx * timeElapsed, by - bullet->m_Dy * timeElapsed, bw, bh));
+		float bdx = bullet->m_Dx * timeElapsed;
+		float bdy = bullet->m_Dy * timeElapsed;
+
+		// used a larger bounding box range because some objects were not being retrieved on the edge cases.
+		quadTree->retrieve(objects, BoundingBox(std::fminf(bx, bx + bdx) - 32, std::fminf(by, by + bdy) - 32, bw + std::abs(bdx) + 64, bh + std::abs(bdy) + 64));
 		for (auto& object : objects)
 		{
 			const auto& collisionBox = object->getCollisionBox();

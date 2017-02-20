@@ -26,7 +26,6 @@ void Bullet::update(float timeElapsed)
 
 	m_Duration -= timeElapsed;
 
-
 	addDirection(m_Dx * timeElapsed, m_Dy * timeElapsed);
 
 	// use tail end of bullet trail if shooting downwards
