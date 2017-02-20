@@ -1,7 +1,7 @@
 #include "player.h"
 
 Player::Player(float x, float y)
-	: Entity(glm::vec3(x, y, y), glm::vec2(Settings::Instance().TILE_SIZE, Settings::Instance().TILE_SIZE), TextureManager::get("Textures/Player/player_anim.png")),
+	: Entity(glm::vec3(x, y, y), glm::vec2(32, 32), TextureManager::get("Textures/Player/player_anim.png")),
 	m_Gun(x + (getWidth() / 16.0f) * 5, y + (getHeight() / 16.0f) * 6), m_CollisionBox(x, y, (getWidth() / 16.0f) * 4, (getHeight() / 16.0f) * 11)
 {
 	m_TexSize = 16;

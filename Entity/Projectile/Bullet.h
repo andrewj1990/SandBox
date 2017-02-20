@@ -8,8 +8,8 @@ public:
 	Bullet(float x, float y, float angle);
 
 	void update(float timeElapsed);
-	void render(Renderer& renderer);
 
+	void submit(Renderer& renderer) override;
 	void renderLight(Renderer& renderer) override;
 
 private:

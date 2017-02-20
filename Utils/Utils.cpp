@@ -63,25 +63,35 @@ bool Utils::inRange(float px, float py, float tx, float ty, float radius)
 	return (dist < (radius * radius));
 }
 
+bool Utils::lineIntersection(const glm::vec4& line1, const glm::vec4& line2)
+{
+	float s1X = line1.z - line1.x;
+	float s2X = line2.z - line2.x;
+	float s1Y = line1.w - line1.y;
+	float s2Y = line2.w - line2.y;
+
+	float s = (-s1Y * (line1.x - line2.x) + s1X * (line1.y - line2.y)) / (-s2X * s1Y + s1X * s2Y);
+	float t = ( s2X * (line1.y - line2.y) - s2Y * (line1.x - line2.x)) / (-s2X * s1Y + s1X * s2Y);
+
+	if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+glm::mat4 Utils::calcTransformMat(float x, float y, float w, float h, float angle)
+{
+	glm::mat4 transform;
+	transform = glm::translate(transform, glm::vec3(x + w / 2.0f, y + h / 2.0f, 0));
+	transform = glm::rotate(transform, angle, glm::vec3(0, 0, 1));
+	transform = glm::translate(transform, glm::vec3(-x - w / 2.0f, -y - h / 2.0f, 0));
+	return transform;
+}
+
 bool Utils::quadCollision(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2)
 {
-	//if ((x1 > x2 && x1 < x2 + w2 && y1 > y2 && y1 < y2 + h2) ||
-	//	(x1 + w1 > x2 && x1 + w1 < x2 + w2 && y1 > y2 && y1 < y2 + h2) ||
-	//	(x1 > x2 && x1 < x2 + w2 && y1 + h1 > y2 && y1 + h1 < y2 + h2) ||
-	//	(x1 + w1 > x2 && x1 + w1 < x2 + w2 && y1 + h1 > y2 && y1 + h1 < y2 + h2))
-	//{
-	//	return true;
-	//}
-
-	//if ((x2 > x1 && x2 < x1 + w1 && y2 > y1 && y2 < y1 + h1) ||
-	//	(x2 + w2 > x1 && x2 + w2 < x1 + w1 && y2 > y1 && y2 < y1 + h1) ||
-	//	(x2 > x1 && x2 < x1 + w1 && y2 + h2 > y1 && y2 + h2 < y1 + h1) ||
-	//	(x2 + w2 > x1 && x2 + w2 < x1 + w1 && y2 + h2 > y1 && y2 + h2 < y1 + h1))
-	//{
-	//	return true;
-	//}
-
-	//return false;
 
 	return (x1 <= x2 + w2 && x1 + w1 >= x2 && y1 <= y2 + h2 && y1 + h1 >= y2);
 }

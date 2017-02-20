@@ -29,12 +29,13 @@ public:
 	float getAngle() const override { return m_Angle; }
 	virtual void damage(int amount) {}
 
+	float m_Dx;
+	float m_Dy;
+
 private:
 	void init();
 
 protected:
-	float m_Dx;
-	float m_Dy;
 
 	float m_CumulativeTime;
 };

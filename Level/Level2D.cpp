@@ -147,6 +147,34 @@ void Level2D::render(Renderer& renderer)
 	{
 		renderer.debugRender(m_PointLight.getLightRegion(), TextureManager::get("Textures/bbox.png"));
 	}
+
+
+
+	// line segment test
+	std::vector<std::shared_ptr<Sprite>> objects;
+	auto mx = Window::Instance().getMouseWorldPosX();
+	auto my = Window::Instance().getMouseWorldPosY();
+	BoundingBox mouseBoundingBox(mx - 8, my - 8, 16, 16);
+	m_ObjectsQT->retrieve(objects, mouseBoundingBox);
+	renderer.begin();
+	for (auto& object : objects)
+	{
+		const auto& collisionBox = object->getCollisionBox();
+
+		float cx = collisionBox->x;
+		float cy = collisionBox->y;
+		float cw = collisionBox->width;
+		float ch = collisionBox->height;
+
+		if (Utils::lineIntersection(glm::vec4(m_Player->getCenterX(), m_Player->getCenterY(), mx, my), glm::vec4(cx, cy, cx + cw, cy + ch)) ||
+			Utils::lineIntersection(glm::vec4(m_Player->getCenterX(), m_Player->getCenterY(), mx, my), glm::vec4(cx, cy + ch, cx + cw, cy))
+			)
+		{
+			renderer.submit(Renderable(glm::vec3(cx, cy, 0), glm::vec2(cw, ch), TextureManager::get("Textures/collision_box.png")));
+		}
+	}
+	renderer.end();
+	renderer.flush();
 }
 
 void Level2D::renderLights(Renderer& renderer)
