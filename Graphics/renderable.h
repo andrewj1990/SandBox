@@ -7,6 +7,7 @@
 #include "Renderer.h"
 #include "..\Utils\Utils.h"
 #include "..\Utils\BoundingBox.h"
+#include "texture_manager.h"
 
 class Renderable
 {

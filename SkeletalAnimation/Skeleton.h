@@ -9,6 +9,7 @@
 
 #include "..\Graphics\Renderer.h"
 #include "..\Graphics\renderable.h"
+#include "..\Graphics\texture_manager.h"
 
 struct KeyFrame
 {

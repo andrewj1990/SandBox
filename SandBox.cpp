@@ -16,6 +16,7 @@
 #include "Graphics\label.h"
 #include "Utils\timer.h"
 #include "Settings.h"
+#include "Graphics\texture_manager.h"
 
 void movement(const Window& window, Camera& camera, float deltaTime)
 {

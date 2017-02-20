@@ -72,7 +72,6 @@ void Gun::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree,
 			float cw = collisionBox->width;
 			float ch = collisionBox->height;
 
-			//if (collisionBox->intersects(*(bullet)->getCollisionBox()))
 			if (Utils::lineIntersection(glm::vec4(bx, by, bx - bullet->m_Dx * timeElapsed, by - bullet->m_Dy * timeElapsed), glm::vec4(cx, cy, cx + cw, cy + ch)) ||
 				Utils::lineIntersection(glm::vec4(bx, by, bx - bullet->m_Dx * timeElapsed, by - bullet->m_Dy * timeElapsed), glm::vec4(cx, cy + ch, cx + cw, cy))
 				)

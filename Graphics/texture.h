@@ -5,16 +5,12 @@
 #include <string>
 #include <vector>
 #include <glm\glm.hpp>
-#include "spritesheet.h"
-
-class SpriteSheet;
 
 class Texture
 {
 public:
 	
 	Texture(const std::string& filename);
-	Texture(SpriteSheet& spritesheet, const std::string& filename, int xIndex, int yIndex, int width, int height);
 	~Texture();
 
 	void setDefaultUV();
