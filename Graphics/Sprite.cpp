@@ -16,12 +16,13 @@ Sprite::Sprite(const glm::vec3& position, const glm::vec2 size, Texture* texture
 	: Renderable(position, size, texture)
 {
 	init();
+	m_CollisionBox = std::shared_ptr<BoundingBox>(new BoundingBox(position.x, position.y, size.x, size.y));
 }
 
 void Sprite::init()
 {
 	m_Angle = 0.0f;
-	m_Solid = false;
+	m_Solid = true;
 }
 
 void Sprite::setPosition(float x, float y)

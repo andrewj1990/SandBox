@@ -51,7 +51,7 @@ bool Player::playerCollision(float dx, float dy, const std::unique_ptr<QTree<Spr
 		float tw = collisionBox->width;
 		float th = collisionBox->height;
 
-		if (Utils::quadCollision(x, y, w, h, tx, ty, tw, th))
+		if (tile->isSolid() && Utils::quadCollision(x, y, w, h, tx, ty, tw, th))
 		{
 			return true;
 		}
@@ -295,14 +295,14 @@ void Player::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTr
 
 void Player::render(Renderer& renderer)
 {
-	float scale = 1.1f;
-	glm::mat4 transform;
-	glm::mat4 outline;
-	outline = glm::translate(outline, glm::vec3(getPosition().x + getSize().x / 2.0f, getPosition().y + getSize().y / 2.0f, 0));
-	outline = glm::scale(outline, glm::vec3(scale, scale, scale));
-	outline = glm::rotate(outline, getAngle(), glm::vec3(0, 0, 1));
-	outline = glm::translate(outline, glm::vec3(-getPosition().x - getSize().x / 2.0f, -getPosition().y - getSize().y / 2.0f, 0));
+	//float scale = 1.1f;
+	//glm::mat4 outline;
+	//outline = glm::translate(outline, glm::vec3(getPosition().x + getSize().x / 2.0f, getPosition().y + getSize().y / 2.0f, 0));
+	//outline = glm::scale(outline, glm::vec3(scale, scale, scale));
+	//outline = glm::rotate(outline, getAngle(), glm::vec3(0, 0, 1));
+	//outline = glm::translate(outline, glm::vec3(-getPosition().x - getSize().x / 2.0f, -getPosition().y - getSize().y / 2.0f, 0));
 
+	glm::mat4 transform;
 	transform = glm::translate(transform, glm::vec3(getPosition().x + getSize().x / 2.0f, getPosition().y + getSize().y / 2.0f, 0));
 	transform = glm::rotate(transform, getAngle(), glm::vec3(0, 0, 1));
 	transform = glm::translate(transform, glm::vec3(-getPosition().x - getSize().x / 2.0f, -getPosition().y - getSize().y / 2.0f, 0));
@@ -322,4 +322,5 @@ void Player::render(Renderer& renderer)
 
 void Player::renderLight(Renderer& renderer)
 {
+	m_Gun.renderLight(renderer);
 }

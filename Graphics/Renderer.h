@@ -22,7 +22,7 @@ struct VertexData
 	unsigned int colour;
 };
 
-const int RENDERER_MAX_SPRITES	= 15000;
+const int RENDERER_MAX_SPRITES	= 250000;
 const int RENDERER_VERTEX_SIZE	= sizeof(VertexData);
 const int RENDERER_SPRITE_SIZE	= RENDERER_VERTEX_SIZE * 4;
 const int RENDERER_BUFFER_SIZE	= RENDERER_SPRITE_SIZE * RENDERER_MAX_SPRITES;

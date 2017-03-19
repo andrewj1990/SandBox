@@ -55,5 +55,5 @@ void main()
 		texColor = texture(textures[tid], fs_in.uv.xy);
 	}
 
-	color = vec4(0, 0, 0, alpha);
+	color = vec4(1, 1, 1, alpha);
 }

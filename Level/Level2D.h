@@ -32,9 +32,14 @@ private:
 	std::unique_ptr<Player> m_Player;
 
 	PointLight m_PointLight;
+
 	std::unique_ptr<QTree<Sprite>> m_WaterTilesQT;
 	std::unique_ptr<QTree<Sprite>> m_QuadTree;
 	std::unique_ptr<QTree<Sprite>> m_ObjectsQT;
+
+	std::unique_ptr<QTree<Sprite>> m_TestQT;
+	std::vector<std::shared_ptr<Sprite>> m_TestObjects;
+
 	Sprite m_Background;
 
 	std::vector<PointLight> m_PointLights;

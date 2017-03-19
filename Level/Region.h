@@ -5,6 +5,11 @@
 #include "..\Settings.h"
 #include "Effects\TileRipple.h"
 
+struct WorldObjects
+{
+	bool tree = false;
+};
+
 class Region
 {
 public:
@@ -19,6 +24,7 @@ public:
 	void addObjects(std::unique_ptr<QTree<Sprite>>& quadTree);
 
 	void removeTiles(float x, float y, bool exactCoord = true, bool ripple = false);
+	void removeObject(float x, float y, bool exactCoord = true);
 	TileType getTileType(float x, float y);
 	bool emptyTile(float x, float y);
 	bool getSurfacePosition(float x, float y);
@@ -44,4 +50,7 @@ private:
 	std::vector<std::unique_ptr<TileRegion>> m_Regions;
 	std::vector<std::unique_ptr<TileRipple>> m_Ripples;
 	std::unordered_set<std::string> m_Tiles;
+	std::unordered_set<std::string> m_DestroyedObjects;
+
+	std::unordered_map<std::string, WorldObjects> m_WorldObjects;
 };

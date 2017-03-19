@@ -263,7 +263,8 @@ void Renderer::end()
 
 // draw the quads in the buffer
 void Renderer::flush()
-{
+{	
+	Settings::Instance().drawCount++;
 	glEnable(GL_TEXTURE_2D);
 	for (int i = 0; i < m_TextureSlots.size(); ++i)
 	{

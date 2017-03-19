@@ -7,6 +7,8 @@
 #include "..\Utils\simplexNoise.h"
 #include "..\Settings.h"
 #include "Objects\Tree.h"
+#include "Objects\Rock.h"
+#include "Objects\Bush.h"
 
 class TileRegion {
 public:
@@ -14,7 +16,7 @@ public:
 	TileRegion(int x, int y, int size);
 	~TileRegion() { }
 
-	void init(const std::unordered_set<std::string>& region_tiles);
+	void init(const std::unordered_set<std::string>& region_tiles, const std::unordered_set<std::string>& destroyed_objects);
 
 	void submit(Renderer& renderer);
 
@@ -37,6 +39,8 @@ private:
 	float noiseHeight(float x, float y);
 	bool transitionTile(float x, float y);
 	bool caveTile(float x, float y, float threshold = 0.5f);
+
+	void addObjects(int x, int y, const std::unordered_set<std::string>& destroyed_objects, TileType tileType);
 
 private:
 	int m_IndexX;

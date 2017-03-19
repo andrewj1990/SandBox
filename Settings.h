@@ -26,6 +26,8 @@ public:
 	bool debugShowLightRange = false;
 	bool ADS = true;
 
+	int drawCount = 0;
+
 	bool noClip = false;
 
 	

@@ -10,7 +10,8 @@ Level2D::Level2D()
 	m_WaterTilesQT = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, winW, winH)));
 	m_QuadTree = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, winW, winH)));
 	m_ObjectsQT = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, winW, winH)));
-	
+	m_TestQT = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox((int)Window::Instance().getCamera().Position.x, (int)Window::Instance().getCamera().Position.y, (int)Window::Instance().getWidth(), (int)Window::Instance().getHeight())));
+
 	init();
 
 	m_WaterRippleTime = 0; 
@@ -48,9 +49,10 @@ void Level2D::update(float timeElapsed)
 		m_PointLights.push_back(PointLight(m_PointLight));
 	}
 
-	m_WaterTilesQT = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, Settings::Instance().PROJECTION_WIDTH, Settings::Instance().PROJECTION_HEIGHT)));
-	m_QuadTree = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, Settings::Instance().PROJECTION_WIDTH, Settings::Instance().PROJECTION_HEIGHT)));
-	m_ObjectsQT = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX, camY, Settings::Instance().PROJECTION_WIDTH, Settings::Instance().PROJECTION_HEIGHT)));
+	int qTreeOffset = 200;
+	m_WaterTilesQT	= std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX - qTreeOffset, camY - qTreeOffset, Settings::Instance().PROJECTION_WIDTH + qTreeOffset * 2, Settings::Instance().PROJECTION_HEIGHT + qTreeOffset * 2)));
+	m_QuadTree		= std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX - qTreeOffset, camY - qTreeOffset, Settings::Instance().PROJECTION_WIDTH + qTreeOffset * 2, Settings::Instance().PROJECTION_HEIGHT + qTreeOffset * 2)));
+	m_ObjectsQT		= std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(camX - qTreeOffset, camY - qTreeOffset, Settings::Instance().PROJECTION_WIDTH + qTreeOffset * 2, Settings::Instance().PROJECTION_HEIGHT + qTreeOffset * 2)));
 
 	//m_Region.addTiles(m_QTree);
 	//m_Region.addTiles(m_QuadTree);
@@ -93,6 +95,19 @@ void Level2D::update(float timeElapsed)
 			it++;
 		}
 	}
+
+	//m_TestQT = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(-qTreeOffset, -qTreeOffset, (int)Window::Instance().getWidth() + qTreeOffset * 2, (int)Window::Instance().getHeight() + qTreeOffset * 2)));
+
+	//const auto& win = Window::Instance();
+	//if (win.isButtonPressed(GLFW_MOUSE_BUTTON_3))
+	//{
+	//	m_TestObjects.push_back(std::shared_ptr<Sprite>(new Sprite(glm::vec3(win.getMouseWorldPosX(), win.getMouseWorldPosY(), Settings::Instance().Z_PLANE - 1), glm::vec2(10, 10), TextureManager::get("Textures/container2_specular.png"))));
+	//}
+
+	//for (auto& testObj : m_TestObjects)
+	//{
+	//	m_TestQT->insert(testObj);
+	//}
 }
 
 void Level2D::render(Renderer& renderer)
@@ -100,7 +115,12 @@ void Level2D::render(Renderer& renderer)
 	renderer.render(m_Background);
 	m_Region.render(renderer);
 
-	for (auto& waterRipple : m_WaterRipples) waterRipple->render(renderer);
+	renderer.begin();
+	renderer.m_AlphaTest = false;
+	for (auto& waterRipple : m_WaterRipples) waterRipple->submit(renderer);
+	renderer.end();
+	renderer.flush();
+	renderer.m_AlphaTest = true;
 
 	m_Player->render(renderer);
 
@@ -149,32 +169,55 @@ void Level2D::render(Renderer& renderer)
 	}
 
 
+	// testing qtree
+	//std::vector<BoundingBox> boundingBoxes;
+	//m_TestQT->getBounds(boundingBoxes);
 
-	// line segment test
-	std::vector<std::shared_ptr<Sprite>> objects;
-	auto mx = Window::Instance().getMouseWorldPosX();
-	auto my = Window::Instance().getMouseWorldPosY();
-	BoundingBox mouseBoundingBox(mx - 8, my - 8, 2, 2);
-	m_ObjectsQT->retrieve(objects, mouseBoundingBox);
-	renderer.begin();
-	for (auto& object : objects)
-	{
-		const auto& collisionBox = object->getCollisionBox();
+	//for (auto& bb : boundingBoxes)
+	//{
+	//	renderer.debugRender(bb, TextureManager::get("Textures/bbox.png"));
+	//}
 
-		float cx = collisionBox->x;
-		float cy = collisionBox->y;
-		float cw = collisionBox->width;
-		float ch = collisionBox->height;
+	//renderer.begin();
+	//for (auto& testObj : m_TestObjects)
+	//{
+	//	renderer.submit(*testObj);
+	//}
 
-		if (Utils::lineIntersection(glm::vec4(m_Player->getCenterX(), m_Player->getCenterY(), mx, my), glm::vec4(cx, cy, cx + cw, cy + ch)) ||
-			Utils::lineIntersection(glm::vec4(m_Player->getCenterX(), m_Player->getCenterY(), mx, my), glm::vec4(cx, cy + ch, cx + cw, cy))
-			)
-		{
-			renderer.submit(Renderable(glm::vec3(cx, cy, (1 << 23) - 1000), glm::vec2(cw, ch), TextureManager::get("Textures/collision_box.png")));
-		}
-	}
-	renderer.end();
-	renderer.flush();
+	//auto mx = Window::Instance().getMouseWorldPosX();
+	//auto my = Window::Instance().getMouseWorldPosY();
+	//int tempBounds = 8;
+	//BoundingBox mouseBoundingBox(mx - tempBounds, my - tempBounds, tempBounds * 2, tempBounds * 2);
+	//std::vector<std::shared_ptr<Sprite>> m_Data;
+	//m_TestQT->retrieve(m_Data, mouseBoundingBox);
+	//renderer.end();
+	//renderer.flush();
+
+	//for (auto& sprite : m_Data)
+	//{
+	//	renderer.debugRender(*(sprite->getCollisionBox()), TextureManager::get("Textures/collision_box.png"));
+	//}
+
+	//renderer.debugRender(mouseBoundingBox, TextureManager::get("Textures/collision_box.png"));
+
+
+	//ResourceManager::getInstance().shader("outline_shader")->use();
+	//renderer.begin();
+	//renderer.m_AlphaTest = false;
+
+	//std::vector<std::shared_ptr<Sprite>> m_Data2;
+	//m_ObjectsQT->retrieve(m_Data2, mouseBoundingBox);
+
+	//for (auto& sprite : m_Data2)
+	//{
+	//	renderer.submit(*sprite);
+	//}
+
+	//renderer.end();
+	//renderer.flush();
+	//renderer.m_AlphaTest = true;
+
+	//ResourceManager::getInstance().shader("basic_shader")->use();
 }
 
 void Level2D::renderLights(Renderer& renderer)
@@ -191,6 +234,8 @@ void Level2D::renderLights(Renderer& renderer)
 	{
 		pointLight.render(renderer);
 	}
+
+	m_Player->renderLight(renderer);
 
 	renderer.end();
 	renderer.flush();

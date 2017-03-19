@@ -93,8 +93,10 @@ int main()
 	float t = 0.0f;
 	float dt = 0.01f;
 	float accumulator = 0.0f;
+	int prevDrawCount = 0;
 	while (!Window::Instance().shouldClose())
 	{
+		Settings::Instance().drawCount = 0;
 		Settings::Instance().settingsToggle();
 
 		if (Window::Instance().isKeyPressed(GLFW_KEY_N))
@@ -232,6 +234,12 @@ int main()
 			frames = 0;
 			updates = 0;
 		}
+		if (prevDrawCount != Settings::Instance().drawCount)
+		{
+			prevDrawCount = Settings::Instance().drawCount;
+			std::cout << Settings::Instance().drawCount << "\n";
+		}
+
 	}
 
 	return 0;

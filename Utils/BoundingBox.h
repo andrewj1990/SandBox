@@ -12,6 +12,7 @@ public:
 	~BoundingBox() { }
 
 	bool contains(const Renderable& data);
+	bool contains(const BoundingBox& data);
 	bool intersects(const Renderable& box);
 	bool intersects(const BoundingBox& box, bool offset = false);
 

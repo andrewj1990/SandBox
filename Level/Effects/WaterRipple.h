@@ -12,7 +12,7 @@ public:
 	bool complete();
 
 	void update(Region& region, float timeElapsed);
-	void render(Renderer& renderer);
+	void submit(Renderer& renderer);
 
 private:
 	std::vector<std::unique_ptr<WaterParticle>> m_WaterParticles;

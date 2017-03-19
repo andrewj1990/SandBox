@@ -26,7 +26,7 @@ Region::Region()
 void Region::load(int x, int y)
 {
 	m_Regions.push_back(std::unique_ptr<TileRegion>(new TileRegion(x, y)));
-	m_Regions.back()->init(m_Tiles);
+	m_Regions.back()->init(m_Tiles, m_DestroyedObjects);
 }
 
 void Region::unload(int x, int y)
@@ -116,6 +116,26 @@ void Region::removeTiles(float x, float y, bool exactCoord, bool ripple)
 				reloadTileUV(a, b);
 			}
 		}
+	}
+}
+
+void Region::removeObject(float x, float y, bool exactCoord)
+{
+	int ix = (int)x / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE;
+	int iy = (int)y / Settings::Instance().TILE_SIZE * Settings::Instance().TILE_SIZE;
+
+	if (!exactCoord)
+	{
+		ix = x < 0 ? ix - Settings::Instance().TILE_SIZE : ix;
+		iy = y < 0 ? iy - Settings::Instance().TILE_SIZE : iy;
+	}
+
+	std::string tileGlobalPosition = std::to_string(ix) + "_" + std::to_string(iy);
+
+	auto it = m_DestroyedObjects.find(tileGlobalPosition);
+	if (it == m_DestroyedObjects.end())
+	{
+		m_DestroyedObjects.insert(tileGlobalPosition);
 	}
 }
 
@@ -230,7 +250,6 @@ void Region::render(Renderer& renderer)
 	}
 	renderer.end();
 	renderer.flush();
-
 }
 
 void Region::reloadTileUV(int x, int y)

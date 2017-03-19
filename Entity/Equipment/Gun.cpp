@@ -65,7 +65,8 @@ void Gun::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree,
 		float bdy = bullet->m_Dy * timeElapsed;
 
 		// used a larger bounding box range because some objects were not being retrieved on the edge cases.
-		quadTree->retrieve(objects, BoundingBox(std::fminf(bx, bx + bdx) - 32, std::fminf(by, by + bdy) - 32, bw + std::abs(bdx) + 64, bh + std::abs(bdy) + 64));
+		quadTree->retrieve(objects, BoundingBox(bx - bdx, by - bdy, bdx, bdy));
+		//quadTree->retrieve(objects, BoundingBox(std::fminf(bx, bx + bdx) - 32, std::fminf(by, by + bdy) - 32, bw + std::abs(bdx) + 64, bh + std::abs(bdy) + 64));
 		for (auto& object : objects)
 		{
 			const auto& collisionBox = object->getCollisionBox();
@@ -87,6 +88,7 @@ void Gun::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree,
 				//region.removeTiles(collisionBox->x, collisionBox->y, true, true);
 				object->setDestroy(true);
 				bullet->setDestroy(true);
+				region.removeObject(object->getX(), object->getY());
 				break;
 			}
 		}
@@ -169,12 +171,25 @@ void Gun::render(Renderer& renderer)
 	renderer.push(transform);
 	renderer.render(*this);
 	renderer.pop();
+
+	//for (auto& bullet : m_Bullets)
+	//{
+	//	float bx = bullet->getCollisionBox()->x;
+	//	float by = bullet->getCollisionBox()->y;
+	//	float bw = bullet->getCollisionBox()->width;
+	//	float bh = bullet->getCollisionBox()->height;
+
+	//	float bdx = bullet->m_Dx * 0.01f;
+	//	float bdy = bullet->m_Dy * 0.01f;
+
+	//	// used a larger bounding box range because some objects were not being retrieved on the edge cases.
+	//	//BoundingBox bbox(std::fminf(bx, bx + bdx) - 32, std::fminf(by, by + bdy) - 32, bw + std::abs(bdx) + 64, bh + std::abs(bdy) + 64);
+	//	BoundingBox bbox(bx - bdx, by - bdy, bdx, bdy);
+	//	renderer.debugRender(bbox, TextureManager::get("Textures/collision_box.png"));
+	//}
 }
 
 void Gun::renderLight(Renderer& renderer)
 {
-	for (auto& bullet : m_Bullets)
-	{
-		bullet->renderLight(renderer);
-	}
+	//for (auto& bullet : m_Bullets) bullet->submit(renderer);
 }
