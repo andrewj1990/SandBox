@@ -244,12 +244,15 @@ void Region::update(float timeElapsed)
 void Region::render(Renderer& renderer)
 {
 	renderer.begin();
+	
+	ResourceManager::getInstance().shader("basic_shader")->setUniform("outline", true);
 	for (auto& tileRegion : m_Regions)
 	{
 		tileRegion->submit(renderer);
 	}
 	renderer.end();
 	renderer.flush();
+	ResourceManager::getInstance().shader("basic_shader")->setUniform("outline", false);
 }
 
 void Region::reloadTileUV(int x, int y)

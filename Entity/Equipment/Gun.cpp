@@ -146,9 +146,9 @@ void Gun::render(Renderer& renderer)
 {
 	renderer.push(glm::mat4(), true);
 	renderer.begin();
-	renderer.m_AlphaTest = false;
 
 	glEnable(GL_DEPTH_TEST);
+	renderer.m_AlphaTest = false;
 	for (auto& bullet : m_Bullets) bullet->submit(renderer);
 	for (auto& entity : m_Entities) entity->submit(renderer);
 

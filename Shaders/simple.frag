@@ -27,9 +27,24 @@ void main()
 	if (fs_in.tid > 0.0)
 	{
 		int tid = int(fs_in.tid - 0.5);
-
+		
 		if (outline)
-		{			
+		{		
+			alpha = (1 - texture(textures[tid], fs_in.uv.xy).a);
+
+			sides += texture(textures[tid], fs_in.uv.xy + vec2(stepSize, 0.0f)).a;
+			sides += texture(textures[tid], fs_in.uv.xy + vec2(-stepSize, 0.0f)).a;
+			sides += texture(textures[tid], fs_in.uv.xy + vec2(0.0f, stepSize)).a;
+			sides += texture(textures[tid], fs_in.uv.xy + vec2(0.0f, -stepSize)).a;
+		
+			sides += texture(textures[tid], fs_in.uv.xy + vec2(-stepSize, -stepSize)).a;
+			sides += texture(textures[tid], fs_in.uv.xy + vec2( stepSize, -stepSize)).a;
+			sides += texture(textures[tid], fs_in.uv.xy + vec2(-stepSize,  stepSize)).a;
+			sides += texture(textures[tid], fs_in.uv.xy + vec2( stepSize,  stepSize)).a;
+
+			alpha *= sides;	
+
+			/*
 			alpha = (1 - texture(textures[tid], fs_in.uv.xy).a);
 
 			sides += texture(textures[tid], fs_in.uv.xy + vec2(fs_in.uv.z, 0.0f)).a;
@@ -43,18 +58,6 @@ void main()
 			sides += texture(textures[tid], fs_in.uv.xy + vec2(fs_in.uv.z, fs_in.uv.w)).a;
 
 			alpha *= sides;
-
-		/*
-			alpha = 8 * texture(textures[tid], fs_in.uv.xy).a;
-			alpha -= texture(textures[tid], fs_in.uv.xy + vec2(fs_in.uv.z, 0.0f)).a;
-			alpha -= texture(textures[tid], fs_in.uv.xy + vec2(-fs_in.uv.z, 0.0f)).a;
-			alpha -= texture(textures[tid], fs_in.uv.xy + vec2(0.0f, fs_in.uv.w)).a;
-			alpha -= texture(textures[tid], fs_in.uv.xy + vec2(0.0f, -fs_in.uv.w)).a;
-		
-			alpha -= texture(textures[tid], fs_in.uv.xy + vec2(-fs_in.uv.z, -fs_in.uv.w)).a;
-			alpha -= texture(textures[tid], fs_in.uv.xy + vec2(fs_in.uv.z, -fs_in.uv.w)).a;
-			alpha -= texture(textures[tid], fs_in.uv.xy + vec2(-fs_in.uv.z, fs_in.uv.w)).a;
-			alpha -= texture(textures[tid], fs_in.uv.xy + vec2(fs_in.uv.z, fs_in.uv.w)).a;
 			*/
 		}
 

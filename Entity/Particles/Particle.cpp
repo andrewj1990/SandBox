@@ -18,6 +18,8 @@ void Particle::update(float timeElapsed)
 {
 	addDirection(m_Dx * timeElapsed, m_Dy * timeElapsed);
 
+	//fade(0.03f);
+
 	m_Duration -= timeElapsed;
 
 	if (m_Duration <= 0)
