@@ -12,6 +12,7 @@
 #include "..\Utils\QTree.h"
 #include "..\Graphics\Buffers\framebuffer.h"
 #include "Effects\WaterRipple.h"
+#include "..\Entity\ObjectManager.h"
 
 class Level2D 
 {

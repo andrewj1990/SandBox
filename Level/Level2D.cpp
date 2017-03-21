@@ -96,18 +96,18 @@ void Level2D::update(float timeElapsed)
 		}
 	}
 
-	//m_TestQT = std::unique_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(-qTreeOffset, -qTreeOffset, (int)Window::Instance().getWidth() + qTreeOffset * 2, (int)Window::Instance().getHeight() + qTreeOffset * 2)));
+	ObjectManager::ObjectsQT = std::shared_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(-qTreeOffset, -qTreeOffset, (int)Window::Instance().getWidth() + qTreeOffset * 2, (int)Window::Instance().getHeight() + qTreeOffset * 2)));
 
-	//const auto& win = Window::Instance();
-	//if (win.isButtonPressed(GLFW_MOUSE_BUTTON_3))
-	//{
-	//	m_TestObjects.push_back(std::shared_ptr<Sprite>(new Sprite(glm::vec3(win.getMouseWorldPosX(), win.getMouseWorldPosY(), Settings::Instance().Z_PLANE - 1), glm::vec2(10, 10), TextureManager::get("Textures/container2_specular.png"))));
-	//}
+	const auto& win = Window::Instance();
+	if (win.isButtonPressed(GLFW_MOUSE_BUTTON_3))
+	{
+		m_TestObjects.push_back(std::shared_ptr<Sprite>(new Sprite(glm::vec3(win.getMouseWorldPosX(), win.getMouseWorldPosY(), Settings::Instance().Z_PLANE - 1), glm::vec2(10, 10), TextureManager::get("Textures/container2_specular.png"))));
+	}
 
-	//for (auto& testObj : m_TestObjects)
-	//{
-	//	m_TestQT->insert(testObj);
-	//}
+	for (auto& testObj : m_TestObjects)
+	{
+		ObjectManager::ObjectsQT->insert(testObj);
+	}
 }
 
 void Level2D::render(Renderer& renderer)
@@ -170,35 +170,35 @@ void Level2D::render(Renderer& renderer)
 
 
 	// testing qtree
-	//std::vector<BoundingBox> boundingBoxes;
-	//m_TestQT->getBounds(boundingBoxes);
+	std::vector<BoundingBox> boundingBoxes;
+	ObjectManager::ObjectsQT->getBounds(boundingBoxes);
 
-	//for (auto& bb : boundingBoxes)
-	//{
-	//	renderer.debugRender(bb, TextureManager::get("Textures/bbox.png"));
-	//}
+	for (auto& bb : boundingBoxes)
+	{
+		renderer.debugRender(bb, TextureManager::get("Textures/bbox.png"));
+	}
 
-	//renderer.begin();
-	//for (auto& testObj : m_TestObjects)
-	//{
-	//	renderer.submit(*testObj);
-	//}
+	renderer.begin();
+	for (auto& testObj : m_TestObjects)
+	{
+		renderer.submit(*testObj);
+	}
 
-	//auto mx = Window::Instance().getMouseWorldPosX();
-	//auto my = Window::Instance().getMouseWorldPosY();
-	//int tempBounds = 8;
-	//BoundingBox mouseBoundingBox(mx - tempBounds, my - tempBounds, tempBounds * 2, tempBounds * 2);
-	//std::vector<std::shared_ptr<Sprite>> m_Data;
-	//m_TestQT->retrieve(m_Data, mouseBoundingBox);
-	//renderer.end();
-	//renderer.flush();
+	auto mx = Window::Instance().getMouseWorldPosX();
+	auto my = Window::Instance().getMouseWorldPosY();
+	int tempBounds = 8;
+	BoundingBox mouseBoundingBox(mx - tempBounds, my - tempBounds, tempBounds * 2, tempBounds * 2);
+	std::vector<std::shared_ptr<Sprite>> m_Data;
+	ObjectManager::ObjectsQT->retrieve(m_Data, mouseBoundingBox);
+	renderer.end();
+	renderer.flush();
 
-	//for (auto& sprite : m_Data)
-	//{
-	//	renderer.debugRender(*(sprite->getCollisionBox()), TextureManager::get("Textures/collision_box.png"));
-	//}
+	for (auto& sprite : m_Data)
+	{
+		renderer.debugRender(*(sprite->getCollisionBox()), TextureManager::get("Textures/collision_box.png"));
+	}
 
-	//renderer.debugRender(mouseBoundingBox, TextureManager::get("Textures/collision_box.png"));
+	renderer.debugRender(mouseBoundingBox, TextureManager::get("Textures/collision_box.png"));
 
 
 	//ResourceManager::getInstance().shader("outline_shader")->use();
