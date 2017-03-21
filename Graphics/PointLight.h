@@ -8,6 +8,7 @@
 #include "Sprite.h"
 #include "..\Utils\QTree.h"
 #include "..\Utils\Ray.h"
+#include "..\Entity\ObjectManager.h"
 
 class PointLight
 {
@@ -16,7 +17,7 @@ public:
 	PointLight(const PointLight& other);
 	~PointLight() {}
 
-	void update(float x, float y, const std::unique_ptr<QTree<Sprite>>& objectsQT, float timeElapsed);
+	void update(float x, float y, float timeElapsed);
 	void render(Renderer& renderer);
 
 	int getX() { return m_Position.x; }

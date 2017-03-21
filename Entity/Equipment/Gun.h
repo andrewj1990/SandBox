@@ -11,6 +11,7 @@
 #include "..\DamageCounter.h"
 #include "..\..\Utils\QTree.h"
 #include "..\..\Level\Region.h"
+#include "..\ObjectManager.h"
 
 class Gun : public Entity
 {
@@ -20,7 +21,7 @@ public:
 	void shoot(float x, float y, float angle, float movespeed = 0.0f);
 	void move(float x, float y);
 
-	void update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree, float timeElapsed);
+	void update(Region& region, float timeElapsed);
 	void render(Renderer& renderer) override;
 
 	void renderLight(Renderer& renderer) override;

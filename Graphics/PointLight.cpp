@@ -12,10 +12,10 @@ PointLight::PointLight(const PointLight& other)
 {
 }
 
-void PointLight::update(float x, float y, const std::unique_ptr<QTree<Sprite>>& objectsQT, float timeElapsed)
+void PointLight::update(float x, float y, float timeElapsed)
 {
 	std::vector<std::shared_ptr<Sprite>> sprites;
-	objectsQT->retrieve(sprites, m_LightRegion);
+	ObjectManager::ObjectsQT->retrieve(sprites, m_LightRegion);
 
 	m_Position.x = x;
 	m_Position.y = y;

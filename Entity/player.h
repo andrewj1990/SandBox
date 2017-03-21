@@ -13,6 +13,7 @@
 #include "..\Utils\quadTree.h"
 #include "..\Utils\QTree.h"
 #include "..\Level\Region.h"
+#include "ObjectManager.h"
 
 enum PlayerState
 {
@@ -31,7 +32,7 @@ public:
 
 	void addBuff();
 
-	void update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree, const std::unique_ptr<QTree<Sprite>>& waterQT, float timeElapsed);
+	void update(Region& region, float timeElapsed);
 	void render(Renderer& renderer) override;
 
 	void renderLight(Renderer& renderer) override;
@@ -43,8 +44,8 @@ public:
 
 private:
 	void init();
-	bool playerCollision(float dx, float dy, const std::unique_ptr<QTree<Sprite>>& quadTree);
-	void move(const std::unique_ptr<QTree<Sprite>>& quadTree, const std::unique_ptr<QTree<Sprite>>& waterQT, Region& region, float timeElapsed);
+	bool playerCollision(float dx, float dy);
+	void move(Region& region, float timeElapsed);
 	void aimDownSight(float timeElapsed);
 	void shoot(float angle, float timeElapsed);
 	void moveCamera();

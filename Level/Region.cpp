@@ -45,7 +45,7 @@ void Region::unload(int x, int y)
 	}
 }
 
-void Region::addTiles(std::unique_ptr<QTree<Sprite>>& quadTree)
+void Region::addTiles(std::shared_ptr<QTree<Sprite>>& quadTree)
 {
 	for (auto& tileRegion : m_Regions)
 	{
@@ -56,7 +56,7 @@ void Region::addTiles(std::unique_ptr<QTree<Sprite>>& quadTree)
 	}
 }
 
-void Region::addWaterTiles(std::unique_ptr<QTree<Sprite>>& quadTree)
+void Region::addWaterTiles(std::shared_ptr<QTree<Sprite>>& quadTree)
 {
 	for (auto& tileRegion : m_Regions)
 	{
@@ -70,7 +70,7 @@ void Region::addWaterTiles(std::unique_ptr<QTree<Sprite>>& quadTree)
 	}
 }
 
-void Region::addObjects(std::unique_ptr<QTree<Sprite>>& quadTree)
+void Region::addObjects(std::shared_ptr<QTree<Sprite>>& quadTree)
 {
 	for (auto& tileRegion : m_Regions)
 	{

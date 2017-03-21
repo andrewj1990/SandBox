@@ -28,7 +28,7 @@ void Gun::move(float x, float y)
 	addDirection(x, y);
 }
 
-void Gun::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree, float timeElapsed)
+void Gun::update(Region& region, float timeElapsed)
 {
 	float mx = Window::Instance().getMouseWorldPosX();
 	float my = Window::Instance().getMouseWorldPosY();
@@ -65,7 +65,7 @@ void Gun::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree,
 		float bdy = bullet->m_Dy * timeElapsed;
 
 		// used a larger bounding box range because some objects were not being retrieved on the edge cases.
-		quadTree->retrieve(objects, BoundingBox(bx - bdx, by - bdy, bdx, bdy));
+		ObjectManager::ObjectsQT->retrieve(objects, BoundingBox(bx - bdx, by - bdy, bdx, bdy));
 		//quadTree->retrieve(objects, BoundingBox(std::fminf(bx, bx + bdx) - 32, std::fminf(by, by + bdy) - 32, bw + std::abs(bdx) + 64, bh + std::abs(bdy) + 64));
 		for (auto& object : objects)
 		{

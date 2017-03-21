@@ -33,7 +33,7 @@ void Player::init()
 	camera.Position = glm::vec3(0, 0, 0);
 }
 
-bool Player::playerCollision(float dx, float dy, const std::unique_ptr<QTree<Sprite>>& quadTree)
+bool Player::playerCollision(float dx, float dy)
 {
 	float x = m_CollisionBox.x + 2 + dx;
 	float y = m_CollisionBox.y + dy;
@@ -41,7 +41,7 @@ bool Player::playerCollision(float dx, float dy, const std::unique_ptr<QTree<Spr
 	float h = 1;			// collision with feet only for movement
 
 	std::vector<std::shared_ptr<Sprite>> tiles;
-	quadTree->retrieve(tiles, m_CollisionBox);
+	ObjectManager::ObjectsQT->retrieve(tiles, m_CollisionBox);
 
 	for (auto& tile : tiles)
 	{
@@ -60,7 +60,7 @@ bool Player::playerCollision(float dx, float dy, const std::unique_ptr<QTree<Spr
 	return false;
 }
 
-void Player::move(const std::unique_ptr<QTree<Sprite>>& quadTree, const std::unique_ptr<QTree<Sprite>>& waterQT, Region& region, float timeElapsed)
+void Player::move(Region& region, float timeElapsed)
 {
 	Window& window = Window::Instance();
 
@@ -113,12 +113,12 @@ void Player::move(const std::unique_ptr<QTree<Sprite>>& quadTree, const std::uni
 
 	if (!Settings::Instance().noClip)
 	{
-		if (playerCollision(dx, 0, quadTree) || region.getTileType(getCenterX() + dx, getY()) == TileType::VOID)
+		if (playerCollision(dx, 0) || region.getTileType(getCenterX() + dx, getY()) == TileType::VOID)
 		{
 			dx = 0.0f;
 		}
 
-		if (playerCollision(0, dy, quadTree) || region.getTileType(getCenterX(), getY() + dy) == TileType::VOID)
+		if (playerCollision(0, dy) || region.getTileType(getCenterX(), getY() + dy) == TileType::VOID)
 		{
 			dy = 0.0f;
 		}
@@ -269,7 +269,7 @@ void Player::dodge()
 	}
 }
 
-void Player::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTree, const std::unique_ptr<QTree<Sprite>>& waterQT, float timeElapsed)
+void Player::update(Region& region, float timeElapsed)
 {
 	Window& window = Window::Instance();
 	float angle = Utils::calcAngleRad(getCenterX(), getCenterY(), window.getMouseWorldPosX(), window.getMouseWorldPosY());
@@ -277,9 +277,9 @@ void Player::update(Region& region, const std::unique_ptr<QTree<Sprite>>& quadTr
 	aimDownSight(timeElapsed);
 	shoot(angle, timeElapsed);
 
-	move(quadTree, waterQT, region, timeElapsed);
+	move(region, timeElapsed);
 	moveCamera();
-	m_Gun.update(region, quadTree, timeElapsed);
+	m_Gun.update(region, timeElapsed);
 
 	m_Position.z = -m_Position.y;
 	if (m_Gun.getAngle() < 0)
