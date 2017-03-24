@@ -14,6 +14,10 @@
 #include "Effects\WaterRipple.h"
 #include "..\Entity\ObjectManager.h"
 
+#include "..\Entity\Systems\MovementSystem.h"
+#include "..\Entity\EntityManager.h"
+#include "..\Utils\TypeID.h"
+
 class Level2D 
 {
 public:
@@ -43,6 +47,9 @@ private:
 	std::vector<std::unique_ptr<WaterRipple>> m_WaterRipples;
 
 	Region m_Region;
+
+	std::shared_ptr<EntityManager> m_EntityManager;
+	std::unique_ptr<System> m_MovementSystem;
 
 	float m_WaterRippleTime;
 };

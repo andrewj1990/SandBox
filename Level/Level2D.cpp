@@ -12,10 +12,31 @@ void Level2D::init()
 {
 	const Camera& cam = Window::Instance().getCamera();
 	m_Player = std::unique_ptr<Player>(new Player(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f));
+
+	m_EntityManager = std::make_shared<EntityManager>();
+	m_MovementSystem = std::make_unique<MovementSystem>(m_EntityManager);
+
+	std::shared_ptr<TEntity> player = std::make_shared<TEntity>();
+	player->attach<PositionComponent>(std::make_shared<PositionComponent>(PositionComponent(100, 50)));
+	player->attach<VelocityComponent>(std::make_shared<VelocityComponent>(VelocityComponent(1, 1)));
+	m_EntityManager->add(player);
+
+	for (int i = 0; i < 1; i++)
+	{
+		std::shared_ptr<TEntity> mob1 = std::make_shared<TEntity>();
+		mob1->attach<PositionComponent>(std::make_shared<PositionComponent>(PositionComponent(200, 100)));
+		mob1->attach<VelocityComponent>(std::make_shared<VelocityComponent>(VelocityComponent(100, 1)));
+		m_EntityManager->add(mob1);
+	}
 }
 
 void Level2D::update(float timeElapsed)
 {
+
+	m_MovementSystem->update(timeElapsed);
+	m_EntityManager->update();
+	//std::cout << m_EntityManager->getEntities().size() << "\n";
+
 	Camera& cam = Window::Instance().getCamera();
 
 	float px = m_Player->getCenterX();
