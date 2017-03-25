@@ -43,6 +43,7 @@ public:
 
 	void begin();
 	void submit(const Renderable& renderable);
+	void submit(const glm::vec3& position, const glm::vec2& size, const std::vector<glm::vec4>& uv, Texture* texture, const glm::vec4& colour = glm::vec4(1, 1, 1, 1));
 	void drawString(const Font& font, const std::string& text, const glm::vec3& position, const glm::vec4& colour);
 	void end();
 	void flush();

@@ -11,14 +11,13 @@
 
 class Renderable
 {
-protected:
+public:
 	Renderable()
 		: m_Position(glm::vec3(0, 0, 0)), m_Size(32, 32), m_Colour(glm::vec4(1, 1, 1, 1)), m_Texture(nullptr)
 	{
 		setUVDefaults();
 	}
 
-public:
 	Renderable(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color = glm::vec4(1, 1, 1, 1))
 		: m_Position(position), m_Size(size), m_Colour(color), m_Texture(nullptr)
 	{

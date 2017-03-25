@@ -1,7 +1,7 @@
 #include "MovementSystem.h"
 
-MovementSystem::MovementSystem(std::shared_ptr<EntityManager>& entityManager)
-	: System(entityManager)
+MovementSystem::MovementSystem()
+	: System()
 {
 	m_Lock = 1 << TypeID::value<PositionComponent>() | 1 << TypeID::value<VelocityComponent>();
 }
@@ -10,28 +10,11 @@ MovementSystem::~MovementSystem()
 {
 }
 
-void MovementSystem::update(float timeElapsed)
+void MovementSystem::update(std::shared_ptr<TEntity>& entity, float timeElapsed)
 {
-	for (auto& entity : m_EntityManager->getEntities())
-	{
-		if (unlock(entity->getKey()))
-		{
-			//std::cout << "unlocked\n";
-		}
-		auto positionComponent = entity->get<PositionComponent>();
+	auto positionComponent = entity->get<PositionComponent>();
+	//std::cout << positionComponent->m_X << ", " << positionComponent->m_Y << "\n";
 
-		if (positionComponent)
-		{
-			//std::cout << positionComponent->m_X << ", " << positionComponent->m_Y << "\n";
-		}
-
-		auto velocityComponent = entity->get<VelocityComponent>();
-		if (velocityComponent)
-		{
-			positionComponent->m_X += velocityComponent->m_X;
-			//if (positionComponent->m_X > 300) {
-			//	entity->setDestroy(true);
-			//}
-		}
-	}
+	auto velocityComponent = entity->get<VelocityComponent>();
+	positionComponent->m_X += velocityComponent->m_X;
 }

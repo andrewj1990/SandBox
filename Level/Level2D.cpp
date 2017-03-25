@@ -14,28 +14,31 @@ void Level2D::init()
 	m_Player = std::unique_ptr<Player>(new Player(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f));
 
 	m_EntityManager = std::make_shared<EntityManager>();
-	m_MovementSystem = std::make_unique<MovementSystem>(m_EntityManager);
 
 	std::shared_ptr<TEntity> player = std::make_shared<TEntity>();
-	player->attach<PositionComponent>(std::make_shared<PositionComponent>(PositionComponent(100, 50)));
+	player->attach<PositionComponent>(std::make_shared<PositionComponent>(PositionComponent(glm::vec3(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f, -(Window::Instance().getHeight() / 2 - 16.0f)))));
 	player->attach<VelocityComponent>(std::make_shared<VelocityComponent>(VelocityComponent(1, 1)));
+	player->attach<InputComponent>(std::make_shared<InputComponent>(InputComponent()));
+	player->attach<SpriteComponent>(std::make_shared<SpriteComponent>(SpriteComponent(glm::vec2(32, 32), TextureManager::get("Textures/Tree.png"))));
 	m_EntityManager->add(player);
 
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 100000; i++)
 	{
 		std::shared_ptr<TEntity> mob1 = std::make_shared<TEntity>();
-		mob1->attach<PositionComponent>(std::make_shared<PositionComponent>(PositionComponent(200, 100)));
-		mob1->attach<VelocityComponent>(std::make_shared<VelocityComponent>(VelocityComponent(100, 1)));
+		int y = Utils::random(0, 720);
+		mob1->attach<PositionComponent>(std::make_shared<PositionComponent>(PositionComponent(glm::vec3(Utils::random(0, 1280), y, -y))));
+		mob1->attach<VelocityComponent>(std::make_shared<VelocityComponent>(VelocityComponent(1, 1)));
+		mob1->attach<InputComponent>(std::make_shared<InputComponent>(InputComponent()));
+		mob1->attach<SpriteComponent>(std::make_shared<SpriteComponent>(SpriteComponent(glm::vec2(32, 32), TextureManager::get("Textures/Tree.png"))));
+		//m_Objects.push_back(std::shared_ptr<Sprite>(new Tree(Utils::random(0, 1280), y)));
 		m_EntityManager->add(mob1);
 	}
 }
 
+
 void Level2D::update(float timeElapsed)
 {
-
-	m_MovementSystem->update(timeElapsed);
-	m_EntityManager->update();
-	//std::cout << m_EntityManager->getEntities().size() << "\n";
+	m_EntityManager->update(timeElapsed);
 
 	Camera& cam = Window::Instance().getCamera();
 
@@ -109,6 +112,9 @@ void Level2D::update(float timeElapsed)
 
 void Level2D::render(Renderer& renderer)
 {
+	m_EntityManager->render(renderer);
+	renderer.render(m_Objects);
+
 	renderer.render(m_Background);
 	m_Region.render(renderer);
 

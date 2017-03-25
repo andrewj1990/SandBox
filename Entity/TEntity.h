@@ -50,6 +50,7 @@ inline void TEntity::detach()
 		if ((*i)->getID() == TypeID::value<T>())
 		{
 			i = m_Components.erase(i);
+			m_Key &= ~(1 << TypeID::value<T>());
 			break;
 		}
 		i++;

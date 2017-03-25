@@ -49,7 +49,7 @@ private:
 	Region m_Region;
 
 	std::shared_ptr<EntityManager> m_EntityManager;
-	std::unique_ptr<System> m_MovementSystem;
+	std::vector<std::shared_ptr<Renderable>> m_Objects;
 
 	float m_WaterRippleTime;
 };
