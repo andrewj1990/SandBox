@@ -11,7 +11,7 @@ Bullet::Bullet(float x, float y, float angle)
 
 	m_Duration = 2.0f;
 
-	m_Light = Sprite(glm::vec3(0, 0, 0), glm::vec2(32, 32), TextureManager::get("Textures/light2.png"));
+	m_Light = Sprite(glm::vec3(0, 0, 0), glm::vec2(4, 6), TextureManager::get("Textures/Bullet2.png"));
 }
 
 void Bullet::update(float timeElapsed)
@@ -39,6 +39,8 @@ void Bullet::update(float timeElapsed)
 		m_Destroy = true;
 	}
 
+	m_Light.setLightPosition(getX(), getY(), m_Size.x);
+	m_Light.setSize(glm::vec2(m_Size.x, m_Light.getSize().y));
 	m_Light.setPosition(getCenterX() - m_Light.getSize().x / 2, getCenterY() - m_Light.getSize().y / 2);
 }
 
@@ -55,5 +57,11 @@ void Bullet::submit(Renderer& renderer)
 
 void Bullet::renderLight(Renderer& renderer)
 {
+	glm::mat4 transform;
+	transform = glm::translate(transform, glm::vec3(m_Position.x, m_Position.y + m_Size.y / 2.0f, 0));
+	transform = glm::rotate(transform, m_Angle + glm::radians(180.0f), glm::vec3(0, 0, 1));
+	transform = glm::translate(transform, glm::vec3(-m_Position.x, -m_Position.y - m_Size.y / 2.0f, 0));
+	renderer.push(transform);
 	renderer.submit(m_Light);
+	renderer.pop();
 }

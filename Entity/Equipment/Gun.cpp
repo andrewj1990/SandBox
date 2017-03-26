@@ -19,8 +19,8 @@ void Gun::shoot(float x, float y, float angle, float movespeed)
 	const glm::vec3& pos = glm::vec3(getPosition().x + getSize().x - 12, getPosition().y + getSize().y - rty, 0);
 	glm::vec4 gunPos = transform * glm::vec4(pos, 1.0f);
 
-	for (int i = 0; i < 150; i++) m_Entities.push_back(std::unique_ptr<GunParticle>(new GunParticle(gunPos.x, gunPos.y, angle, movespeed)));
-	m_Bullets.push_back(std::unique_ptr<Bullet>(new Bullet(gunPos.x, gunPos.y, angle)));
+	for (int i = 0; i < 100; i++) m_Entities.push_back(std::make_unique<GunParticle>(gunPos.x, gunPos.y, angle, movespeed));
+	m_Bullets.push_back(std::make_unique<Bullet>(gunPos.x, gunPos.y, angle));
 }
 
 void Gun::move(float x, float y)
@@ -208,5 +208,5 @@ void Gun::render(Renderer& renderer)
 
 void Gun::renderLight(Renderer& renderer)
 {
-	//for (auto& bullet : m_Bullets) bullet->submit(renderer);
+	for (auto& bullet : m_Bullets) bullet->renderLight(renderer);
 }

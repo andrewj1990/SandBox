@@ -207,6 +207,8 @@ void Level2D::renderLights(Renderer& renderer)
 
 	m_Player->renderLight(renderer);
 
+	for (auto& fireParticle : m_FireParticles) fireParticle->submit(renderer);
+
 	renderer.end();
 	renderer.flush();
 	

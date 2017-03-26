@@ -16,7 +16,7 @@ void Player::init()
 	m_CumulativeTime = 0.0f;
 
 	m_MoveSpeed = 280.0f;
-	m_AttackSpeed = 0.0f;//0.1f;
+	m_AttackSpeed = 0.1f;//0.1f;
 	m_AttackFrame = 0.0f;
 	m_CurrentAttackDuration = 0.0f;
 	m_AimDownSight = false;
