@@ -157,7 +157,7 @@ void TileRegion::setTileUV(std::shared_ptr<Tile>& tile, const std::unordered_set
 	if (bottomTileType) sum += 4.0f;
 	if (leftTileType) sum += 8.0f;
 
-	tile->setUV(sum, (int)tile->getType(), 16, 16);
+	tile->setUV(sum, (int)tile->getType(), 16.0f, 16.0f);
 }
 
 float TileRegion::noiseHeight(float x, float y)

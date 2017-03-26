@@ -1,5 +1,7 @@
 #pragma once
 
+#define USE_DYNAMIC_STREAMING 0
+
 #include <cstddef>
 #include <GL/glew.h>
 #include "buffers/indexbuffer.h"
@@ -85,6 +87,7 @@ private:
 	GLuint m_VAO;
 	GLuint m_BO;
 	VertexData* m_Buffer;
+	VertexData* m_BufferInitPos;
 	std::unique_ptr<IndexBuffer> m_IBO;
 	GLsizei m_IndexCount;
 

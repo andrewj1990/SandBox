@@ -58,7 +58,7 @@ void EntityManager::render(Renderer& renderer)
 	glDisable(GL_DEPTH_TEST);
 }
 
-void EntityManager::add(std::shared_ptr<TEntity> entity)
+void EntityManager::add(TEntity entity)
 {
-	m_Entities.push_back(entity);
+	m_Entities.push_back(std::make_shared<TEntity>(entity));
 }

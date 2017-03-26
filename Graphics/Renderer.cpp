@@ -21,7 +21,16 @@ void Renderer::init()
 	// initialize and bind buffer object
 	glGenBuffers(1, &m_BO);
 	glBindBuffer(GL_ARRAY_BUFFER, m_BO);
+#if USE_DYNAMIC_STREAMING
+	GLbitfield mapFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+	GLbitfield createFlags = mapFlags | GL_DYNAMIC_STORAGE_BIT;
+
+	glBufferStorage(GL_ARRAY_BUFFER, RENDERER_BUFFER_SIZE, nullptr, createFlags);
+	m_Buffer = (VertexData*)glMapBufferRange(GL_ARRAY_BUFFER, 0, RENDERER_BUFFER_SIZE, mapFlags);
+	m_BufferInitPos = m_Buffer;
+#else
 	glBufferData(GL_ARRAY_BUFFER, RENDERER_BUFFER_SIZE, NULL, GL_DYNAMIC_DRAW);
+#endif
 
 	glEnableVertexAttribArray(SHADER_VERTEX_INDEX);
 	glEnableVertexAttribArray(SHADER_UV_INDEX);
@@ -32,6 +41,7 @@ void Renderer::init()
 	glVertexAttribPointer(SHADER_UV_INDEX, 4, GL_FLOAT, GL_FALSE, RENDERER_VERTEX_SIZE, (const GLvoid*)(offsetof(VertexData, VertexData::uv)));
 	glVertexAttribPointer(SHADER_TID_INDEX, 1, GL_FLOAT, GL_FALSE, RENDERER_VERTEX_SIZE, (const GLvoid*)(offsetof(VertexData, VertexData::tid)));
 	glVertexAttribPointer(SHADER_COLOUR_INDEX, 4, GL_UNSIGNED_BYTE, GL_TRUE, RENDERER_VERTEX_SIZE, (const GLvoid*)(offsetof(VertexData, VertexData::colour)));
+
 
 	// unbind buffer object
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -64,9 +74,12 @@ void Renderer::init()
 
 void Renderer::begin()
 {
+#if USE_DYNAMIC_STREAMING
+#else
 	// bind the buffer object and map the buffer to be written to
 	glBindBuffer(GL_ARRAY_BUFFER, m_BO);
 	m_Buffer = (VertexData*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+#endif
 }
 
 void Renderer::submit(const Renderable& renderable)
@@ -335,8 +348,11 @@ void Renderer::drawString(const Font& font, const std::string& text, const glm::
 void Renderer::end()
 {
 	// unmap and unbind buffer
+#if USE_DYNAMIC_STREAMING
+#else
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+#endif
 }
 
 // draw the quads in the buffer
@@ -379,6 +395,9 @@ void Renderer::flush()
 	glBindVertexArray(0);
 
 	m_IndexCount = 0;
+#if USE_DYNAMIC_STREAMING
+	m_Buffer = m_BufferInitPos;
+#endif
 	m_TextureSlots.clear();
 }
 

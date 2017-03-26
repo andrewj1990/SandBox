@@ -1,7 +1,10 @@
 #include "Level2D.h"
 
 Level2D::Level2D()
-	: m_PointLight(), m_Background(glm::vec3(0, 0, -(Settings::Instance().Z_PLANE) + 10), glm::vec2(Window::Instance().getWidth(), Window::Instance().getHeight()), TextureManager::get("Textures/Level/bg.png")), m_Region()
+	: m_PointLight(), 
+	m_Background(glm::vec3(0, 0, -(Settings::Instance().Z_PLANE) + 10), glm::vec2(Window::Instance().getWidth(), Window::Instance().getHeight()), TextureManager::get("Textures/Level/bg.png")), 
+	m_EntityManager(),
+	m_Region()
 {
 	init();
 
@@ -13,32 +16,20 @@ void Level2D::init()
 	const Camera& cam = Window::Instance().getCamera();
 	m_Player = std::unique_ptr<Player>(new Player(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f));
 
-	m_EntityManager = std::make_shared<EntityManager>();
+	//m_EntityManager = std::make_shared<EntityManager>();
 
-	std::shared_ptr<TEntity> player = std::make_shared<TEntity>();
-	player->attach<PositionComponent>(std::make_shared<PositionComponent>(PositionComponent(glm::vec3(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f, -(Window::Instance().getHeight() / 2 - 16.0f)))));
-	player->attach<VelocityComponent>(std::make_shared<VelocityComponent>(VelocityComponent(1, 1)));
-	player->attach<InputComponent>(std::make_shared<InputComponent>(InputComponent()));
-	player->attach<SpriteComponent>(std::make_shared<SpriteComponent>(SpriteComponent(glm::vec2(32, 32), TextureManager::get("Textures/Tree.png"))));
-	m_EntityManager->add(player);
-
-	for (int i = 0; i < 100000; i++)
-	{
-		std::shared_ptr<TEntity> mob1 = std::make_shared<TEntity>();
-		int y = Utils::random(0, 720);
-		mob1->attach<PositionComponent>(std::make_shared<PositionComponent>(PositionComponent(glm::vec3(Utils::random(0, 1280), y, -y))));
-		mob1->attach<VelocityComponent>(std::make_shared<VelocityComponent>(VelocityComponent(1, 1)));
-		mob1->attach<InputComponent>(std::make_shared<InputComponent>(InputComponent()));
-		mob1->attach<SpriteComponent>(std::make_shared<SpriteComponent>(SpriteComponent(glm::vec2(32, 32), TextureManager::get("Textures/Tree.png"))));
-		//m_Objects.push_back(std::shared_ptr<Sprite>(new Tree(Utils::random(0, 1280), y)));
-		m_EntityManager->add(mob1);
-	}
+	TEntity mob = TEntity();
+	mob.attach<PositionComponent>(std::make_shared<PositionComponent>(glm::vec3(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f, -(Window::Instance().getHeight() / 2 - 16.0f))));
+	mob.attach<VelocityComponent>(std::make_shared<VelocityComponent>(1, 1));
+	mob.attach<InputComponent>(std::make_shared<InputComponent>());
+	mob.attach<SpriteComponent>(std::make_shared<SpriteComponent>(glm::vec2(32, 32), TextureManager::get("Textures/Tree.png")));
+	m_EntityManager.add(mob);
 }
 
 
 void Level2D::update(float timeElapsed)
 {
-	m_EntityManager->update(timeElapsed);
+	m_EntityManager.update(timeElapsed);
 
 	Camera& cam = Window::Instance().getCamera();
 
@@ -108,12 +99,37 @@ void Level2D::update(float timeElapsed)
 			it++;
 		}
 	}
+
+	if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_3))
+	{
+		auto mx = Window::Instance().getMouseWorldPosX();
+		auto my = Window::Instance().getMouseWorldPosY();
+		for (int i = 0; i < 200; i++)
+		{
+			float offsetX = Utils::random(-200, 200);
+			float offsetY = Utils::random(-200, 200);
+			m_FireParticles.push_back(std::make_unique<Particle>(mx + offsetX, my + offsetY, Utils::random(5, 20), 90.0f));
+		}
+		//std::cout << "number of fire particles : " << m_FireParticles.size() << "\n";
+	}
+
+	for (auto i = m_FireParticles.begin(); i != m_FireParticles.end(); )
+	{
+		if ((*i)->shouldDestroy())
+		{
+			i = m_FireParticles.erase(i);
+		}
+		else
+		{
+			(*i)->update(timeElapsed);
+			i++;
+		}
+	}
 }
 
 void Level2D::render(Renderer& renderer)
 {
-	m_EntityManager->render(renderer);
-	renderer.render(m_Objects);
+	m_EntityManager.render(renderer);
 
 	renderer.render(m_Background);
 	m_Region.render(renderer);
@@ -121,11 +137,13 @@ void Level2D::render(Renderer& renderer)
 	renderer.begin();
 	renderer.m_AlphaTest = false;
 	for (auto& waterRipple : m_WaterRipples) waterRipple->submit(renderer);
+	for (auto& fireParticle : m_FireParticles) fireParticle->submit(renderer);
 	renderer.end();
 	renderer.flush();
 	renderer.m_AlphaTest = true;
 
 	m_Player->render(renderer);
+
 
 	if (Settings::Instance().debugShowCollisionBoxes)
 	{

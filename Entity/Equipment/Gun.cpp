@@ -82,7 +82,8 @@ void Gun::update(Region& region, float timeElapsed)
 			{
 				for (int i = 0; i < 25; i++)
 				{
-					m_Entities.push_back(std::unique_ptr<Particle>(new Particle(cx, cy, 5.0f, glm::degrees(bullet->getAngle()))));
+					//m_Entities.push_back(std::unique_ptr<Particle>(new Particle(cx, cy, 5.0f, glm::degrees(bullet->getAngle()))));
+					m_Entities.push_back(std::make_unique<Particle>(cx, cy, Utils::random(5, 20), object->getTexture()));
 				}
 
 				//region.removeTiles(collisionBox->x, collisionBox->y, true, true);
@@ -148,13 +149,29 @@ void Gun::render(Renderer& renderer)
 	renderer.begin();
 
 	glEnable(GL_DEPTH_TEST);
-	renderer.m_AlphaTest = false;
+	//renderer.m_AlphaTest = false;
 	for (auto& bullet : m_Bullets) bullet->submit(renderer);
-	for (auto& entity : m_Entities) entity->submit(renderer);
-
+	
 	renderer.end();
 	renderer.flush();
-	renderer.m_AlphaTest = true;
+
+	renderer.begin();
+	for (auto& entity : m_Entities)
+	{
+		glm::mat4 transform;
+		transform = glm::translate(transform, glm::vec3(entity->getCenterX(), entity->getCenterY(), 0));
+		transform = glm::rotate(transform, entity->getAngle(), glm::vec3(0, 0, 1));
+		transform = glm::translate(transform, glm::vec3(-entity->getCenterX(), -entity->getCenterY(), 0));
+		renderer.push(transform);
+		entity->submit(renderer);
+		renderer.pop();
+	}
+
+	renderer.end();
+	ResourceManager::getInstance().shader("basic_shader")->setUniform("outline", true);
+	renderer.flush();
+	ResourceManager::getInstance().shader("basic_shader")->setUniform("outline", false);
+	//renderer.m_AlphaTest = true;
 	glDisable(GL_DEPTH_TEST);
 
 	for (auto& text : m_DamageText) text->render(renderer);

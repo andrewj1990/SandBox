@@ -14,7 +14,7 @@ public:
 	void update(float timeElapsed);
 	void render(Renderer& renderer);
 
-	void add(std::shared_ptr<TEntity> entity);
+	void add(TEntity entity);
 
 	std::vector<std::shared_ptr<TEntity>>& getEntities() { return m_Entities; }
 

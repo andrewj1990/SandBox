@@ -48,8 +48,8 @@ private:
 
 	Region m_Region;
 
-	std::shared_ptr<EntityManager> m_EntityManager;
-	std::vector<std::shared_ptr<Renderable>> m_Objects;
+	EntityManager m_EntityManager;
+	std::vector<std::unique_ptr<Particle>> m_FireParticles;
 
 	float m_WaterRippleTime;
 };

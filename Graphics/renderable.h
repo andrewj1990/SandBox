@@ -104,6 +104,8 @@ public:
 
 		float inverseRow = (sh / height) - y - 1.0f;
 
+		float offsetX = 0.1f / width;
+		float offsetY = 0.1f / height;
 		float tx = (x * width) / sw;
 		float ty = (inverseRow * height) / sh;
 		float tw = (width / sw);
@@ -114,10 +116,10 @@ public:
 		float sx = sw;
 		float sy = sh;
 
-		m_UV[0] = glm::vec4(tx, ty, sx, sy);
-		m_UV[1] = glm::vec4(tx, ty + th, sx, sy);
-		m_UV[2] = glm::vec4(tx + tw, ty + th, sx, sy);
-		m_UV[3] = glm::vec4(tx + tw, ty, sx, sy);
+		m_UV[0] = glm::vec4(tx + offsetX	 , ty + offsetY	  , sx, sy);
+		m_UV[1] = glm::vec4(tx + offsetX	 , ty + th - offsetY, sx, sy);
+		m_UV[2] = glm::vec4(tx + tw - offsetX, ty + th - offsetY, sx, sy);
+		m_UV[3] = glm::vec4(tx + tw - offsetX, ty + offsetY, sx, sy);
 	}
 
 	float getTextureWidth() const
@@ -140,6 +142,7 @@ public:
 	}
 
 	void setTexture(Texture* texture) { m_Texture = texture; m_UV = m_Texture->getUVs(); }
+	Texture* getTexture() { return m_Texture; }
 
 	virtual std::shared_ptr<Entity> getTree() { return nullptr; }
 	void setPosition(const glm::vec3& position) { m_Position = position; }
