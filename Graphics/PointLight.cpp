@@ -14,7 +14,7 @@ PointLight::PointLight(const PointLight& other)
 
 void PointLight::update(float x, float y, float timeElapsed)
 {
-	std::vector<std::shared_ptr<Sprite>> sprites;
+	std::vector<std::shared_ptr<Entity>> sprites;
 	ObjectManager::ObjectsQT->retrieve(sprites, m_LightRegion);
 
 	m_Position.x = x;

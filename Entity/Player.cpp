@@ -40,7 +40,7 @@ bool Player::playerCollision(float dx, float dy)
 	float w = m_CollisionBox.width - 5;
 	float h = 1;			// collision with feet only for movement
 
-	std::vector<std::shared_ptr<Sprite>> tiles;
+	std::vector<std::shared_ptr<Entity>> tiles;
 	ObjectManager::ObjectsQT->retrieve(tiles, m_CollisionBox);
 
 	for (auto& tile : tiles)

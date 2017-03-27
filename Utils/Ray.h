@@ -3,13 +3,14 @@
 
 #include "..\Graphics\Sprite.h"
 #include "BoundingBox.h"
+#include "..\Entity\Entity.h"
 
 class Ray
 {
 public:
 	Ray(glm::vec2 startPoint, float angleRad);
 
-	void findIntersections(const std::vector<std::shared_ptr<Sprite>>& sprites, const BoundingBox& bbox, float radius);
+	void findIntersections(const std::vector<std::shared_ptr<Entity>>& sprites, const BoundingBox& bbox, float radius);
 	void intersect(float sx, float sy, float ex, float ey);
 
 	const glm::vec2& getEndPoint() const { return m_EndPoint; }

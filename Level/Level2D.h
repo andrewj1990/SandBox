@@ -13,6 +13,7 @@
 #include "..\Graphics\Buffers\framebuffer.h"
 #include "Effects\WaterRipple.h"
 #include "..\Entity\ObjectManager.h"
+#include "..\Entity\Mob\BasicMob.h"
 
 #include "..\Entity\Systems\MovementSystem.h"
 #include "..\Entity\EntityManager.h"
@@ -34,6 +35,8 @@ public:
 	
 private:
 	std::unique_ptr<Player> m_Player;
+	
+	std::vector<std::shared_ptr<Entity>> m_Mobs;
 
 	PointLight m_PointLight;
 

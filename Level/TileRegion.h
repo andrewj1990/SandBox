@@ -23,7 +23,7 @@ public:
 	int indexX() { return m_IndexX; }
 	int indexY() { return m_IndexY; }
 	const std::vector<std::shared_ptr<Tile>>& getTiles() { return m_Tiles; }
-	std::vector<std::shared_ptr<Sprite>>& getObjects() { return m_Objects; }
+	std::vector<std::shared_ptr<Entity>>& getObjects() { return m_Objects; }
 
 	void setUV(int x, int y, const std::unordered_set<std::string>& region_tiles);
 	void removeTile(int x, int y);
@@ -54,5 +54,5 @@ private:
 
 	SimplexNoise m_Noise;
 	std::vector<std::shared_ptr<Tile>> m_Tiles;
-	std::vector<std::shared_ptr<Sprite>> m_Objects;
+	std::vector<std::shared_ptr<Entity>> m_Objects;
 };

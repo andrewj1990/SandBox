@@ -1,9 +1,11 @@
 #include "BasicMob.h"
 
 BasicMob::BasicMob(float x, float y)
-	: Entity(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Player/PlayerSpritesheet10.png"))
+	: Entity(glm::vec3(x, y, 0), glm::vec2(64, 64), TextureManager::get("Textures/Mobs/mob.png"))
 {
 	m_Life = 10;
+
+	m_CollisionBox = std::make_shared<BoundingBox>(x, y, 64, 64);
 }
 
 BasicMob::~BasicMob()
@@ -34,9 +36,12 @@ void BasicMob::update(float timeElapsed)
 	float dy = m_Dy;
 
 	addDirection(dx, dy);
+	m_CollisionBox->x = m_Position.x;
+	m_CollisionBox->y = m_Position.y;
+
 }
 
 void BasicMob::render(Renderer& renderer)
 {
-	//renderer.render(*this);
+	renderer.render(*this);
 }

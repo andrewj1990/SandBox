@@ -16,14 +16,14 @@ void Level2D::init()
 	const Camera& cam = Window::Instance().getCamera();
 	m_Player = std::unique_ptr<Player>(new Player(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f));
 
-	//m_EntityManager = std::make_shared<EntityManager>();
+	m_Mobs.push_back(std::make_shared<BasicMob>(100, 100));
 
-	TEntity mob = TEntity();
-	mob.attach<PositionComponent>(std::make_shared<PositionComponent>(glm::vec3(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f, -(Window::Instance().getHeight() / 2 - 16.0f))));
-	mob.attach<VelocityComponent>(std::make_shared<VelocityComponent>(1, 1));
-	mob.attach<InputComponent>(std::make_shared<InputComponent>());
-	mob.attach<SpriteComponent>(std::make_shared<SpriteComponent>(glm::vec2(32, 32), TextureManager::get("Textures/Tree.png")));
-	m_EntityManager.add(mob);
+	//TEntity mob = TEntity();
+	//mob.attach<PositionComponent>(std::make_shared<PositionComponent>(glm::vec3(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f, -(Window::Instance().getHeight() / 2 - 16.0f))));
+	//mob.attach<VelocityComponent>(std::make_shared<VelocityComponent>(1, 1));
+	//mob.attach<InputComponent>(std::make_shared<InputComponent>());
+	//mob.attach<SpriteComponent>(std::make_shared<SpriteComponent>(glm::vec2(32, 32), TextureManager::get("Textures/Tree.png")));
+	//m_EntityManager.add(mob);
 }
 
 
@@ -62,6 +62,12 @@ void Level2D::update(float timeElapsed)
 	//m_Region.addTiles(m_QuadTree);
 	m_Region.addObjects(ObjectManager::ObjectsQT);
 	m_Region.addWaterTiles(ObjectManager::WaterTilesQT);
+
+	for (auto& mob : m_Mobs)
+	{
+		ObjectManager::ObjectsQT->insert(mob);
+		mob->update(timeElapsed);
+	}
 
 	m_Player->update(m_Region, timeElapsed);
 	m_PointLight.update(m_Player->getCenterX(), m_Player->getY() + 3, timeElapsed);
@@ -144,6 +150,14 @@ void Level2D::render(Renderer& renderer)
 
 	m_Player->render(renderer);
 
+	renderer.begin();
+	for (auto& mob : m_Mobs)
+	{
+		mob->submit(renderer);
+	}
+	renderer.end();
+	renderer.flush();
+
 
 	if (Settings::Instance().debugShowCollisionBoxes)
 	{
@@ -174,7 +188,7 @@ void Level2D::render(Renderer& renderer)
 			renderer.debugRender(bb, TextureManager::get("Textures/bbox.png"));
 		}
 
-		std::vector<std::shared_ptr<Sprite>> m_Data;
+		std::vector<std::shared_ptr<Entity>> m_Data;
 		ObjectManager::ObjectsQT->retrieve(m_Data, m_PointLight.getLightRegion());
 
 		for (auto sprite : m_Data)

@@ -1,7 +1,7 @@
 #include "Rock.h"
 
 Rock::Rock(int x, int y)
-	: Sprite(glm::vec3(x, y, -y), glm::vec2(Utils::random(32, 64), Utils::random(64, 96)), TextureManager::get("Textures/Rock.png"))
+	: Entity(glm::vec3(x, y, -y), glm::vec2(Utils::random(32, 64), Utils::random(64, 96)), TextureManager::get("Textures/Rock.png"))
 {
 	float sizeFactorX = getWidth() / 10.0f;
 	float sizeFactorY = getHeight() / 10.0f;

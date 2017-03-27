@@ -32,4 +32,6 @@ private:
 	std::vector<std::unique_ptr<Entity>> m_Entities;
 	std::vector<std::unique_ptr<Entity>> m_Bullets;
 	std::vector<std::unique_ptr<DamageCounter>> m_DamageText;
+
+	Sprite m_Light;
 };

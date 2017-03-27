@@ -5,7 +5,7 @@ Bullet::Bullet(float x, float y, float angle)
 {
 	m_Angle = angle;
 
-	float velocity = 5000;
+	float velocity = 2500;//5000;
 	m_Dx = std::cosf(angle) * velocity;
 	m_Dy = std::sinf(angle) * velocity;
 
@@ -22,7 +22,7 @@ void Bullet::update(float timeElapsed)
 		m_Size.x -= 30;
 		return;
 	}
-	m_Size.x += 30;
+	m_Size.x += 15;//30;
 
 	m_Duration -= timeElapsed;
 
@@ -39,8 +39,8 @@ void Bullet::update(float timeElapsed)
 		m_Destroy = true;
 	}
 
-	m_Light.setLightPosition(getX(), getY(), m_Size.x);
 	m_Light.setSize(glm::vec2(m_Size.x, m_Light.getSize().y));
+	m_Light.setLightPosition(getX(), getY(), m_Size.x / 2);
 	m_Light.setPosition(getCenterX() - m_Light.getSize().x / 2, getCenterY() - m_Light.getSize().y / 2);
 }
 

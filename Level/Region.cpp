@@ -70,7 +70,7 @@ void Region::addWaterTiles(std::shared_ptr<QTree<Sprite>>& quadTree)
 	}
 }
 
-void Region::addObjects(std::shared_ptr<QTree<Sprite>>& quadTree)
+void Region::addObjects(std::shared_ptr<QTree<Entity>>& quadTree)
 {
 	for (auto& tileRegion : m_Regions)
 	{

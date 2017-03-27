@@ -1,7 +1,7 @@
 #include "Bush.h"
 
 Bush::Bush(int x, int y)
-	: Sprite(glm::vec3(x, y, -y), glm::vec2(Utils::random(32, 64), Utils::random(64, 96)), TextureManager::get("Textures/Bush.png"))
+	: Entity(glm::vec3(x, y, -y), glm::vec2(Utils::random(32, 64), Utils::random(64, 96)), TextureManager::get("Textures/Bush.png"))
 {
 	m_Solid = false;
 	float sizeFactorX = getWidth() / 10.0f;

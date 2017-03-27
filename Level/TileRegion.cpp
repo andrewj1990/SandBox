@@ -225,22 +225,22 @@ void TileRegion::addObjects(int x, int y, const std::unordered_set<std::string>&
 		{
 			if (r1 < 0.7)
 			{
-				m_Objects.push_back(std::shared_ptr<Sprite>(new Tree(x + xOffset, y + yOffset)));
+				m_Objects.push_back(std::shared_ptr<Entity>(new Tree(x + xOffset, y + yOffset)));
 			}
 			else if (r1 < 0.8)
 			{
-				m_Objects.push_back(std::shared_ptr<Sprite>(new Bush(x + xOffset, y + yOffset)));
+				m_Objects.push_back(std::shared_ptr<Entity>(new Bush(x + xOffset, y + yOffset)));
 			}
 		}
 		else if (rocks < 0.2)
 		{
 			if (r1 < 0.3)
 			{
-				m_Objects.push_back(std::shared_ptr<Sprite>(new Rock(x + xOffset, y + yOffset)));
+				m_Objects.push_back(std::shared_ptr<Entity>(new Rock(x + xOffset, y + yOffset)));
 			}
 			else if (r1 < 0.4)
 			{
-				m_Objects.push_back(std::shared_ptr<Sprite>(new Bush(x + xOffset, y + yOffset)));
+				m_Objects.push_back(std::shared_ptr<Entity>(new Bush(x + xOffset, y + yOffset)));
 			}
 		}
 	}
