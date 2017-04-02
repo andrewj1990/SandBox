@@ -99,6 +99,8 @@ void Gun::update(Region& region, float timeElapsed)
 				{
 					//m_Entities.push_back(std::unique_ptr<Particle>(new Particle(cx, cy, 5.0f, glm::degrees(bullet->getAngle()))));
 					m_Entities.push_back(std::make_unique<Particle>(cx, cy, Utils::random(5, 20), object->getTexture()));
+					m_Entities.push_back(std::make_unique<CollisionParticle>(cx, cy, glm::degrees(m_Angle)));
+					m_Entities.push_back(std::make_unique<CollisionParticle>(cx, cy, glm::degrees(m_Angle), object->getTexture()));
 				}
 
 				//region.removeTiles(collisionBox->x, collisionBox->y, true, true);
@@ -174,13 +176,13 @@ void Gun::render(Renderer& renderer)
 	renderer.begin();
 	for (auto& entity : m_Entities)
 	{
-		glm::mat4 transform;
-		transform = glm::translate(transform, glm::vec3(entity->getCenterX(), entity->getCenterY(), 0));
-		transform = glm::rotate(transform, entity->getAngle(), glm::vec3(0, 0, 1));
-		transform = glm::translate(transform, glm::vec3(-entity->getCenterX(), -entity->getCenterY(), 0));
-		renderer.push(transform);
+		//glm::mat4 transform;
+		//transform = glm::translate(transform, glm::vec3(entity->getCenterX(), entity->getCenterY(), 0));
+		//transform = glm::rotate(transform, entity->getAngle(), glm::vec3(0, 0, 1));
+		//transform = glm::translate(transform, glm::vec3(-entity->getCenterX(), -entity->getCenterY(), 0));
+		//renderer.push(transform);
 		entity->submit(renderer);
-		renderer.pop();
+		//renderer.pop();
 	}
 
 	renderer.end();
@@ -224,6 +226,6 @@ void Gun::render(Renderer& renderer)
 
 void Gun::renderLight(Renderer& renderer)
 {
-	m_Light.submit(renderer);
+	//m_Light.submit(renderer);
 	for (auto& bullet : m_Bullets) bullet->renderLight(renderer);
 }

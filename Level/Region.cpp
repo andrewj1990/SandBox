@@ -13,6 +13,8 @@ Region::Region()
 
 	m_CountX = (m_RegionWidth / m_SubRegionWidth);
 	m_CountY = (m_RegionHeight / m_SubRegionHeight) + 1;
+	//m_CountX = 1;
+	//m_CountY = 1;
 
 	for (int x = m_X; x < m_CountX; x++)
 	{

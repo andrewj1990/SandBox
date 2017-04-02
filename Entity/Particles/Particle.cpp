@@ -75,3 +75,14 @@ void Particle::update(float timeElapsed)
 	}
 
 }
+
+void Particle::submit(Renderer& renderer)
+{
+	glm::mat4 transform;
+	transform = glm::translate(transform, glm::vec3(getCenterX(), getCenterY(), 0));
+	transform = glm::rotate(transform, getAngle(), glm::vec3(0, 0, 1));
+	transform = glm::translate(transform, glm::vec3(-getCenterX(), -getCenterY(), 0));
+	renderer.push(transform);
+	renderer.submit(*this);
+	renderer.pop();
+}

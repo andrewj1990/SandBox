@@ -8,6 +8,7 @@
 #include "..\..\Utils\quadTree.h"
 #include "..\Particles\Particle.h"
 #include "..\Particles\GunParticle.h"
+#include "..\Particles\CollisionParticle.h"
 #include "..\DamageCounter.h"
 #include "..\..\Utils\QTree.h"
 #include "..\..\Level\Region.h"

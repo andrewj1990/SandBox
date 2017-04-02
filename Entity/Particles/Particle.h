@@ -11,6 +11,7 @@ public:
 	virtual ~Particle() {}
 	
 	virtual void update(float timeElapsed) override;
+	virtual void submit(Renderer& renderer) override;
 
 protected:
 	float m_Duration;
