@@ -18,6 +18,9 @@ public:
 
 	void load(int x, int y);
 	void unload(int x, int y);
+
+	void load();
+	void unload();
 	
 	void addTiles(std::shared_ptr<QTree<Sprite>>& quadTree);
 	void addWaterTiles(std::shared_ptr<QTree<Sprite>>& quadTree);
@@ -33,6 +36,7 @@ public:
 	void render(Renderer& renderer);
 
 private:
+	bool contains(int x, int y);
 	void reloadTileUV(int x, int y);
 	std::unique_ptr<TileRegion>& getTileRegion(int x, int y);
 
@@ -46,6 +50,9 @@ private:
 
 	int m_SubRegionWidth;
 	int m_SubRegionHeight;
+
+	BoundingBox m_UnloadRegion;
+	BoundingBox m_LoadRegion;
 
 	std::vector<std::unique_ptr<TileRegion>> m_Regions;
 	std::vector<std::unique_ptr<TileRipple>> m_Ripples;

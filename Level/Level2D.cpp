@@ -16,7 +16,10 @@ void Level2D::init()
 	const Camera& cam = Window::Instance().getCamera();
 	m_Player = std::unique_ptr<Player>(new Player(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f));
 
-	m_Mobs.push_back(std::make_shared<BasicMob>(100, 100));
+	for (int i = 0; i < 100; i++)
+	{
+		m_Mobs.push_back(std::make_shared<BasicMob>(100, 100));
+	}
 
 	//TEntity mob = TEntity();
 	//mob.attach<PositionComponent>(std::make_shared<PositionComponent>(glm::vec3(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f, -(Window::Instance().getHeight() / 2 - 16.0f))));
@@ -114,8 +117,10 @@ void Level2D::update(float timeElapsed)
 		{
 			float offsetX = Utils::random(-200, 200);
 			float offsetY = Utils::random(-200, 200);
-			m_FireParticles.push_back(std::make_unique<Particle>(mx + offsetX, my + offsetY, Utils::random(5, 20), 90.0f));
+			//m_FireParticles.push_back(std::make_unique<Particle>(mx + offsetX, my + offsetY, Utils::random(5, 20), 90.0f));
 		}
+		m_Mobs.push_back(std::make_shared<BasicMob>(mx, my));
+		std::cout << "mobs : " << m_Mobs.size() << "\n";
 		//std::cout << "number of fire particles : " << m_FireParticles.size() << "\n";
 	}
 

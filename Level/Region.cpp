@@ -1,6 +1,8 @@
 #include "Region.h"
 
 Region::Region()
+	: m_UnloadRegion(Window::Instance().getCamera().getPosition().x / 2, Window::Instance().getCamera().getPosition().y / 2, Window::Instance().getWidth() + 700, Window::Instance().getHeight() + 700),
+	m_LoadRegion(0, 0, Window::Instance().getWidth(), Window::Instance().getHeight())
 {
 	m_X = Window::Instance().getCamera().getPosition().x;
 	m_Y = Window::Instance().getCamera().getPosition().y;
@@ -27,6 +29,19 @@ Region::Region()
 
 void Region::load(int x, int y)
 {
+	// check if the region is already loaded
+	for (auto it = m_Regions.begin(); it != m_Regions.end(); )
+	{
+		if ((*it)->indexX() == x && (*it)->indexY() == y)
+		{
+			return;
+		}
+		else
+		{
+			it++;
+		}
+	}
+
 	m_Regions.push_back(std::unique_ptr<TileRegion>(new TileRegion(x, y)));
 	m_Regions.back()->init(m_Tiles, m_DestroyedObjects);
 }
@@ -36,6 +51,45 @@ void Region::unload(int x, int y)
 	for (auto it = m_Regions.begin(); it != m_Regions.end(); )
 	{
 		if ((*it)->indexX() == x && (*it)->indexY() == y)
+		{
+			m_Regions.erase(it);
+			return;
+		}
+		else
+		{
+			it++;
+		}
+	}
+}
+
+void Region::load()
+{
+	int x = Utils::fastFloor(Window::Instance().getCamera().getPosition().x / m_SubRegionWidth) - 1;
+	int y = Utils::fastFloor(Window::Instance().getCamera().getPosition().y / m_SubRegionHeight) - 1;
+	int w = x + m_CountX + 1;
+	int h = y + m_CountY + 1;
+
+	for (int i = x; i < w; i++)
+	{
+		for (int j = y; j < h; j++)
+		{
+			if (!contains(i, j))
+			{
+				m_Regions.push_back(std::unique_ptr<TileRegion>(new TileRegion(i, j)));
+				m_Regions.back()->init(m_Tiles, m_DestroyedObjects);
+			}
+		}
+	}
+
+}
+
+void Region::unload()
+{
+	for (auto it = m_Regions.begin(); it != m_Regions.end(); )
+	{
+		int x = (*it)->indexX() * m_SubRegionWidth;
+		int y = (*it)->indexY() * m_SubRegionHeight;
+		if (!m_UnloadRegion.contains(x, y))
 		{
 			m_Regions.erase(it);
 			return;
@@ -165,35 +219,15 @@ bool Region::getSurfacePosition(float x, float y)
 void Region::update(float timeElapsed)
 {
 	int x = Utils::fastFloor(Window::Instance().getCamera().getPosition().x / m_SubRegionWidth);
-	int y = Utils::fastFloor(Window::Instance().getCamera().getPosition().y / m_SubRegionHeight);
+	int y = Utils::fastFloor(Window::Instance().getCamera().getPosition().y / m_SubRegionHeight) - 1;
 
-	// update regions when camera moves outside current region
-	if (m_X != x)
-	{
-		int delX = m_X < x ? m_X : m_X + m_CountX - 1;
-		int addX = m_X < x ? m_X + m_CountX : x;
+	m_UnloadRegion.x = Window::Instance().getCamera().getPosition().x - (m_SubRegionWidth * 2);
+	m_UnloadRegion.y = Window::Instance().getCamera().getPosition().y - (m_SubRegionHeight * 2);
+	m_LoadRegion.x = Window::Instance().getCamera().getPosition().x;
+	m_LoadRegion.y = Window::Instance().getCamera().getPosition().y;
 
-		for (int i = m_Y; i < m_Y + m_CountY; i++)
-		{
-			unload(delX, i);
-			load(addX, i);
-		}
-
-		m_X = x;
-	}
-	if (m_Y != y)
-	{
-		int delY = m_Y < y ? m_Y : m_Y + m_CountY - 1;
-		int addY = m_Y < y ? m_Y + m_CountY : y;
-
-		for (int i = m_X; i < m_X + m_CountX; i++)
-		{
-			unload(i, delY);
-			load(i, addY);
-		}
-
-		m_Y = y;
-	}
+	load();
+	unload();
 
 	// remove the tile
 	if (Window::Instance().isKeyPressed(GLFW_KEY_H))
@@ -255,6 +289,26 @@ void Region::render(Renderer& renderer)
 	renderer.end();
 	renderer.flush();
 	ResourceManager::getInstance().shader("basic_shader")->setUniform("outline", false);
+
+	//renderer.debugRender(m_UnloadRegion, TextureManager::get("Textures/bbox.png"));
+	//renderer.debugRender(m_LoadRegion, TextureManager::get("Textures/bbox.png"));
+}
+
+bool Region::contains(int x, int y)
+{
+	for (auto it = m_Regions.begin(); it != m_Regions.end(); )
+	{
+		if ((*it)->indexX() == x && (*it)->indexY() == y)
+		{
+			return true;
+		}
+		else
+		{
+			it++;
+		}
+	}
+
+	return false;
 }
 
 void Region::reloadTileUV(int x, int y)

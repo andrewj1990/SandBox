@@ -167,7 +167,7 @@ public:
 		float maxZoom = 0.3f;
 		if (Zoom >= 0.0f && Zoom <= maxZoom) Zoom += zOffset;
 		if (Zoom > maxZoom) Zoom = maxZoom;
-		if (Zoom < 0.0f) Zoom = 0.0f;
+		if (Zoom < 0.0f) Zoom = -1.0f;
 	}
 
 	void setZoom(float zoom)

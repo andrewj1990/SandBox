@@ -30,6 +30,14 @@ bool BoundingBox::contains(const BoundingBox& data)
 	return (containsX && containsY);
 }
 
+bool BoundingBox::contains(int px, int py)
+{
+	bool containsX = (x <= px && px <= x + width);
+	bool containsY = (y <= py && py <= y + height);
+
+	return (containsX && containsY);
+}
+
 bool BoundingBox::intersects(const Renderable& box)
 {
 	return (x <= box.getPosition().x + box.getSize().x && x + width >= box.getPosition().x && y <= box.getPosition().y + box.getSize().y && y + height >= box.getPosition().y);
