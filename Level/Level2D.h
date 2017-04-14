@@ -54,5 +54,7 @@ private:
 	EntityManager m_EntityManager;
 	std::vector<std::unique_ptr<Particle>> m_FireParticles;
 
+	Sprite aoe_test;
+
 	float m_WaterRippleTime;
 };

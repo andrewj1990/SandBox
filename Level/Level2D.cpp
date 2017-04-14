@@ -4,10 +4,11 @@ Level2D::Level2D()
 	: m_PointLight(), 
 	m_Background(glm::vec3(0, 0, -(Settings::Instance().Z_PLANE) + 10), glm::vec2(Window::Instance().getWidth(), Window::Instance().getHeight()), TextureManager::get("Textures/Level/bg.png")), 
 	m_EntityManager(),
-	m_Region()
+	m_Region(),
+	aoe_test(glm::vec3(0, 0, 0), glm::vec2(100, 100), TextureManager::get("Textures/aoe.png"))
 {
 	init();
-
+	aoe_test.setColor(glm::vec4(0, 0, 0, 1));
 	m_WaterRippleTime = 0; 
 }
 
@@ -136,6 +137,25 @@ void Level2D::update(float timeElapsed)
 			i++;
 		}
 	}
+
+	if (Window::Instance().isKeyPressed(GLFW_KEY_1))
+	{
+		aoe_test.setSize(aoe_test.getSize() - glm::vec2(1));
+	}
+	if (Window::Instance().isKeyPressed(GLFW_KEY_2))
+	{
+		aoe_test.setSize(aoe_test.getSize() + glm::vec2(1));
+	}
+	if (Window::Instance().isKeyPressed(GLFW_KEY_3))
+	{
+		aoe_test.setColor(aoe_test.getColour() + glm::vec4(0.01f, 0, 0, 0));
+	}
+
+	auto mx = Window::Instance().getMouseWorldPosX() - aoe_test.getSize().x / 2;
+	auto my = Window::Instance().getMouseWorldPosY() - aoe_test.getSize().y / 2;
+
+	aoe_test.setPosition(mx, my);
+
 }
 
 void Level2D::render(Renderer& renderer)
@@ -207,6 +227,10 @@ void Level2D::render(Renderer& renderer)
 	{
 		renderer.debugRender(m_PointLight.getLightRegion(), TextureManager::get("Textures/bbox.png"));
 	}
+
+	renderer.m_AlphaTest = false;
+	renderer.render(aoe_test);
+	renderer.m_AlphaTest = true;
 }
 
 void Level2D::renderLights(Renderer& renderer)
