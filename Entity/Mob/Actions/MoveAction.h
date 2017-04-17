@@ -15,4 +15,6 @@ public:
 private:
 	float m_CumulativeTime;
 	float m_Angle;
+
+	float m_FollowDistanceSqrd;
 };

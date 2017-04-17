@@ -27,6 +27,7 @@ public:
 	virtual void shoot(float angle) {}
 	float getAngle(const Entity& entity);
 	float getAngle() const override { return m_Angle; }
+	float calcDistanceSqrd(const Entity& entity) const;
 	virtual void damage(int amount) {}
 
 	float m_Dx;

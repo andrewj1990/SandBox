@@ -13,6 +13,9 @@ void MoveAction::init()
 	m_Complete = false;
 
 	m_Angle = glm::radians(Utils::random(0.0f, 360.0f));
+	
+	float followDistance = 400.0f;
+	m_FollowDistanceSqrd = followDistance * followDistance;
 }
 
 void MoveAction::play(Entity& mob, Entity& player, float timeElapsed)
@@ -26,6 +29,12 @@ void MoveAction::play(Entity& mob, Entity& player, float timeElapsed)
 	}
 
 	//float angle = mob.getAngle(player);
+	float distSqrd = mob.calcDistanceSqrd(player);
+	if (distSqrd < m_FollowDistanceSqrd)
+	{
+		float angle = mob.getAngle(player);
+		m_Angle = angle;
+	}
 
 	//float angle = std::atan2f(dy, dx);
 

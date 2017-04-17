@@ -1,11 +1,11 @@
 #pragma once
 
-#include "..\Entity.h"
+#include "Mob.h"
 
-class BasicMob : public Entity
+class BasicMob : public Mob
 {
 public:
-	BasicMob(float x, float y);
+	BasicMob(float x, float y, std::unique_ptr<Player>& player);
 	~BasicMob();
 
 	void damage(int amount) override;
@@ -14,6 +14,5 @@ public:
 	void render(Renderer& renderer) override;
 
 private:
-	int m_Life;
 
 };

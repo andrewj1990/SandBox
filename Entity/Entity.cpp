@@ -125,6 +125,19 @@ float Entity::getAngle(const Entity& entity)
 	return std::atan2f(dy, dx);
 }
 
+float Entity::calcDistanceSqrd(const Entity& entity) const
+{
+	float x1 = getCenterX();
+	float y1 = getCenterY();
+	float x2 = entity.getCenterX();
+	float y2 = entity.getCenterY();
+
+	float dx = x2 - x1;
+	float dy = y2 - y1;
+
+	return (dx * dx + dy * dy);
+}
+
 void Entity::init()
 {
 	m_Dx = 0.0f;
