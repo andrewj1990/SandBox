@@ -17,9 +17,10 @@ void Level2D::init()
 	const Camera& cam = Window::Instance().getCamera();
 	m_Player = std::unique_ptr<Player>(new Player(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f));
 
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 10; i++)
 	{
-		m_Mobs.push_back(std::make_shared<BasicMob>(100, 100, m_Player));
+		//m_Mobs.push_back(std::make_shared<BasicMob>(100, 100, m_Player));
+		m_Mobs.push_back(std::make_shared<ProjectileMob>(200, 200, m_Player));
 	}
 
 	//TEntity mob = TEntity();
@@ -67,10 +68,19 @@ void Level2D::update(float timeElapsed)
 	m_Region.addObjects(ObjectManager::ObjectsQT);
 	m_Region.addWaterTiles(ObjectManager::WaterTilesQT);
 
-	for (auto& mob : m_Mobs)
+	for (auto& it = m_Mobs.begin(); it != m_Mobs.end(); )
 	{
-		ObjectManager::ObjectsQT->insert(mob);
-		mob->update(timeElapsed);
+		if ((*it)->shouldDestroy())
+		{
+			it = m_Mobs.erase(it);
+		}
+		else
+		{
+			ObjectManager::ObjectsQT->insert(*it);
+			(*it)->update(timeElapsed);
+
+			++it;
+		}
 	}
 
 	m_Player->update(m_Region, timeElapsed);
@@ -118,10 +128,10 @@ void Level2D::update(float timeElapsed)
 		{
 			float offsetX = Utils::random(-200, 200);
 			float offsetY = Utils::random(-200, 200);
-			//m_FireParticles.push_back(std::make_unique<Particle>(mx + offsetX, my + offsetY, Utils::random(5, 20), 90.0f));
+			m_FireParticles.push_back(std::make_unique<Particle>(mx + offsetX, my + offsetY, Utils::random(5, 20), 90.0f));
 		}
-		m_Mobs.push_back(std::make_shared<BasicMob>(mx, my, m_Player));
-		std::cout << "mobs : " << m_Mobs.size() << "\n";
+		//m_Mobs.push_back(std::make_shared<BasicMob>(mx, my, m_Player));
+		//std::cout << "mobs : " << m_Mobs.size() << "\n";
 		//std::cout << "number of fire particles : " << m_FireParticles.size() << "\n";
 	}
 
@@ -173,16 +183,13 @@ void Level2D::render(Renderer& renderer)
 	renderer.flush();
 	renderer.m_AlphaTest = true;
 
-	m_Player->render(renderer);
 
-	renderer.begin();
 	for (auto& mob : m_Mobs)
 	{
-		mob->submit(renderer);
+		mob->render(renderer);
 	}
-	renderer.end();
-	renderer.flush();
 
+	m_Player->render(renderer);
 
 	if (Settings::Instance().debugShowCollisionBoxes)
 	{
@@ -229,7 +236,7 @@ void Level2D::render(Renderer& renderer)
 	}
 
 	renderer.m_AlphaTest = false;
-	renderer.render(aoe_test);
+	//renderer.render(aoe_test);
 	renderer.m_AlphaTest = true;
 }
 

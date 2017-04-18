@@ -1,6 +1,6 @@
-#include "BasicMob.h"
+#include "ProjectileMob.h"
 
-BasicMob::BasicMob(float x, float y, std::unique_ptr<Player>& player)
+ProjectileMob::ProjectileMob(float x, float y, std::unique_ptr<Player>& player)
 	: Mob(glm::vec3(x, y, 0), glm::vec2(64, 64), TextureManager::get("Textures/Mobs/mob3.png"), player)
 {
 	m_MaxHP = 10;
@@ -12,23 +12,26 @@ BasicMob::BasicMob(float x, float y, std::unique_ptr<Player>& player)
 
 	m_Actions.push_back(std::make_unique<DamageAction>());
 	m_Actions.push_back(std::make_unique<MoveAction>());
-	m_Actions.push_back(std::make_unique<ChannellingAttack>());
+	m_Actions.push_back(std::make_unique<AttackAction>());
 }
 
-BasicMob::~BasicMob()
+ProjectileMob::~ProjectileMob()
 {
 }
 
-void BasicMob::attack(float x, float y)
+void ProjectileMob::attack(float x, float y)
 {
 	int fireRingSize = 100;
-	m_FireRings.push_back(std::make_unique<Sprite>(glm::vec3(x - fireRingSize / 2, y - fireRingSize / 2, 0), glm::vec2(fireRingSize), TextureManager::get("Textures/aoe.png")));
-	auto& fireRing = m_FireRings.back();
-	fireRing->setColor(glm::vec4(0, 0, 0, 0.3f));
+	float px = m_Player->getCenterX();
+	float py = m_Player->getCenterY();
+	
+	m_Projectiles.push_back(std::make_unique<FireProjectile>(x, y, Utils::calcAngleRad(x, y, px, py)));
+	//auto& fireRing = m_Projectiles.back();
+	//fireRing->setColor(glm::vec4(0, 0, 0, 0.3f));
 
 }
 
-void BasicMob::damage(int amount)
+void ProjectileMob::damage(int amount)
 {
 	__super::damage(amount);
 
@@ -38,7 +41,7 @@ void BasicMob::damage(int amount)
 
 }
 
-void BasicMob::update(float timeElapsed)
+void ProjectileMob::update(float timeElapsed)
 {
 	__super::update(timeElapsed);
 
@@ -56,34 +59,31 @@ void BasicMob::update(float timeElapsed)
 
 	m_LifeBar.setPosition(getX(), getY() + sizeFactorY * 22);
 
-	for (auto& it = m_FireRings.begin(); it != m_FireRings.end(); )
+	for (auto& it = m_Projectiles.begin(); it != m_Projectiles.end(); )
 	{
-		if ((*it)->getSize().x > 300 || (*it)->getColour().x >= 1.0f)
+		if ((*it)->shouldDestroy())
 		{
-			it = m_FireRings.erase(it);
+			it = m_Projectiles.erase(it);
 		}
 		else
 		{
-			(*it)->setSize((*it)->getSize() + glm::vec2(1));
-			(*it)->setColor((*it)->getColour() + glm::vec4(0.005f, 0, 0, 0));
+			(*it)->update(timeElapsed);
 
-			(*it)->addDirection(-0.5f, -0.5f);
-
-			it++;
+			++it;
 		}
 	}
 
 }
 
-void BasicMob::render(Renderer& renderer)
+void ProjectileMob::render(Renderer& renderer)
 {
 	renderer.m_AlphaTest = false;
 	renderer.begin();
-	for (auto& fireRing : m_FireRings)
+	for (auto& projectile : m_Projectiles)
 	{
-		renderer.submit(*fireRing);
+		projectile->submit(renderer);
 	}
-	
+
 	renderer.end();
 	renderer.flush();
 	renderer.m_AlphaTest = true;

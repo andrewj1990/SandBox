@@ -14,6 +14,7 @@
 #include "Effects\WaterRipple.h"
 #include "..\Entity\ObjectManager.h"
 #include "..\Entity\Mob\BasicMob.h"
+#include "..\Entity\Mob\ProjectileMob.h"
 
 #include "..\Entity\Systems\MovementSystem.h"
 #include "..\Entity\EntityManager.h"

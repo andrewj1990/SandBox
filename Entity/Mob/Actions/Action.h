@@ -1,6 +1,7 @@
 #pragma once
 
 class Entity;
+class Mob;
 
 class Action
 {
@@ -9,7 +10,7 @@ public:
 	virtual ~Action() {}
 
 	virtual void init() { m_Complete = false; }
-	virtual void play(Entity& mob, Entity& player, float timeElapsed) = 0;
+	virtual void play(Mob& mob, Entity& player, float timeElapsed) = 0;
 
 	bool isComplete() const { return m_Complete; }
 	void setComplete(bool complete) { m_Complete = complete; }

@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Mob.h"
-#include "Actions\DamageAction.h"
+#include "..\Projectile\FireProjectile.h"
 
-class BasicMob : public Mob
+class ProjectileMob : public Mob
 {
 public:
-	BasicMob(float x, float y, std::unique_ptr<Player>& player);
-	~BasicMob();
+	ProjectileMob(float x, float y, std::unique_ptr<Player>& player);
+	~ProjectileMob();
 
 	void attack(float x, float y) override;
 	void damage(int amount) override;
@@ -16,6 +16,6 @@ public:
 	void render(Renderer& renderer) override;
 
 private:
-	std::vector<std::unique_ptr<Sprite>> m_FireRings;
+	std::vector<std::unique_ptr<Entity>> m_Projectiles;
 
 };

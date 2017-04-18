@@ -1,5 +1,5 @@
 #include "MoveAction.h"
-#include "..\..\Entity.h"
+#include "..\Mob.h"
 
 MoveAction::MoveAction()
 	: Action()
@@ -18,7 +18,7 @@ void MoveAction::init()
 	m_FollowDistanceSqrd = followDistance * followDistance;
 }
 
-void MoveAction::play(Entity& mob, Entity& player, float timeElapsed)
+void MoveAction::play(Mob& mob, Entity& player, float timeElapsed)
 {
 	m_CumulativeTime += timeElapsed;
 
@@ -35,8 +35,6 @@ void MoveAction::play(Entity& mob, Entity& player, float timeElapsed)
 		float angle = mob.getAngle(player);
 		m_Angle = angle;
 	}
-
-	//float angle = std::atan2f(dy, dx);
 
 	// if collides with player then set action as complete
 	if (mob.collide(player))

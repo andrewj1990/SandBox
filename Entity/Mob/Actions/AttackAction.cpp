@@ -1,8 +1,8 @@
 #include "AttackAction.h"
-#include "..\..\Entity.h"
+#include "..\Mob.h"
 
 AttackAction::AttackAction()
-	: Action()
+	: Action(), m_Timer()
 {
 }
 
@@ -15,15 +15,12 @@ void AttackAction::init()
 	m_CumulativeTime = 0.0f;
 }
 
-void AttackAction::play(Entity& mob, Entity& player, float timeElapsed)
+void AttackAction::play(Mob& mob, Entity& player, float timeElapsed)
 {	
-	float angle = mob.getAngle(player);
-	m_AttackFrame += timeElapsed;
-
-	if (m_AttackFrame >= m_AttackSpeed)
+	if (m_Timer.elapsed() > 0.3f)
 	{
-		mob.shoot(angle);
-		m_AttackFrame = 0.0f;
+		m_Timer.reset();
+		mob.attack(mob.getCenterX(), mob.getCenterY());
 	}
 
 	m_Duration -= timeElapsed;
@@ -34,7 +31,7 @@ void AttackAction::play(Entity& mob, Entity& player, float timeElapsed)
 }
 
 AOEAttackAction::AOEAttackAction()
-	: Action()
+	: AttackAction()
 {
 }
 
@@ -47,13 +44,55 @@ void AOEAttackAction::init()
 	m_CumulativeTime = 0.0f;
 }
 
-void AOEAttackAction::play(Entity& mob, Entity& player, float timeElapsed)
+void AOEAttackAction::play(Mob& mob, Entity& player, float timeElapsed)
 {
 	float angle = glm::degrees(mob.getAngle(player)) - 90.0f;
 
 	for (int i = 0; i < 180; i += 20)
 	{
 		mob.shoot(glm::radians(angle + (float)i));
+	}
+
+	m_Duration -= timeElapsed;
+	if (m_Duration < 0)
+	{
+		m_Complete = true;
+	}
+}
+
+ChannellingAttack::ChannellingAttack()
+	: AttackAction(), m_Timer()
+{
+}
+
+void ChannellingAttack::init()
+{
+	m_Complete = false;
+	m_Duration = 2.0f;
+	m_AttackSpeed = 0.0f;
+	m_AttackFrame = 0.0f;
+	m_CumulativeTime = 0.0f;
+	m_Length = 0.0f;
+	m_Angle = 0.0f;
+
+	m_Timer.reset();
+}
+
+void ChannellingAttack::play(Mob& mob, Entity& player, float timeElapsed)
+{
+	if (m_Timer.elapsed() > 0.3f)
+	{
+		m_Timer.reset();
+
+		if (m_Length == 0)
+		{
+			m_Angle = mob.getAngle(player);
+		}
+
+		m_Length += 200.0f;
+		float dx = m_Length * std::cosf(m_Angle);
+		float dy = m_Length * std::sinf(m_Angle);
+		mob.attack(mob.getCenterX() + dx , mob.getCenterY() + dy);
 	}
 
 	m_Duration -= timeElapsed;

@@ -104,8 +104,9 @@ void Gun::update(Region& region, float timeElapsed)
 				}
 
 				//region.removeTiles(collisionBox->x, collisionBox->y, true, true);
+				object->setAngle(m_Angle);
 				object->damage(1);
-				object->setDestroy(true);
+				//object->setDestroy(true);
 				bullet->setDestroy(true);
 				region.removeObject(object->getX(), object->getY());
 				break;

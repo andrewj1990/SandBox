@@ -9,7 +9,7 @@ public:
 	MoveAction();
 
 	void init() override;
-	void play(Entity& mob, Entity& player, float timeElapsed) override;
+	void play(Mob& mob, Entity& player, float timeElapsed) override;
 
 
 private:
