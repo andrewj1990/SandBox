@@ -94,6 +94,7 @@ int main()
 	float dt = 0.01f;
 	float accumulator = 0.0f;
 	int prevDrawCount = 0;
+	float timeModifier = 1.0f;
 	while (!Window::Instance().shouldClose())
 	{
 		Settings::Instance().drawCount = 0;
@@ -184,9 +185,23 @@ int main()
 
 		accumulator += frameTime;
 
+		if (Window::Instance().isKeyPressed(GLFW_KEY_V))
+		{
+			timeModifier += 0.01f;
+			std::cout << "timeSlow : " << timeModifier << "\n";
+		}
+		if (Window::Instance().isKeyPressed(GLFW_KEY_C))
+		{
+			timeModifier -= 0.01f;
+			std::cout << "timeSlow : " << timeModifier << "\n";
+		}
+
+		if (timeModifier <= 0) timeModifier = 0;
+
+
 		while (accumulator >= dt)
 		{
-			level2d->update(dt);
+			level2d->update(dt * timeModifier);
 			++updates;
 			updateTimer += tick;
 

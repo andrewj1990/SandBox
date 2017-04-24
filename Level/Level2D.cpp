@@ -166,6 +166,14 @@ void Level2D::update(float timeElapsed)
 
 	aoe_test.setPosition(mx, my);
 
+	if (Window::Instance().isKeyPressed(GLFW_KEY_M))
+	{
+//		ParticleManager::instance().add(Entity(glm::vec3(mx, my, 0), glm::vec2(32), glm::vec4(1, 0, 0, 1)));
+		ParticleManager::instance().add(WaterParticle(mx, my, Utils::random(0, 360), 100));
+	}
+
+	ParticleManager::instance().update(timeElapsed);
+
 }
 
 void Level2D::render(Renderer& renderer)
@@ -190,6 +198,9 @@ void Level2D::render(Renderer& renderer)
 	}
 
 	m_Player->render(renderer);
+
+	ParticleManager::instance().render(renderer);
+
 
 	if (Settings::Instance().debugShowCollisionBoxes)
 	{

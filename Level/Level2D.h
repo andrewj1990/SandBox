@@ -19,6 +19,7 @@
 #include "..\Entity\Systems\MovementSystem.h"
 #include "..\Entity\EntityManager.h"
 #include "..\Utils\TypeID.h"
+#include "..\Entity\Particles\ParticleManager.h"
 
 class Level2D 
 {

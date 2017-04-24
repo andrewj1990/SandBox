@@ -40,6 +40,7 @@ void Entity::init(const glm::vec3& pos, const glm::vec2& size, Texture* texture)
 
 void Entity::update(float timeElapsed)
 {
+	std::cout << "jere\n";
 }
 
 void Entity::submit(Renderer& renderer)
