@@ -30,6 +30,7 @@ public:
 	inline float getCenterY() const { return getY() + getSize().y / 2.0f; }
 
 	std::shared_ptr<BoundingBox>& getCollisionBox() { return m_CollisionBox; }
+	std::shared_ptr<BoundingBox>& getOccluder() { return m_Occluder; }
 
 protected:
 	float m_Angle;
@@ -38,4 +39,5 @@ protected:
 	bool m_Destroy;
 
 	std::shared_ptr<BoundingBox> m_CollisionBox;
+	std::shared_ptr<BoundingBox> m_Occluder;
 };

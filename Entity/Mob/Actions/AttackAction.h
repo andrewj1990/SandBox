@@ -20,6 +20,23 @@ protected:
 	Timer m_Timer;
 };
 
+class MeleeAction : public Action
+{
+public:
+	MeleeAction();
+
+	void init() override;
+	void play(Mob& mob, Entity& player, float timeElapsed) override;
+
+
+protected:
+	float m_AttackSpeed;
+	float m_AttackFrame;
+
+	Timer m_Timer;
+};
+
+
 class AOEAttackAction : public AttackAction
 {
 public:

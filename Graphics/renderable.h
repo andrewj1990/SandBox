@@ -16,18 +16,21 @@ public:
 		: m_Position(glm::vec3(0, 0, 0)), m_Size(32, 32), m_Colour(glm::vec4(1, 1, 1, 1)), m_Texture(nullptr)
 	{
 		setUVDefaults();
+		m_ReflectX = false;
 	}
 
 	Renderable(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color = glm::vec4(1, 1, 1, 1))
 		: m_Position(position), m_Size(size), m_Colour(color), m_Texture(nullptr)
 	{
 		setUVDefaults();
+		m_ReflectX = false;
 	}
 
 	Renderable(const glm::vec3& position, const glm::vec2& size, Texture* texture)
 		: m_Position(position), m_Size(size), m_Colour(glm::vec4(1, 1, 1, 1)), m_Texture(texture)
 	{
 		setUVDefaults();
+		m_ReflectX = false;
 	}
 
 	// quad in ccw position where x0,y0 is bottom left
@@ -36,6 +39,7 @@ public:
 	{
 		setPositions(x0, y0, x1, y1, x2, y2, x3, y3);
 		setUVDefaults();
+		m_ReflectX = false;
 	}
 
 	virtual ~Renderable()
@@ -116,10 +120,20 @@ public:
 		float sx = sw;
 		float sy = sh;
 
-		m_UV[0] = glm::vec4(tx + offsetX	 , ty + offsetY	  , sx, sy);
-		m_UV[1] = glm::vec4(tx + offsetX	 , ty + th - offsetY, sx, sy);
-		m_UV[2] = glm::vec4(tx + tw - offsetX, ty + th - offsetY, sx, sy);
-		m_UV[3] = glm::vec4(tx + tw - offsetX, ty + offsetY, sx, sy);
+		if (m_ReflectX)
+		{
+			m_UV[0] = glm::vec4(tx + tw + offsetX, ty + offsetY	  , sx, sy);
+			m_UV[1] = glm::vec4(tx + tw + offsetX, ty + th - offsetY, sx, sy);
+			m_UV[2] = glm::vec4(tx - offsetX	 , ty + th - offsetY, sx, sy);
+			m_UV[3] = glm::vec4(tx - offsetX	 , ty + offsetY, sx, sy);
+		}
+		else
+		{
+			m_UV[0] = glm::vec4(tx + offsetX	 , ty + offsetY	  , sx, sy);
+			m_UV[1] = glm::vec4(tx + offsetX	 , ty + th - offsetY, sx, sy);
+			m_UV[2] = glm::vec4(tx + tw - offsetX, ty + th - offsetY, sx, sy);
+			m_UV[3] = glm::vec4(tx + tw - offsetX, ty + offsetY, sx, sy);
+		}
 	}
 
 	float getTextureWidth() const
@@ -185,6 +199,8 @@ private:
 	}
 
 protected:
+	bool m_ReflectX;
+
 	glm::vec3 m_Position;
 	std::vector<glm::vec3> m_Positions;
 	glm::vec2 m_Size;

@@ -18,4 +18,7 @@ public:
 private:
 	std::vector<std::unique_ptr<Entity>> m_Projectiles;
 
+	float m_Anim;
+	int m_Row;
+
 };

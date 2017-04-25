@@ -9,6 +9,7 @@ BasicMob::BasicMob(float x, float y, std::unique_ptr<Player>& player)
 	float sizeFactorX = getWidth() / 32.0f;
 	float sizeFactorY = getHeight() / 32.0f;
 	m_CollisionBox = std::make_shared<BoundingBox>(x + (sizeFactorX * 10), y, (sizeFactorX * 10), sizeFactorY + 32);
+	m_Occluder = std::make_shared<BoundingBox>(x + (sizeFactorX * 10), y, (sizeFactorX * 10), sizeFactorY + 32);
 
 	m_Actions.push_back(std::make_unique<DamageAction>());
 	m_Actions.push_back(std::make_unique<MoveAction>());

@@ -6,6 +6,7 @@ Rock::Rock(int x, int y)
 	float sizeFactorX = getWidth() / 10.0f;
 	float sizeFactorY = getHeight() / 10.0f;
 	m_CollisionBox = std::shared_ptr<BoundingBox>(new BoundingBox(x + (sizeFactorX * 1), y, (sizeFactorX * 8), sizeFactorY));
+	m_Occluder = std::shared_ptr<BoundingBox>(new BoundingBox(x + (sizeFactorX * 1), y, (sizeFactorX * 8), sizeFactorY));
 }
 
 void Rock::update(float timeElapsed)

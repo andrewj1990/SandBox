@@ -12,7 +12,7 @@ void MoveAction::init()
 	m_Duration = 1.0f;
 	m_Complete = false;
 
-	m_Angle = glm::radians(Utils::random(0.0f, 360.0f));
+	m_Angle = glm::radians(Utils::random(-180.0f, 180.0f));
 	
 	float followDistance = 400.0f;
 	m_FollowDistanceSqrd = followDistance * followDistance;
@@ -21,6 +21,7 @@ void MoveAction::init()
 void MoveAction::play(Mob& mob, Entity& player, float timeElapsed)
 {
 	m_CumulativeTime += timeElapsed;
+
 
 	if (m_CumulativeTime > m_Duration)
 	{
@@ -35,6 +36,15 @@ void MoveAction::play(Mob& mob, Entity& player, float timeElapsed)
 		float angle = mob.getAngle(player);
 		m_Angle = angle;
 	}
+
+	mob.setState(State::WALKING);
+	if (m_Angle > 0) mob.setDirectionY(Direction::UP);
+	else mob.setDirectionY(Direction::DOWN);
+
+	if (m_Angle > glm::radians(90.0f) || m_Angle < glm::radians(-90.0f)) mob.setDirectionX(Direction::LEFT);
+	else mob.setDirectionX(Direction::RIGHT);
+
+	//std::cout << glm::degrees(m_Angle) << "\n";
 
 	// if collides with player then set action as complete
 	if (mob.collide(player))

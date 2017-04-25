@@ -17,7 +17,7 @@ void Level2D::init()
 	const Camera& cam = Window::Instance().getCamera();
 	m_Player = std::unique_ptr<Player>(new Player(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f));
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		//m_Mobs.push_back(std::make_shared<BasicMob>(100, 100, m_Player));
 		m_Mobs.push_back(std::make_shared<ProjectileMob>(200, 200, m_Player));
@@ -169,7 +169,8 @@ void Level2D::update(float timeElapsed)
 	if (Window::Instance().isKeyPressed(GLFW_KEY_M))
 	{
 //		ParticleManager::instance().add(Entity(glm::vec3(mx, my, 0), glm::vec2(32), glm::vec4(1, 0, 0, 1)));
-		ParticleManager::instance().add(WaterParticle(mx, my, Utils::random(0, 360), 100));
+		for (int i = 0; i < 100; i++)
+			ParticleManager::instance().add(FireProjectile(mx, my, glm::radians(Utils::random(0.0f, 360.0f))));
 	}
 
 	ParticleManager::instance().update(timeElapsed);

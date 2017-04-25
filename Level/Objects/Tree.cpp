@@ -6,6 +6,8 @@ Tree::Tree(int x, int y)
 	float sizeFactorX = getWidth() / 10.0f;
 	float sizeFactorY = getHeight() / 10.0f;
 	m_CollisionBox = std::shared_ptr<BoundingBox>(new BoundingBox(x + (sizeFactorX * 3), y, (sizeFactorX * 3), sizeFactorY));
+	m_Occluder = std::shared_ptr<BoundingBox>(new BoundingBox(x + (sizeFactorX * 3), y, (sizeFactorX * 3), sizeFactorY));
+
 }
 
 void Tree::update(float timeElapsed)

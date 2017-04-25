@@ -17,6 +17,43 @@ void AttackAction::init()
 
 void AttackAction::play(Mob& mob, Entity& player, float timeElapsed)
 {	
+	mob.setState(State::ATTACKING);
+	if (m_Timer.elapsed() > 0.3f)
+	{
+		m_Timer.reset();
+		mob.attack(mob.getCenterX(), mob.getCenterY());
+	}
+
+	m_Duration -= timeElapsed;
+	if (m_Duration < 0)
+	{
+		m_Complete = true;
+	}
+}
+
+MeleeAction::MeleeAction()
+	: Action(), m_Timer()
+{
+}
+
+void MeleeAction::init()
+{
+	m_Complete = false;
+	m_Duration = 0.5f;
+	m_AttackSpeed = 0.0f;
+	m_AttackFrame = 0.0f;
+	m_CumulativeTime = 0.0f;
+}
+
+void MeleeAction::play(Mob& mob, Entity& player, float timeElapsed)
+{
+	if (!Utils::inRange(mob.getCenterX(), mob.getCenterY(), player.getCenterX(), player.getCenterY(), 100) && mob.getState() != State::ATTACKING)
+	{
+		m_Complete = true;
+		return;
+	}
+
+	mob.setState(State::ATTACKING);
 	if (m_Timer.elapsed() > 0.3f)
 	{
 		m_Timer.reset();

@@ -42,7 +42,7 @@ struct Bone
 class Skeleton
 {
 public:
-	Skeleton(const int& x = 0, const int& y = 0);
+	Skeleton(int x = 0, int y = 0);
 
 	int boneIndex(std::string name) const;
 
@@ -56,6 +56,7 @@ public:
 	void printSkeletonInfo(std::string name = "root", int level = 0) const;
 	
 	void render(Renderer& renderer);
+	void submit(const std::string& name, Renderer& renderer);
 	void render(const std::string& name, Renderer& renderer);
 
 	Bone& getRoot() { return m_Root; }

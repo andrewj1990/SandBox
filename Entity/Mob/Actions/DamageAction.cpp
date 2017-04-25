@@ -16,6 +16,8 @@ void DamageAction::init()
 
 void DamageAction::play(Mob& mob, Entity& player, float timeElapsed)
 {
+	mob.setState(State::HIT);
+
 	m_Duration -= timeElapsed;
 	if (m_Duration <= 0)
 	{

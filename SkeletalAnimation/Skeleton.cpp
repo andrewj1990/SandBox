@@ -1,6 +1,6 @@
 #include "Skeleton.h"
 
-Skeleton::Skeleton(const int& x, const int& y)
+Skeleton::Skeleton(int x, int y)
 {
 	m_Root.name = "root";
 	m_Root.params = glm::vec4(x, y, 0, 0);
@@ -150,17 +150,46 @@ void Skeleton::printSkeletonInfo(std::string name, int level) const
 
 void Skeleton::render(Renderer& renderer)
 {
-	for (int i = 0; i < m_Bones.size(); i++)
+	renderer.begin();
+	submit("root", renderer);
+	renderer.end();
+	renderer.flush();
+}
+
+void Skeleton::submit(const std::string& name, Renderer & renderer)
+{
+	Bone& bone = getBone(name);
+
+	for (int i = 0; i < bone.childs.size(); i++)
 	{
-		Renderable renderable(glm::vec3(m_Bones[i].params.x, m_Bones[i].params.y, 0), glm::vec2(m_Bones[i].size.x, m_Bones[i].size.y), glm::vec4(1, 1, 0, 1));
-		//renderable.setRotation(m_Bones[i].params.z);
+		Bone& cBone = m_Bones[bone.childs[i]];
+		Renderable renderable(glm::vec3(cBone.params.x, cBone.params.y, 0), glm::vec2(cBone.size.x, cBone.size.y), TextureManager::get(cBone.texture));
+		//Renderable renderable(glm::vec3(cBone.params.x, cBone.params.y, 0), glm::vec2(cBone.size.x, cBone.size.y), TextureManager::get("Textures/PlayerSpritesheet10.png"));
+
 		glm::mat4 transformation = glm::mat4();
-		transformation = glm::translate(transformation, glm::vec3(m_Bones[i].params.x, m_Bones[i].params.y, 0));
-		transformation = glm::scale(transformation, glm::vec3(m_Bones[i].size.x, m_Bones[i].size.y, 1));
+
+		if (name == "root")
+		{
+			transformation = glm::translate(transformation, glm::vec3(bone.params.x, bone.params.y, 0));
+			transformation = glm::translate(transformation, glm::vec3(cBone.size / 2.0f, 0.0f));
+			transformation = glm::rotate(transformation, glm::radians(bone.params.z), glm::vec3(0, 0, 1));
+			transformation = glm::translate(transformation, glm::vec3(-cBone.size / 2.0f, 0.0f));
+		}
+
+		transformation = glm::translate(transformation, glm::vec3(cBone.params.x, cBone.params.y, 0));
+		transformation = glm::rotate(transformation, glm::radians(cBone.params.z), glm::vec3(0, 0, 1));
+
 		renderer.push(transformation);
-		renderer.render(renderable);
+		renderer.submit(renderable);
+		submit(cBone.name, renderer);
 		renderer.pop();
 	}
+
+	if (name == "root")
+	{
+		renderer.pop();
+	}
+
 }
 
 void Skeleton::render(const std::string& name, Renderer& renderer)
