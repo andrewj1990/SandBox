@@ -18,4 +18,8 @@ public:
 private:
 	std::vector<std::unique_ptr<Sprite>> m_FireRings;
 
+	Sprite m_Spear;
+	bool m_Attacking;
+	float m_SpearAttack;
+
 };

@@ -53,9 +53,9 @@ void EntityManager::render(Renderer& renderer)
 	}
 
 	renderer.end();
-	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST);
 	renderer.flush();
-	glDisable(GL_DEPTH_TEST);
+	//glDisable(GL_DEPTH_TEST);
 }
 
 void EntityManager::add(TEntity entity)

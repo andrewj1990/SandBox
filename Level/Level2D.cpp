@@ -20,7 +20,7 @@ void Level2D::init()
 	for (int i = 0; i < 1; i++)
 	{
 		//m_Mobs.push_back(std::make_shared<BasicMob>(100, 100, m_Player));
-		m_Mobs.push_back(std::make_shared<ProjectileMob>(200, 200, m_Player));
+		m_Mobs.push_back(std::make_shared<BasicMob>(200, 200, m_Player));
 	}
 
 	//TEntity mob = TEntity();
@@ -198,10 +198,9 @@ void Level2D::render(Renderer& renderer)
 		mob->render(renderer);
 	}
 
-	m_Player->render(renderer);
-
 	ParticleManager::instance().render(renderer);
-
+	
+	m_Player->render(renderer);
 
 	if (Settings::Instance().debugShowCollisionBoxes)
 	{

@@ -18,7 +18,8 @@ public:
 
 	void init(const std::unordered_set<std::string>& region_tiles, const std::unordered_set<std::string>& destroyed_objects);
 
-	void submit(Renderer& renderer);
+	void submitTiles(Renderer& renderer);
+	void submitObjects(Renderer& renderer);
 
 	int indexX() { return m_IndexX; }
 	int indexY() { return m_IndexY; }

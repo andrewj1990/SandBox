@@ -1,7 +1,8 @@
 #include "BasicMob.h"
 
 BasicMob::BasicMob(float x, float y, std::unique_ptr<Player>& player)
-	: Mob(glm::vec3(x, y, 0), glm::vec2(64, 64), TextureManager::get("Textures/Mobs/mob3.png"), player)
+	: Mob(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Mobs/mob4.png"), player),
+	m_Spear(glm::vec3(x, y, 0), glm::vec2(32, 10), TextureManager::get("Textures/Mobs/Spear.png"))
 {
 	m_MaxHP = 10;
 	m_HP = m_MaxHP;
@@ -9,11 +10,12 @@ BasicMob::BasicMob(float x, float y, std::unique_ptr<Player>& player)
 	float sizeFactorX = getWidth() / 32.0f;
 	float sizeFactorY = getHeight() / 32.0f;
 	m_CollisionBox = std::make_shared<BoundingBox>(x + (sizeFactorX * 10), y, (sizeFactorX * 10), sizeFactorY + 32);
-	m_Occluder = std::make_shared<BoundingBox>(x + (sizeFactorX * 10), y, (sizeFactorX * 10), sizeFactorY + 32);
+	//m_Occluder = std::make_shared<BoundingBox>(x + (sizeFactorX * 10), y, (sizeFactorX * 10), sizeFactorY + 32);
+	m_Occluder = std::make_shared<BoundingBox>(x + (sizeFactorX * 10), y, 0, 0);
 
 	m_Actions.push_back(std::make_unique<DamageAction>());
 	m_Actions.push_back(std::make_unique<MoveAction>());
-	m_Actions.push_back(std::make_unique<ChannellingAttack>());
+	//m_Actions.push_back(std::make_unique<MeleeAction>());
 }
 
 BasicMob::~BasicMob()
@@ -27,6 +29,9 @@ void BasicMob::attack(float x, float y)
 	auto& fireRing = m_FireRings.back();
 	fireRing->setColor(glm::vec4(0, 0, 0, 0.3f));
 
+	m_SpearAttack = 10;
+	m_Attacking = true;
+
 }
 
 void BasicMob::damage(int amount)
@@ -36,11 +41,17 @@ void BasicMob::damage(int amount)
 	// set to damage action
 	m_ActionIndex = 0;
 	m_Actions[m_ActionIndex]->init();
-
 }
 
 void BasicMob::update(float timeElapsed)
 {
+	//m_Angle = Utils::calcAngleRad(getCenterX(), getCenterY(), m_Player->getCenterX(), m_Player->getCenterY());
+	if (!m_Attacking)
+	{
+		m_SpearAttack = 0;
+	}
+	m_Attacking = false;
+
 	__super::update(timeElapsed);
 
 	if (m_HP <= 0)
@@ -55,7 +66,7 @@ void BasicMob::update(float timeElapsed)
 	m_CollisionBox->x = m_Position.x + (sizeFactorX * 10);
 	m_CollisionBox->y = m_Position.y;
 
-	m_LifeBar.setPosition(getX(), getY() + sizeFactorY * 22);
+	m_LifeBar.setPosition(getX(), getY() + sizeFactorY * 32);
 
 	for (auto& it = m_FireRings.begin(); it != m_FireRings.end(); )
 	{
@@ -74,6 +85,8 @@ void BasicMob::update(float timeElapsed)
 		}
 	}
 
+	m_Spear.setPosition(getX(), getY());
+
 }
 
 void BasicMob::render(Renderer& renderer)
@@ -89,8 +102,21 @@ void BasicMob::render(Renderer& renderer)
 	renderer.flush();
 	renderer.m_AlphaTest = true;
 
+	glm::mat4 transform;
+	transform = glm::translate(transform, glm::vec3(getPosition().x + getSize().x / 2.0f, getPosition().y + getSize().y / 2.0f, 0));
+	transform = glm::rotate(transform, getAngle(), glm::vec3(0, 0, 1));
+	glm::mat4 weapon_transform = transform;
+	transform = glm::translate(transform, glm::vec3(-getPosition().x - getSize().x / 2.0f, -getPosition().y - getSize().y / 2.0f, 0));
+
+	weapon_transform = glm::translate(weapon_transform, glm::vec3(-getPosition().x - getSize().x / 2.0f + 20 + m_SpearAttack, -getPosition().y - getSize().y / 2.0f - 5, 0));
+
+	renderer.push(transform);
 	renderer.render(*this);
+	renderer.pop();
+
+	renderer.push(weapon_transform);
+	renderer.render(m_Spear);
+	renderer.pop();
 
 	m_LifeBar.render(renderer);
-
 }

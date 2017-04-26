@@ -13,6 +13,7 @@
 #include "..\..\Utils\QTree.h"
 #include "..\..\Level\Region.h"
 #include "..\ObjectManager.h"
+#include "..\Particles\ParticleManager.h"
 
 class Gun : public Entity
 {
@@ -35,4 +36,7 @@ private:
 	std::vector<std::unique_ptr<DamageCounter>> m_DamageText;
 
 	Sprite m_Light;
+
+	bool m_Shooting;
+	float m_Recoil;
 };

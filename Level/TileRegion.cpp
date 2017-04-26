@@ -51,13 +51,21 @@ void TileRegion::init(const std::unordered_set<std::string>& region_tiles, const
 	}
 }
 
-void TileRegion::submit(Renderer& renderer)
+void TileRegion::submitTiles(Renderer& renderer)
 {
 	for (const auto& tile : m_Tiles)
 	{
 		renderer.submit(*tile);
 	}
 
+	//for (const auto& object : m_Objects)
+	//{
+	//	object->submit(renderer);
+	//}
+}
+
+void TileRegion::submitObjects(Renderer& renderer)
+{
 	for (const auto& object : m_Objects)
 	{
 		object->submit(renderer);

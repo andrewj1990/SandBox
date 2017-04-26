@@ -281,14 +281,18 @@ void Region::render(Renderer& renderer)
 {
 	renderer.begin();
 	
-	ResourceManager::getInstance().shader("basic_shader")->setUniform("outline", true);
+	//ResourceManager::getInstance().shader("basic_shader")->setUniform("outline", true);
 	for (auto& tileRegion : m_Regions)
 	{
-		tileRegion->submit(renderer);
+		tileRegion->submitTiles(renderer);
+	}
+	for (auto& tileRegion : m_Regions)
+	{
+		tileRegion->submitObjects(renderer);
 	}
 	renderer.end();
 	renderer.flush();
-	ResourceManager::getInstance().shader("basic_shader")->setUniform("outline", false);
+	//ResourceManager::getInstance().shader("basic_shader")->setUniform("outline", false);
 
 	//renderer.debugRender(m_UnloadRegion, TextureManager::get("Textures/bbox.png"));
 	//renderer.debugRender(m_LoadRegion, TextureManager::get("Textures/bbox.png"));

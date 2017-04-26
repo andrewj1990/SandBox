@@ -53,6 +53,7 @@ void MoveAction::play(Mob& mob, Entity& player, float timeElapsed)
 	}
 	else
 	{
+		mob.setAngle(m_Angle);
 		mob.addDirection(std::cosf(m_Angle), std::sinf(m_Angle));
 	}
 

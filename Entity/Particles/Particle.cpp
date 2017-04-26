@@ -48,6 +48,26 @@ Particle::Particle(float x, float y, float size, Texture* texture)
 	m_Dz = 100;
 }
 
+
+Particle::Particle(float x, float y, float size, float angleDeg, Texture* texture)
+	: Entity(glm::vec3(x, y, 1000.0f), glm::vec2(size, size), texture)
+{
+	float vel = Utils::random(100.0f, 250.0f);
+	float a = glm::radians(angleDeg);
+
+	m_Dx = std::cosf(a) * vel;
+	m_Dy = std::sinf(a) * vel;
+
+	//m_Duration = Utils::random(0.2f, 1.0f);
+	m_Duration = Utils::random(2.2f, 4.0f);
+
+	m_Angle = glm::radians(Utils::random(0.0f, 360.0f));
+	m_RotationSpeed = glm::radians(Utils::random(-5.0f, 5.0f));
+
+	m_Dz = 100;
+}
+
+
 void Particle::update(float timeElapsed)
 {
 	addDirection(m_Dx * timeElapsed, (m_Dy - m_Dz) * timeElapsed);

@@ -370,12 +370,12 @@ void Renderer::flush()
 	m_IBO->bind();
 
 	glEnable(GL_BLEND);
-	if (m_AlphaTest)
-	{
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_GREATER, 0.9f);			// http://gamedev.stackexchange.com/questions/134809/getting-draw-depth-order-right-in-opengl-tile-engine/134931
-	}
+	//if (m_AlphaTest)
+	//{
+	//	glEnable(GL_DEPTH_TEST);
+	//	glEnable(GL_ALPHA_TEST);
+	//	glAlphaFunc(GL_GREATER, 0.9f);			// http://gamedev.stackexchange.com/questions/134809/getting-draw-depth-order-right-in-opengl-tile-engine/134931
+	//}
 
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE);	// additive blending
 	//glBlendFunc(GL_ONE, GL_ONE);
@@ -384,11 +384,11 @@ void Renderer::flush()
 	glDrawElements(GL_TRIANGLES, m_IndexCount, GL_UNSIGNED_INT, NULL);
 
 	glDisable(GL_BLEND);
-	if (m_AlphaTest)
-	{
-		glDisable(GL_DEPTH_TEST);
-		glDisable(GL_ALPHA_TEST);
-	}
+	//if (m_AlphaTest)
+	//{
+	//	glDisable(GL_DEPTH_TEST);
+	//	glDisable(GL_ALPHA_TEST);
+	//}
 	glDisable(GL_TEXTURE_2D);
 
 	m_IBO->unbind();

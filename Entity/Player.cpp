@@ -1,10 +1,10 @@
 #include "player.h"
 
 Player::Player(float x, float y)
-	: Entity(glm::vec3(x, y, y), glm::vec2(32, 32), TextureManager::get("Textures/Player/player_anim.png")),
-	m_Gun(x + (getWidth() / 16.0f) * 5, y + (getHeight() / 16.0f) * 6), m_CollisionBox(x, y, (getWidth() / 16.0f) * 4, (getHeight() / 16.0f) * 11)
+	: Entity(glm::vec3(x, y, y), glm::vec2(32, 32), TextureManager::get("Textures/Player/temp.png")),
+	m_Gun(x, y), m_CollisionBox(x, y, (getWidth() / 32.0f) * 25, (getHeight() / 32.0f) * 25)
 {
-	m_TexSize = 16;
+	m_TexSize = 32;
 
 	init();
 }
@@ -27,7 +27,7 @@ void Player::init()
 
 	m_Moving = false;
 
-	setUV(1, 0, m_TexSize, m_TexSize);
+	//setUV(1, 0, m_TexSize, m_TexSize);
 
 	Camera& camera = Window::Instance().getCamera();
 	camera.Position = glm::vec3(0, 0, 0);
@@ -70,19 +70,19 @@ void Player::move(Region& region, float timeElapsed)
 	float dx = 0.0f;
 	float dy = 0.0f;
 
-	if (!m_Moving)
-	{
-		setUV(0, 0, m_TexSize, m_TexSize);
-	}
-	else
-	{
-		m_Moving = false;
-	}
+	//if (!m_Moving)
+	//{
+	//	setUV(0, 0, m_TexSize, m_TexSize);
+	//}
+	//else
+	//{
+	//	m_Moving = false;
+	//}
 
 	if (window.isKeyPressed(GLFW_KEY_W))
 	{
 		m_Row = 3;
-		setUV((int)m_Anim % 6, m_Row, m_TexSize, m_TexSize);
+		//setUV((int)m_Anim % 6, m_Row, m_TexSize, m_TexSize);
 		dy += m_MoveSpeed * timeElapsed * (m_CurrentAttackDuration > 0 ? m_MoveSlow : 1.0f);
 		m_Moving = true;
 	}
@@ -90,7 +90,7 @@ void Player::move(Region& region, float timeElapsed)
 	if (window.isKeyPressed(GLFW_KEY_A))
 	{
 		m_Row = 2;
-		setUV((int)m_Anim % 8, m_Row, m_TexSize, m_TexSize);
+		//setUV((int)m_Anim % 8, m_Row, m_TexSize, m_TexSize);
 		dx -= m_MoveSpeed * timeElapsed * (m_CurrentAttackDuration > 0 ? m_MoveSlow : 1.0f);
 		m_Moving = true;
 	}
@@ -98,7 +98,7 @@ void Player::move(Region& region, float timeElapsed)
 	if (window.isKeyPressed(GLFW_KEY_S))
 	{
 		m_Row = 3;
-		setUV((int)m_Anim % 6, m_Row, m_TexSize, m_TexSize);
+		//setUV((int)m_Anim % 6, m_Row, m_TexSize, m_TexSize);
 		dy -= m_MoveSpeed * timeElapsed * (m_CurrentAttackDuration > 0 ? m_MoveSlow : 1.0f);
 		m_Moving = true;
 	}
@@ -106,7 +106,7 @@ void Player::move(Region& region, float timeElapsed)
 	if (window.isKeyPressed(GLFW_KEY_D))
 	{
 		m_Row = 1;
-		setUV((int)m_Anim % 8, m_Row, m_TexSize, m_TexSize);
+		//setUV((int)m_Anim % 8, m_Row, m_TexSize, m_TexSize);
 		dx += m_MoveSpeed * timeElapsed * (m_CurrentAttackDuration > 0 ? m_MoveSlow : 1.0f);
 		m_Moving = true;
 	}
@@ -128,7 +128,7 @@ void Player::move(Region& region, float timeElapsed)
 	{
 		dx *= 0.5f;
 		dy *= 0.5f;
-		setUV(4, 0, m_TexSize, m_TexSize);
+		//setUV(4, 0, m_TexSize, m_TexSize);
 	}
 
 	if (window.isKeyPressed(GLFW_KEY_LEFT_SHIFT))
@@ -142,7 +142,7 @@ void Player::move(Region& region, float timeElapsed)
 		dx *= 0.1f;
 		dy *= 0.1f;
 	}
-
+	
 	move(dx, dy);
 }
 
@@ -179,7 +179,7 @@ void Player::shoot(float angle, float timeElapsed)
 		{
 			float angleOffset = glm::radians(Utils::random(-m_CurrentAttackDuration, m_CurrentAttackDuration));
 			float moveSlow = Utils::lerp(1.0f, 0.3f, m_CurrentAttackDuration / 5.0f);
-			m_Gun.shoot(getPosition().x, getPosition().y, angle + angleOffset, m_Moving ? m_MoveSpeed * moveSlow : 0.0f);
+			m_Gun.shoot(getPosition().x, getPosition().y, angleOffset, m_Moving ? m_MoveSpeed * moveSlow : 0.0f);
 
 			m_AttackFrame = 0.0f;
 		}
@@ -236,8 +236,8 @@ void Player::move(float dx, float dy)
 	addDirection(dx, dy);
 	m_Gun.move(dx, dy);
 
-	float sizeFactorX = getWidth() / 16.0f;
-	m_CollisionBox.x = m_Position.x + (sizeFactorX * 6);
+	float sizeFactorX = getWidth() / 32.0f;
+	m_CollisionBox.x = m_Position.x + (sizeFactorX * 3);
 	m_CollisionBox.y = m_Position.y + 2;
 
 	Camera& camera = Window::Instance().getCamera();
@@ -273,6 +273,7 @@ void Player::update(Region& region, float timeElapsed)
 {
 	Window& window = Window::Instance();
 	float angle = Utils::calcAngleRad(getCenterX(), getCenterY(), window.getMouseWorldPosX(), window.getMouseWorldPosY());
+	m_Angle = angle;
 
 	aimDownSight(timeElapsed);
 	shoot(angle, timeElapsed);
@@ -290,6 +291,7 @@ void Player::update(Region& region, float timeElapsed)
 	{
 		m_Gun.setDepth(m_Position.z - 0.5f);
 	}
+
 
 }
 
