@@ -20,7 +20,7 @@ void Level2D::init()
 	for (int i = 0; i < 1; i++)
 	{
 		//m_Mobs.push_back(std::make_shared<BasicMob>(100, 100, m_Player));
-		m_Mobs.push_back(std::make_shared<BasicMob>(200, 200, m_Player));
+		m_Mobs.push_back(std::make_shared<MeleeMob>(Utils::random(1, 1000), Utils::random(1,1000), m_Player));
 	}
 
 	//TEntity mob = TEntity();
@@ -183,6 +183,7 @@ void Level2D::render(Renderer& renderer)
 
 	renderer.render(m_Background);
 	m_Region.render(renderer);
+	ParticleManager::instance().render(renderer);
 
 	renderer.begin();
 	renderer.m_AlphaTest = false;
@@ -198,9 +199,8 @@ void Level2D::render(Renderer& renderer)
 		mob->render(renderer);
 	}
 
-	ParticleManager::instance().render(renderer);
-	
 	m_Player->render(renderer);
+
 
 	if (Settings::Instance().debugShowCollisionBoxes)
 	{

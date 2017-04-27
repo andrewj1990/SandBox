@@ -44,6 +44,9 @@ protected:
 	float m_HP;
 	float m_MaxHP;
 	int m_ActionIndex;
+	float m_Movespeed;
+
+	float m_AttackRange;
 
 	std::unique_ptr<Player>& m_Player;
 	LifeBar m_LifeBar;

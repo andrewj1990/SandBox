@@ -4,6 +4,9 @@ Mob::Mob(const glm::vec3& position, const glm::vec2& size, Texture* texture, std
 	: Entity(position, size, texture), m_Player(player), m_LifeBar(size.x)
 {
 	m_ActionIndex = -1;
+	m_AttackRange = 0;
+	m_MaxHP = 0;
+	m_HP = 0;
 }
 
 void Mob::damage(float amount)

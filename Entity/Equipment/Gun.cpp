@@ -24,9 +24,9 @@ void Gun::shoot(float x, float y, float angle, float movespeed)
 	const glm::vec3& pos = glm::vec3(getPosition().x + getSize().x + 5, getPosition().y + getSize().y - 5, 0);
 	glm::vec4 gunPos = transform * glm::vec4(pos, 1.0f);
 
-	float newAngle = Utils::calcAngleRad(gunPos.x, gunPos.y, Window::Instance().getMouseWorldPosX(), Window::Instance().getMouseWorldPosY());
-	for (int i = 0; i < 100; i++) m_Entities.push_back(std::make_unique<GunParticle>(gunPos.x, gunPos.y, newAngle, movespeed));
-	m_Bullets.push_back(std::make_unique<Bullet>(gunPos.x, gunPos.y, newAngle + angle));
+	//float newAngle = Utils::calcAngleRad(gunPos.x, gunPos.y, Window::Instance().getMouseWorldPosX(), Window::Instance().getMouseWorldPosY());
+	for (int i = 0; i < 100; i++) m_Entities.push_back(std::make_unique<GunParticle>(gunPos.x, gunPos.y, m_Angle, movespeed));
+	m_Bullets.push_back(std::make_unique<Bullet>(gunPos.x, gunPos.y, m_Angle + angle));
 
 	m_Light.setSize(glm::vec2(Utils::random(100, 350)));
 	m_Light.setPosition(gunPos.x - m_Light.getSize().x / 2, gunPos.y - m_Light.getSize().y / 2);
@@ -66,7 +66,19 @@ void Gun::update(Region& region, float timeElapsed)
 	float mx = Window::Instance().getMouseWorldPosX();
 	float my = Window::Instance().getMouseWorldPosY();
 
+	glm::mat4 transform;
+
 	m_Angle = Utils::calcAngleRad(getCenterX(), getCenterY(), mx, my);
+	int rtx = 16;
+	int rty = 16;
+	transform = glm::translate(transform, glm::vec3(getPosition().x + rtx, getPosition().y + rty, 0));
+	transform = glm::rotate(transform, m_Angle, glm::vec3(0, 0, 1));
+	transform = glm::translate(transform, glm::vec3(-getPosition().x - 1 + m_Recoil, -getPosition().y - 23, 0));
+	const glm::vec3& pos = glm::vec3(getPosition().x, getCenterY(), 0);
+	glm::vec4 gunPos = transform * glm::vec4(pos, 1.0f);
+
+	float newAngle = Utils::calcAngleRad(gunPos.x, gunPos.y, Window::Instance().getMouseWorldPosX(), Window::Instance().getMouseWorldPosY());
+	m_Angle = newAngle;
 
 	//if (m_FaceRight && (std::abs(glm::degrees(m_Angle)) >= 90.0f))
 	//{
@@ -113,12 +125,21 @@ void Gun::update(Region& region, float timeElapsed)
 				Utils::lineIntersection(glm::vec4(bx, by, bx - bullet->m_Dx * timeElapsed, by - bullet->m_Dy * timeElapsed), glm::vec4(cx, cy + ch, cx + cw, cy))
 				)
 			{
-				for (int i = 0; i < 25; i++)
+				float randOffset = Utils::random(-30.0f, 30.0f);
+				for (int i = 0; i < 50; i++)
 				{
 					//m_Entities.push_back(std::unique_ptr<Particle>(new Particle(cx, cy, 5.0f, glm::degrees(bullet->getAngle()))));
-					m_Entities.push_back(std::make_unique<Particle>(cx, cy, Utils::random(5, 20), object->getTexture()));
+					//m_Entities.push_back(std::make_unique<Particle>(cx, cy, Utils::random(5, 20), object->getTexture()));
+					ParticleManager::instance().add(Particle(cx, cy, Utils::random(1, 10), glm::vec4(Utils::random(0.8f, 1.0f), 0, 0, Utils::random(0.4f, 1.0f)), glm::degrees(bullet->getAngle()) + 180.0f + randOffset));
+					ParticleManager::instance().add(Particle(cx, cy, Utils::random(1, 10), glm::vec4(Utils::random(0.8f, 1.0f), 0, 0, Utils::random(0.4f, 1.0f)), glm::degrees(bullet->getAngle()) + 180.0f + Utils::random(-90.0f, 90.0f)));
 					m_Entities.push_back(std::make_unique<CollisionParticle>(cx, cy, glm::degrees(m_Angle)));
-					m_Entities.push_back(std::make_unique<CollisionParticle>(cx, cy, glm::degrees(m_Angle), object->getTexture()));
+					//m_Entities.push_back(std::make_unique<CollisionParticle>(cx, cy, glm::degrees(m_Angle), object->getTexture()));
+				}
+
+				randOffset = Utils::random(-90.0f, 90.0f);
+				for (int i = 0; i < 50; i++)
+				{
+					ParticleManager::instance().add(Particle(cx, cy, Utils::random(1, 10), glm::vec4(Utils::random(0.8f, 1.0f), 0, 0, Utils::random(0.4f, 1.0f)), glm::degrees(bullet->getAngle()) + 180.0f + randOffset));
 				}
 
 				//region.removeTiles(collisionBox->x, collisionBox->y, true, true);

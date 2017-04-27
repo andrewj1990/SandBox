@@ -20,6 +20,7 @@
 #include "..\Entity\EntityManager.h"
 #include "..\Utils\TypeID.h"
 #include "..\Entity\Particles\ParticleManager.h"
+#include "..\Entity\Mob\MeleeMob.h"
 
 class Level2D 
 {
