@@ -19,10 +19,11 @@ void Bullet::update(float timeElapsed)
 	// bullet tracer effect
 	if (m_Destroy)
 	{
-		m_Size.x -= 30;
+		m_Size.x -= (3000 * timeElapsed);
 		return;
 	}
-	m_Size.x += 15;//30;
+
+	m_Size.x += (1500 * timeElapsed);
 
 	m_Duration -= timeElapsed;
 

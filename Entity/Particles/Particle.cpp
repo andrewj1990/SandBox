@@ -93,20 +93,26 @@ void Particle::update(float timeElapsed)
 {
 	addDirection(m_Dx * timeElapsed, (m_Dy - m_Dz) * timeElapsed);
 	//setLightPosition(getCenterX(), getCenterY(), m_Size.x);
+	
+	m_CumulativeTime += timeElapsed;
 
-	m_Dx *= 0.98f;
-	m_Dy *= 0.98f;
-	m_Dz -= 1.0f;
-	m_RotationSpeed *= 0.99f;
-
-	if (m_Dz < 0)
+	if (m_CumulativeTime > 0.01)
 	{
-		m_Dz *= -0.98f;
+		m_Dx *= 0.98f;
+		m_Dy *= 0.98f;
+		m_Dz -= 1.0f;
+		m_RotationSpeed *= 0.99f;
+		m_CumulativeTime -= 0.01f;
+
+		if (m_Dz < 0)
+		{
+			m_Dz *= -0.98f;
+		}
+
+		//fade(0.03f);
+
+		m_Angle += m_RotationSpeed;
 	}
-
-	//fade(0.03f);
-
-	m_Angle += m_RotationSpeed;
 
 	m_Duration -= timeElapsed;
 

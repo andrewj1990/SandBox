@@ -27,6 +27,7 @@ public:
 	bool ADS = true;
 
 	int drawCount = 0;
+	float timeModifier = 1.0f;
 
 	bool noClip = false;
 

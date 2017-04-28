@@ -201,7 +201,7 @@ int main()
 
 		while (accumulator >= dt)
 		{
-			level2d->update(dt * timeModifier);
+			level2d->update(dt * Settings::Instance().timeModifier);
 			++updates;
 			updateTimer += tick;
 

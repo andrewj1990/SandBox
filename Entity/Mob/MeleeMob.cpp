@@ -40,8 +40,24 @@ void MeleeMob::damage(int amount)
 {
 	__super::damage(amount);
 
+	//Settings::Instance().timeModifier = 0.5f;
+
 	m_State = State::HIT;
 	m_KnockbackTime.reset();
+
+	float randOffset = Utils::random(-30.0f, 30.0f);
+	for (int i = 0; i < 50; i++)
+	{
+		ParticleManager::instance().add(Particle(getCenterX(), getCenterY(), Utils::random(1, 10), glm::vec4(Utils::random(0.8f, 1.0f), 0, 0, Utils::random(0.4f, 1.0f)), glm::degrees(getAngle()) + 180.0f + randOffset));
+		ParticleManager::instance().add(Particle(getCenterX(), getCenterY(), Utils::random(1, 10), glm::vec4(Utils::random(0.8f, 1.0f), 0, 0, Utils::random(0.4f, 1.0f)), glm::degrees(getAngle()) + 180.0f + Utils::random(-90.0f, 90.0f)));
+	}
+
+	randOffset = Utils::random(-90.0f, 90.0f);
+	for (int i = 0; i < 50; i++)
+	{
+		ParticleManager::instance().add(Particle(getCenterX(), getCenterY(), Utils::random(1, 10), glm::vec4(Utils::random(0.8f, 1.0f), 0, 0, Utils::random(0.4f, 1.0f)), glm::degrees(getAngle()) + 180.0f + randOffset));
+	}
+
 
 }
 
