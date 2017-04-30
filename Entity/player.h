@@ -31,11 +31,16 @@ public:
 	void dodge();
 
 	void addBuff();
+	void damage(int amount) override;
 
 	void update(Region& region, float timeElapsed);
 	void render(Renderer& renderer) override;
 
 	void renderLight(Renderer& renderer) override;
+
+	int getHP() const { return m_HP; }
+	int getMaxHP() const { return m_MaxHP; }
+	float getHPPercent() const { return std::max(0.0f, (float)m_HP / (float)m_MaxHP); }
 
 	bool isADS() const { return m_AimDownSight; }
 	bool isMoving() const { return m_Moving; }
@@ -62,7 +67,7 @@ private:
 
 	Gun m_Gun;
 
-	BoundingBox m_CollisionBox;
+	//BoundingBox m_CollisionBox;
 
 	float m_MoveSpeed;
 	float m_MoveSlow;
@@ -77,4 +82,7 @@ private:
 
 	float m_CameraOffsetX;
 	float m_CameraOffsetY;
+
+	float m_HP;
+	float m_MaxHP;
 };

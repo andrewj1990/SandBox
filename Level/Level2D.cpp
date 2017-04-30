@@ -17,7 +17,7 @@ void Level2D::init()
 	const Camera& cam = Window::Instance().getCamera();
 	m_Player = std::unique_ptr<Player>(new Player(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f));
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		//m_Mobs.push_back(std::make_shared<BasicMob>(100, 100, m_Player));
 		m_Mobs.push_back(std::make_shared<MeleeMob>(Utils::random(1, 1000), Utils::random(1,1000), m_Player));

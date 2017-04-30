@@ -17,6 +17,7 @@ public:
 
 private:
 	float m_Duration;
+	float m_FadeAmount;
 	float m_Dz;
 
 	bool m_StartDestruction;

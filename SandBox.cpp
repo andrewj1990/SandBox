@@ -193,6 +193,7 @@ int main()
 		if (Window::Instance().isKeyPressed(GLFW_KEY_C))
 		{
 			timeModifier -= 0.01f;
+			Settings::Instance().timeModifier = 0.1f;
 			std::cout << "timeSlow : " << timeModifier << "\n";
 		}
 

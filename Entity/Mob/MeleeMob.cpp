@@ -2,7 +2,8 @@
 
 MeleeMob::MeleeMob(float x, float y, std::unique_ptr<Player>& player)
 	: Mob(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Mobs/mob4.png"), player),
-	m_Spear(glm::vec3(x, y, 0), glm::vec2(32, 10), TextureManager::get("Textures/Mobs/Spear.png")), m_AttackTime(), m_KnockbackTime()
+	m_Spear(glm::vec3(x, y, 0), glm::vec2(32, 10), TextureManager::get("Textures/Mobs/Spear.png")), m_SpearBB(0, 0, 10, 10)
+	, m_AttackTime(), m_KnockbackTime()
 {
 	m_MaxHP = 10;
 	m_HP = m_MaxHP;
@@ -11,7 +12,7 @@ MeleeMob::MeleeMob(float x, float y, std::unique_ptr<Player>& player)
 
 	float sizeFactorX = getWidth() / 32.0f;
 	float sizeFactorY = getHeight() / 32.0f;
-	m_CollisionBox = std::make_shared<BoundingBox>(x + (sizeFactorX * 10), y, (sizeFactorX * 10), sizeFactorY + 32);
+	m_CollisionBox = std::make_shared<BoundingBox>(x + (sizeFactorX * 5), y, (sizeFactorX * 27), sizeFactorY * 32);
 	//m_Occluder = std::make_shared<BoundingBox>(x + (sizeFactorX * 10), y, (sizeFactorX * 10), sizeFactorY + 32);
 	m_Occluder = std::make_shared<BoundingBox>(x + (sizeFactorX * 10), y, 0, 0);
 
@@ -74,11 +75,32 @@ void MeleeMob::update(float timeElapsed)
 
 	float sizeFactorX = getWidth() / 32.0f;
 	float sizeFactorY = getHeight() / 32.0f;
-	m_CollisionBox->x = m_Position.x + (sizeFactorX * 10);
+	m_CollisionBox->x = m_Position.x + (sizeFactorX * 5);
 	m_CollisionBox->y = m_Position.y;
 
 	m_LifeBar.setPosition(getX(), getY() + sizeFactorY * 32);
 	m_Spear.setPosition(getX(), getY());
+
+	glm::mat4 transform;
+	m_Angle = Utils::calcAngleRad(getCenterX(), getCenterY(), m_Player->getCenterX(), m_Player->getCenterY());
+	transform = glm::translate(transform, glm::vec3(getPosition().x + getSize().x / 2.0f, getPosition().y + getSize().y / 2.0f, 0));
+	transform = glm::rotate(transform, m_Angle, glm::vec3(0, 0, 1));
+	transform = glm::translate(transform, glm::vec3(-getPosition().x - getSize().x / 2.0f, -getPosition().y - getSize().y / 2.0f, 0));
+
+	const glm::vec3& pos = glm::vec3(m_Spear.getX() + m_Spear.getWidth(), m_Spear.getCenterY(), 0);
+	glm::vec4 spearPos = transform * glm::vec4(pos, 1.0f);
+	
+	m_Angle = Utils::calcAngleRad(spearPos.x, spearPos.y, m_Player->getCenterX(), m_Player->getCenterY());
+
+	glm::mat4 weapon_transform;
+	weapon_transform = glm::translate(weapon_transform, glm::vec3(getPosition().x + getSize().x / 2.0f, getPosition().y + getSize().y / 2.0f, 0));
+	weapon_transform = glm::rotate(weapon_transform, m_Angle, glm::vec3(0, 0, 1));
+	weapon_transform = glm::translate(weapon_transform, glm::vec3(-getPosition().x - getSize().x / 2.0f + 20 + m_SpearAttack, -getPosition().y - getSize().y / 2.0f - 5, 0));
+
+	spearPos = weapon_transform * glm::vec4(pos, 1.0f);
+
+	m_SpearBB.x = spearPos.x - m_SpearBB.width / 2.0f;
+	m_SpearBB.y = spearPos.y - m_SpearBB.height / 2.0f;
 
 	switch (m_State)
 	{
@@ -103,10 +125,10 @@ void MeleeMob::update(float timeElapsed)
 void MeleeMob::render(Renderer& renderer)
 {
 	glm::mat4 transform;
+	float mobAngle = Utils::calcAngleRad(getCenterX(), getCenterY(), m_Player->getCenterX(), m_Player->getCenterY());
 	transform = glm::translate(transform, glm::vec3(getPosition().x + getSize().x / 2.0f, getPosition().y + getSize().y / 2.0f, 0));
-	transform = glm::rotate(transform, getAngle(), glm::vec3(0, 0, 1));
+	transform = glm::rotate(transform, mobAngle, glm::vec3(0, 0, 1));
 	transform = glm::translate(transform, glm::vec3(-getPosition().x - getSize().x / 2.0f, -getPosition().y - getSize().y / 2.0f, 0));
-
 
 	renderer.push(transform);
 	renderer.render(*this);
@@ -114,30 +136,27 @@ void MeleeMob::render(Renderer& renderer)
 
 	glm::mat4 weapon_transform;
 	weapon_transform = glm::translate(weapon_transform, glm::vec3(getPosition().x + getSize().x / 2.0f, getPosition().y + getSize().y / 2.0f, 0));
-	float angle = Utils::calcAngleRad(getCenterX(), getCenterY(), m_Player->getCenterX(), m_Player->getCenterY()) + glm::radians(10.0f);
-	weapon_transform = glm::rotate(weapon_transform, angle, glm::vec3(0, 0, 1));
+	weapon_transform = glm::rotate(weapon_transform, m_Angle, glm::vec3(0, 0, 1));
 	weapon_transform = glm::translate(weapon_transform, glm::vec3(-getPosition().x - getSize().x / 2.0f + 20 + m_SpearAttack, -getPosition().y - getSize().y / 2.0f - 5, 0));
 
 	renderer.push(weapon_transform);
 	renderer.render(m_Spear);
 	renderer.pop();
 
-	const glm::vec3& pos = glm::vec3(m_Spear.getX() + m_Spear.getWidth(), m_Spear.getCenterY(), 0);
-	glm::vec4 sPos = weapon_transform * glm::vec4(pos, 1.0f);
-
-	BoundingBox spear_bb(sPos.x - 5, sPos.y - 5, 10, 10);
-	renderer.debugRender(spear_bb, TextureManager::get("Textures/collision_box.png"));
-
 	m_LifeBar.render(renderer);
 }
 
 void MeleeMob::attack(float timeElapsed)
 {
-	m_Angle = Utils::calcAngleRad(getCenterX(), getCenterY(), m_Player->getCenterX(), m_Player->getCenterY());
+	//m_Angle = Utils::calcAngleRad(getCenterX(), getCenterY(), m_Player->getCenterX(), m_Player->getCenterY());
 
 	m_Attacking = true;
 	if (m_AttackTime.elapsed() < m_AttackDuration)
 	{
+		if (m_SpearBB.intersects(*m_Player->getCollisionBox()))
+		{
+			m_Player->damage(1);
+		}
 		m_SpearAttack += m_AttackSpeed * timeElapsed;
 	}
 	else if (m_AttackTime.elapsed() < m_AttackDuration * 4)
@@ -153,14 +172,14 @@ void MeleeMob::attack(float timeElapsed)
 
 void MeleeMob::move(float timeElapsed)
 {
-	m_Angle = Utils::calcAngleRad(getCenterX(), getCenterY(), m_Player->getCenterX(), m_Player->getCenterY());
+	//m_Angle = Utils::calcAngleRad(getCenterX(), getCenterY(), m_Player->getCenterX(), m_Player->getCenterY());
 	
 	addDirection(m_Movespeed * std::cosf(m_Angle) * timeElapsed, m_Movespeed * std::sinf(m_Angle) * timeElapsed);
 }
 
 void MeleeMob::knockback(float timeElapsed)
 {
-	m_Angle = Utils::calcAngleRad(getCenterX(), getCenterY(), m_Player->getCenterX(), m_Player->getCenterY());
+	//m_Angle = Utils::calcAngleRad(getCenterX(), getCenterY(), m_Player->getCenterX(), m_Player->getCenterY());
 	float knockback_angle = m_Angle + glm::radians(180.0f);
 
 	if (m_KnockbackTime.elapsed() < m_KnockbackDuration)

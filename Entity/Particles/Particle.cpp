@@ -27,13 +27,13 @@ Particle::Particle(float x, float y, float size, const glm::vec4& colour, float 
 	velSlow = 1.0f - std::abs(velSlow);
 	setLightPosition(getCenterX(), getCenterY(), m_Size.x);
 
-	float vel = Utils::random(100.0f, 400.0f) * velSlow;
+	float vel = Utils::random(200.0f, 800.0f) * velSlow;
 	float a = glm::radians(angleDeg + angleOffset);
 
 	m_Dx = std::cosf(a) * vel;
 	m_Dy = std::sinf(a) * vel;
 
-	m_Duration = Utils::random(10.2f, 14.0f);
+	m_Duration = Utils::random(100.2f, 104.0f);
 
 	m_Angle = glm::radians(Utils::random(0.0f, 360.0f));
 	m_RotationSpeed = glm::radians(Utils::random(-5.0f, 5.0f));
@@ -61,7 +61,8 @@ Particle::Particle(float x, float y, float size, Texture* texture)
 	m_Dy = std::sinf(a) * vel;
 
 	//m_Duration = Utils::random(0.2f, 1.0f);
-	m_Duration = Utils::random(10.2f, 14.0f);
+	//m_Duration = Utils::random(10.2f, 14.0f);
+	m_Duration = 100.0f;
 
 	m_Angle = glm::radians(Utils::random(0.0f, 360.0f));
 	m_RotationSpeed = glm::radians(Utils::random(-5.0f, 5.0f));
@@ -80,7 +81,8 @@ Particle::Particle(float x, float y, float size, float angleDeg, Texture* textur
 	m_Dy = std::sinf(a) * vel;
 
 	//m_Duration = Utils::random(0.2f, 1.0f);
-	m_Duration = Utils::random(10.2f, 14.0f);
+	//m_Duration = Utils::random(10.2f, 14.0f);
+	m_Duration = 100.0f;
 
 	m_Angle = glm::radians(Utils::random(0.0f, 360.0f));
 	m_RotationSpeed = glm::radians(Utils::random(-5.0f, 5.0f));
@@ -98,8 +100,8 @@ void Particle::update(float timeElapsed)
 
 	if (m_CumulativeTime > 0.01)
 	{
-		m_Dx *= 0.98f;
-		m_Dy *= 0.98f;
+		m_Dx *= 0.94f;
+		m_Dy *= 0.94f;
 		m_Dz -= 1.0f;
 		m_RotationSpeed *= 0.99f;
 		m_CumulativeTime -= 0.01f;
@@ -109,14 +111,14 @@ void Particle::update(float timeElapsed)
 			m_Dz *= -0.98f;
 		}
 
-		//fade(0.03f);
+		fade(0.05f * timeElapsed);
 
 		m_Angle += m_RotationSpeed;
 	}
 
 	m_Duration -= timeElapsed;
 
-	if (m_Duration <= 0)
+	if (m_Duration <= 0 || getColour().w <= 0.01f)
 	{
 		m_Destroy = true;
 	}

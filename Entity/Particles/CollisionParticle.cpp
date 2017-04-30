@@ -1,7 +1,7 @@
 #include "CollisionParticle.h"
 
 CollisionParticle::CollisionParticle(float x, float y, float angleDeg)
-	: Entity(glm::vec3(x, y, 5000), glm::vec2(3, Utils::random(2, Utils::random(3,6))), glm::vec4(Utils::random(0.9f, 1.0f), Utils::random(0.6f, 1.0f), Utils::random(0.0f, 0.2f), 1.0f))
+	: Entity(glm::vec3(x, y, 5000), glm::vec2(3, Utils::random(2, Utils::random(3,6))), glm::vec4(Utils::random(0.9f, 1.0f), Utils::random(0.6f, 1.0f), Utils::random(0.0f, 0.2f), Utils::random(0.6f, 1.0f)))
 {
 	m_Angle = angleDeg;
 	init();
@@ -31,6 +31,7 @@ void CollisionParticle::init()
 	m_Dy = std::sinf(a) * vel;
 
 	m_Duration = Utils::random(0.1f, 0.5f);
+	m_FadeAmount = m_Duration;
 	m_Angle = a;
 
 	m_StartDestruction = false;
@@ -57,6 +58,7 @@ void CollisionParticle::update(float timeElapsed)
 
 
 	m_Duration -= timeElapsed;
+	fade(m_FadeAmount * timeElapsed);
 
 	addDirection(m_Dx * timeElapsed, m_Dy * timeElapsed);
 

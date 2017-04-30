@@ -15,6 +15,7 @@ void PlayerUI::update()
 
 	//m_PlayerHealth.setPosition(camPos.x + 20, camPos.y + winHeight - 40);
 	//m_Stamina.setPosition(camPos.x + 20, m_PlayerHealth.getPosition().y - 30);
+	m_PlayerHealth.setSize(glm::vec2(m_Player->getHPPercent() * 200, 20));
 
 	Window& win = Window::Instance();
 	////m_Crosshair.setPosition(win.getCamera().Position.x + win.mouseX(), win.getCamera().Position.y + (win.getHeight() - win.mouseY()));

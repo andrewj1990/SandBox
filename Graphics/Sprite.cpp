@@ -35,5 +35,5 @@ void Sprite::setPosition(float x, float y)
 void Sprite::fade(float fadeAmount)
 {
 	m_Colour.w -= fadeAmount;
-	if (m_Colour.w <= 0.1) m_Destroy = true;
+	//if (m_Colour.w <= 0.1) m_Destroy = true;
 }

@@ -22,6 +22,7 @@ private:
 
 private:
 	Sprite m_Spear;
+	BoundingBox m_SpearBB;
 	bool m_Attacking;
 	float m_SpearAttack;
 	float m_AttackSpeed;
