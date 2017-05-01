@@ -17,7 +17,7 @@ void Level2D::init()
 	const Camera& cam = Window::Instance().getCamera();
 	m_Player = std::unique_ptr<Player>(new Player(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f));
 
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		//m_Mobs.push_back(std::make_shared<BasicMob>(100, 100, m_Player));
 		m_Mobs.push_back(std::make_shared<MeleeMob>(Utils::random(1, 1000), Utils::random(1,1000), m_Player));
@@ -128,11 +128,13 @@ void Level2D::update(float timeElapsed)
 		{
 			float offsetX = Utils::random(-200, 200);
 			float offsetY = Utils::random(-200, 200);
-			m_FireParticles.push_back(std::make_unique<Particle>(mx + offsetX, my + offsetY, Utils::random(5, 20), 90.0f));
+			//m_FireParticles.push_back(std::make_unique<Particle>(mx + offsetX, my + offsetY, Utils::random(5, 20), 90.0f));
 		}
 		//m_Mobs.push_back(std::make_shared<BasicMob>(mx, my, m_Player));
 		//std::cout << "mobs : " << m_Mobs.size() << "\n";
 		//std::cout << "number of fire particles : " << m_FireParticles.size() << "\n";
+		m_Mobs.push_back(std::make_shared<MeleeMob>(mx, my, m_Player));
+
 	}
 
 	for (auto i = m_FireParticles.begin(); i != m_FireParticles.end(); )

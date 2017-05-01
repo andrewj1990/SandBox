@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Mob.h"
+#include "..\DamageCounter.h"
+#include "Ragdoll.h"
 
 class MeleeMob : public Mob
 {

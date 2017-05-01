@@ -142,6 +142,8 @@ void Gun::update(Region& region, float timeElapsed)
 				//	ParticleManager::instance().add(Particle(cx, cy, Utils::random(1, 10), glm::vec4(Utils::random(0.8f, 1.0f), 0, 0, Utils::random(0.4f, 1.0f)), glm::degrees(bullet->getAngle()) + 180.0f + randOffset));
 				//}
 
+				//m_DamageText.push_back(std::make_unique<DamageCounter>("TEST", cx, cy));
+
 				//region.removeTiles(collisionBox->x, collisionBox->y, true, true);
 				object->setAngle(m_Angle);
 				object->damage(1);

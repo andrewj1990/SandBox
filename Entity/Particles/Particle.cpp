@@ -1,7 +1,7 @@
 #include "Particle.h"
 
 Particle::Particle(float x, float y, float size, float angleDeg)
-	: Entity(glm::vec3(x, y, 1000.0f), glm::vec2(size, size), glm::vec4(Utils::random(0.7f, 1.0f), Utils::random(0.0f, 1.0f), 0, rand() % 1000 / 1000.0f))
+	: Entity(glm::vec3(x, y, 1000.0f), glm::vec2(size, size), glm::vec4(Utils::random(0.7f, 1.0f), Utils::random(0.0f, 1.0f), 0, rand() % 1000 / 1000.0f)), m_Transform()
 {
 	float angleOffset = Utils::random(-20.0f, 20.0f);
 	setLightPosition(getCenterX(), getCenterY(), m_Size.x);
@@ -20,7 +20,7 @@ Particle::Particle(float x, float y, float size, float angleDeg)
 }
 
 Particle::Particle(float x, float y, float size, const glm::vec4& colour, float angleDeg)
-	: Entity(glm::vec3(x, y, 1000.0f), glm::vec2(size), colour)
+	: Entity(glm::vec3(x, y, 1000.0f), glm::vec2(size), colour), m_Transform()
 {
 	float angleOffset = Utils::random(-20.0f, 20.0f);
 	float velSlow = angleOffset / 20.0f;
@@ -41,13 +41,13 @@ Particle::Particle(float x, float y, float size, const glm::vec4& colour, float 
 }
 
 Particle::Particle(float x, float y, float size, Texture* texture)
-	: Entity(glm::vec3(x, y, 1000.0f), glm::vec2(size, size), texture)
+	: Entity(glm::vec3(x, y, 1000.0f), glm::vec2(size, size), texture), m_Transform()
 {
-	int w = Utils::random(2, texture->getWidth());
-	int h = Utils::random(2, texture->getHeight());
-	int ux = Utils::random(0, texture->getWidth() / w);
-	int uy = Utils::random(0, texture->getHeight() / h);
-	setUV(ux, uy, w, h);
+	//int w = Utils::random(2, texture->getWidth());
+	//int h = Utils::random(2, texture->getHeight());
+	//int ux = Utils::random(0, texture->getWidth() / w);
+	//int uy = Utils::random(0, texture->getHeight() / h);
+	//setUV(ux, uy, w, h);
 	
 	float angleOffset = Utils::random(-20.0f, 20.0f);
 
@@ -72,7 +72,7 @@ Particle::Particle(float x, float y, float size, Texture* texture)
 
 
 Particle::Particle(float x, float y, float size, float angleDeg, Texture* texture)
-	: Entity(glm::vec3(x, y, 1000.0f), glm::vec2(size, size), texture)
+	: Entity(glm::vec3(x, y, 1000.0f), glm::vec2(size, size), texture), m_Transform()
 {
 	float vel = Utils::random(100.0f, 250.0f);
 	float a = glm::radians(angleDeg);
@@ -93,6 +93,11 @@ Particle::Particle(float x, float y, float size, float angleDeg, Texture* textur
 
 void Particle::update(float timeElapsed)
 {
+	m_Transform = glm::mat4();
+	m_Transform = glm::translate(m_Transform, glm::vec3(getCenterX(), getCenterY(), 0));
+	m_Transform = glm::rotate(m_Transform, getAngle(), glm::vec3(0, 0, 1));
+	m_Transform = glm::translate(m_Transform, glm::vec3(-getCenterX(), -getCenterY(), 0));
+
 	addDirection(m_Dx * timeElapsed, (m_Dy - m_Dz) * timeElapsed);
 	//setLightPosition(getCenterX(), getCenterY(), m_Size.x);
 	
@@ -127,11 +132,11 @@ void Particle::update(float timeElapsed)
 
 void Particle::submit(Renderer& renderer)
 {
-	glm::mat4 transform;
-	transform = glm::translate(transform, glm::vec3(getCenterX(), getCenterY(), 0));
-	transform = glm::rotate(transform, getAngle(), glm::vec3(0, 0, 1));
-	transform = glm::translate(transform, glm::vec3(-getCenterX(), -getCenterY(), 0));
-	renderer.push(transform);
+	//glm::mat4 transform;
+	//transform = glm::translate(transform, glm::vec3(getCenterX(), getCenterY(), 0));
+	//transform = glm::rotate(transform, getAngle(), glm::vec3(0, 0, 1));
+	//transform = glm::translate(transform, glm::vec3(-getCenterX(), -getCenterY(), 0));
+	renderer.push(m_Transform);
 	renderer.submit(*this);
 	renderer.pop();
 }

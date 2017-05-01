@@ -1,13 +1,14 @@
 #include "ParticleManager.h"
 
 
-//void ParticleManager::add(const Entity& entity)
-//{
-//	m_Particles.push_back(std::make_unique<Entity>(entity));
-//}
-
 void ParticleManager::update(float timeElapsed)
 {
+	while (!m_ReadyParticles.empty())
+	{
+		m_Particles.emplace_back(std::move(m_ReadyParticles.back()));
+		m_ReadyParticles.pop_back();
+	}
+
 	for (auto it = m_Particles.begin(); it != m_Particles.end(); )
 	{
 		if ((*it)->shouldDestroy())
@@ -19,7 +20,6 @@ void ParticleManager::update(float timeElapsed)
 			(*it)->update(timeElapsed);
 			++it;
 		}
-
 	}
 }
 

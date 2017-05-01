@@ -5,7 +5,7 @@ MeleeMob::MeleeMob(float x, float y, std::unique_ptr<Player>& player)
 	m_Spear(glm::vec3(x, y, 0), glm::vec2(32, 10), TextureManager::get("Textures/Mobs/Spear.png")), m_SpearBB(0, 0, 10, 10)
 	, m_AttackTime(), m_KnockbackTime()
 {
-	m_MaxHP = 10;
+	m_MaxHP = 1;
 	m_HP = m_MaxHP;
 
 	m_AttackRange = 50;
@@ -59,6 +59,7 @@ void MeleeMob::damage(int amount)
 		ParticleManager::instance().add(Particle(getCenterX(), getCenterY(), Utils::random(1, 10), glm::vec4(Utils::random(0.8f, 1.0f), 0, 0, Utils::random(0.4f, 1.0f)), glm::degrees(getAngle()) + 180.0f + randOffset));
 	}
 
+	//ParticleManager::instance().add(DamageCounter(std::to_string(amount), getCenterX(), getCenterY()));
 
 }
 
@@ -69,6 +70,8 @@ void MeleeMob::update(float timeElapsed)
 	if (m_HP <= 0)
 	{
 		m_Destroy = true;
+		//ParticleManager::instance().add(Particle(getCenterX(), getCenterY(), getSize().x, glm::degrees(m_Angle), TextureManager::get("Textures/Mobs/mob4_dead.png")));
+		ParticleManager::instance().add(Ragdoll(getX(), getY(), getSize().x, glm::degrees(m_Angle), TextureManager::get("Textures/Mobs/mob4_dead.png")));
 	}
 
 	m_State = determineState();

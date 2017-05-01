@@ -15,11 +15,18 @@ void DamageCounter::update(float timeElapsed)
 		return;
 	}
 
-	m_Label.position.y += std::sinf(m_Counter) * 3;
-	m_Label.position.x += m_Dx;
+	//m_Label.position.y += std::sinf(m_Counter) * 3;
+	//m_Label.position.x += m_Dx;
+	m_Label.addDirection(m_Dx, std::sinf(m_Counter) * 3);
+	
 }
 
 void DamageCounter::render(Renderer& renderer)
 {
 	renderer.render(m_Label);
+}
+
+void DamageCounter::submit(Renderer& renderer)
+{
+	m_Label.submit(renderer);
 }

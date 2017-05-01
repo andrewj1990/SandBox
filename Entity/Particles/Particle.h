@@ -19,4 +19,6 @@ protected:
 	float m_Duration;
 	float m_RotationSpeed;
 	float m_Dz;
+
+	glm::mat4 m_Transform;
 };
