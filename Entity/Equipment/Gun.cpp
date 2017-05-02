@@ -34,7 +34,7 @@ void Gun::shoot(float x, float y, float angle, float movespeed)
 
 	const glm::vec3& shellOffset = glm::vec3(getPosition().x + getSize().x - 20, getPosition().y + getSize().y - 5, 0);
 	glm::vec4 shellPos = transform * glm::vec4(shellOffset, 1.0f);
-	ParticleManager::instance().add(Particle(shellPos.x, shellPos.y, 10, glm::degrees(m_Angle) + 180.0f + Utils::random(-30.0f, 30.0f), TextureManager::get("Textures/Player/bullet_shell.png")));
+	ParticleManager::instance().add(Particle(shellPos.x, shellPos.y, 10, glm::degrees(m_Angle) + 180.0f + Utils::random(-30.0f, 30.0f), TextureManager::get("Textures/Player/bullet_shell.png"), true));
 
 	m_Shooting = true;
 	m_Recoil = -5;

@@ -59,5 +59,8 @@ private:
 
 	Sprite aoe_test;
 
+	Timer m_MobSpawnTimer;
+	float m_MobSpawnTime;
+
 	float m_WaterRippleTime;
 };

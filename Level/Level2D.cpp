@@ -1,11 +1,13 @@
 #include "Level2D.h"
 
 Level2D::Level2D()
-	: m_PointLight(), 
-	m_Background(glm::vec3(0, 0, -(Settings::Instance().Z_PLANE) + 10), glm::vec2(Window::Instance().getWidth(), Window::Instance().getHeight()), TextureManager::get("Textures/Level/bg.png")), 
+	: m_PointLight(),
+	m_Background(glm::vec3(0, 0, -(Settings::Instance().Z_PLANE) + 10), glm::vec2(Window::Instance().getWidth(), Window::Instance().getHeight()), TextureManager::get("Textures/Level/bg.png")),
 	m_EntityManager(),
 	m_Region(),
-	aoe_test(glm::vec3(0, 0, 0), glm::vec2(100, 100), TextureManager::get("Textures/aoe.png"))
+	aoe_test(glm::vec3(0, 0, 0), glm::vec2(100, 100), TextureManager::get("Textures/aoe.png")),
+	m_MobSpawnTimer(),
+	m_MobSpawnTime(0)
 {
 	init();
 	aoe_test.setColor(glm::vec4(0, 0, 0, 1));
@@ -17,11 +19,14 @@ void Level2D::init()
 	const Camera& cam = Window::Instance().getCamera();
 	m_Player = std::unique_ptr<Player>(new Player(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f));
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		//m_Mobs.push_back(std::make_shared<BasicMob>(100, 100, m_Player));
 		m_Mobs.push_back(std::make_shared<MeleeMob>(Utils::random(1, 1000), Utils::random(1,1000), m_Player));
 	}
+
+	m_MobSpawnTimer.reset();
+	m_MobSpawnTime = 1.0f;
 
 	//TEntity mob = TEntity();
 	//mob.attach<PositionComponent>(std::make_shared<PositionComponent>(glm::vec3(Window::Instance().getWidth() / 2 - 16.0f, Window::Instance().getHeight() / 2 - 16.0f, -(Window::Instance().getHeight() / 2 - 16.0f))));
@@ -77,6 +82,8 @@ void Level2D::update(float timeElapsed)
 		else
 		{
 			ObjectManager::ObjectsQT->insert(*it);
+			ObjectManager::MobQT->insert(*it);
+
 			(*it)->update(timeElapsed);
 
 			++it;
@@ -135,6 +142,12 @@ void Level2D::update(float timeElapsed)
 		//std::cout << "number of fire particles : " << m_FireParticles.size() << "\n";
 		m_Mobs.push_back(std::make_shared<MeleeMob>(mx, my, m_Player));
 
+	}
+
+	if (m_MobSpawnTimer.elapsed() > m_MobSpawnTime)
+	{
+		m_MobSpawnTimer.reset();
+		m_Mobs.push_back(std::make_shared<MeleeMob>(m_Player->getCenterX() + Utils::random(-1000, 1000), m_Player->getCenterY() + Utils::random(-1000, 1000), m_Player));
 	}
 
 	for (auto i = m_FireParticles.begin(); i != m_FireParticles.end(); )
@@ -201,14 +214,19 @@ void Level2D::render(Renderer& renderer)
 	renderer.flush();
 	renderer.m_AlphaTest = true;
 
-
+	renderer.begin();
 	for (auto& mob : m_Mobs)
 	{
-		mob->render(renderer);
+		mob->submit(renderer);
 	}
+	renderer.end();
+	renderer.flush();
 
+	ResourceManager::getInstance().shader("basic_shader")->setUniform("outline", true);
 	m_Player->render(renderer);
+	ResourceManager::getInstance().shader("basic_shader")->setUniform("outline", false);
 
+	m_Region.renderObjects(renderer);
 
 	if (Settings::Instance().debugShowCollisionBoxes)
 	{

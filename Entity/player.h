@@ -14,6 +14,7 @@
 #include "..\Utils\QTree.h"
 #include "..\Level\Region.h"
 #include "ObjectManager.h"
+#include "Projectile\Missile.h"
 
 enum PlayerState
 {
@@ -85,4 +86,6 @@ private:
 
 	float m_HP;
 	float m_MaxHP;
+
+	Timer m_MissileTimer;
 };

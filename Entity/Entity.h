@@ -3,6 +3,7 @@
 #include "..\Graphics\Sprite.h"
 #include "..\Utils\quadTree.h"
 #include "..\Utils\ResourceManager.h"
+#include "Particles\ParticleManager.h"
 
 class Entity : public Sprite {
 public:

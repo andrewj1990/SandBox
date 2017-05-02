@@ -33,6 +33,7 @@ public:
 	bool getSurfacePosition(float x, float y);
 
 	void update(float timeElapsed);
+	void renderObjects(Renderer& renderer);
 	void render(Renderer& renderer);
 
 private:

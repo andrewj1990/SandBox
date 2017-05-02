@@ -14,6 +14,7 @@ public:
 	void damage(int amount) override;
 
 	void update(float timeElapsed) override;
+	void submit(Renderer& renderer) override;
 	void render(Renderer& renderer) override;
 
 private:
@@ -34,4 +35,7 @@ private:
 
 	Timer m_KnockbackTime;
 	float m_KnockbackDuration;
+
+	glm::mat4 m_MobTransform;
+	glm::mat4 m_WeaponTransform;
 };

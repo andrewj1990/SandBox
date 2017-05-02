@@ -31,7 +31,7 @@ private:
 template<class T>
 inline void ParticleManager::add(T&& entity)
 {
-	m_Particles.emplace_back(std::make_unique<T>(entity));
+	m_ReadyParticles.emplace_back(std::make_unique<T>(entity));
 }
 
 template<class T>

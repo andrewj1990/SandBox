@@ -32,6 +32,13 @@ void LifeBar::update(float percent, float timeElapsed)
 	m_DamageBar.setSize(glm::vec2(m_DamageBarWidth, m_Bar.getSize().y));
 }
 
+void LifeBar::submit(Renderer & renderer)
+{
+	renderer.submit(m_Background);
+	renderer.submit(m_DamageBar);
+	renderer.submit(m_Bar);
+}
+
 void LifeBar::render(Renderer& renderer)
 {
 	renderer.m_AlphaTest = false;

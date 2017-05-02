@@ -277,6 +277,20 @@ void Region::update(float timeElapsed)
 	}
 }
 
+void Region::renderObjects(Renderer & renderer)
+{
+	ResourceManager::getInstance().shader("basic_shader")->setUniform("outline", true);
+	renderer.begin();
+	for (auto& tileRegion : m_Regions)
+	{
+		tileRegion->submitObjects(renderer);
+	}
+
+	renderer.end();
+	renderer.flush();
+	ResourceManager::getInstance().shader("basic_shader")->setUniform("outline", false);
+}
+
 void Region::render(Renderer& renderer)
 {
 	renderer.begin();
@@ -285,10 +299,6 @@ void Region::render(Renderer& renderer)
 	for (auto& tileRegion : m_Regions)
 	{
 		tileRegion->submitTiles(renderer);
-	}
-	for (auto& tileRegion : m_Regions)
-	{
-		tileRegion->submitObjects(renderer);
 	}
 	renderer.end();
 	renderer.flush();

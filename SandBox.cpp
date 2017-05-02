@@ -106,6 +106,8 @@ int main()
 			//level = newLevel;
 			//delete level;
 			//level = new Level();
+			delete level2d;
+			level2d = new Level2D();
 		}
 
 		if (Window::Instance().isKeyPressed(GLFW_KEY_K))

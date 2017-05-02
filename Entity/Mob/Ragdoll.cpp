@@ -3,7 +3,7 @@
 Ragdoll::Ragdoll(float x, float y, float size, float angleDeg, Texture* texture)
 	: Entity(glm::vec3(x, y, 0), glm::vec2(size), texture)
 {
-	m_KnockbackDistance = Utils::random(200.0f, 600.0f);
+	m_KnockbackDistance = Utils::random(100.0f, 500.0f);
 
 	float angleRad = glm::radians(angleDeg);
 	m_Dx = m_KnockbackDistance * std::cosf(angleRad);
@@ -28,7 +28,7 @@ void Ragdoll::update(float timeElapsed)
 		m_Dy *= 0.94f;
 		m_CumulativeTime -= 0.01f;
 
-		fade(0.05f * timeElapsed);
+		fade(0.2f * timeElapsed);
 	}
 
 	if (std::abs(m_Dx) < 10.0f && std::abs(m_Dy) < 10.0f)

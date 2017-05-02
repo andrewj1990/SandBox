@@ -14,5 +14,6 @@ public:
 	static std::shared_ptr<QTree<Sprite>> WaterTilesQT;
 	static std::shared_ptr<QTree<Sprite>> QuadTree;
 	static std::shared_ptr<QTree<Entity>> ObjectsQT;
+	static std::shared_ptr<QTree<Entity>> MobQT;
 
 };

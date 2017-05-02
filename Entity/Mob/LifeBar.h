@@ -10,6 +10,7 @@ public:
 	void setPosition(float x, float y);
 
 	void update(float percent, float timeElapsed);
+	void submit(Renderer& renderer);
 	void render(Renderer& renderer);
 
 private:

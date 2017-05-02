@@ -2,7 +2,7 @@
 
 Player::Player(float x, float y)
 	: Entity(glm::vec3(x, y, y), glm::vec2(32, 32), TextureManager::get("Textures/Player/temp.png")),
-	m_Gun(x, y)
+	m_Gun(x, y), m_MissileTimer()
 {
 	m_TexSize = 32;
 	m_CollisionBox = std::make_shared<BoundingBox>(x, y, (getWidth() / 32.0f) * 25, (getHeight() / 32.0f) * 25);
@@ -301,7 +301,22 @@ void Player::update(Region& region, float timeElapsed)
 		m_Gun.setDepth(m_Position.z - 0.5f);
 	}
 
+	std::vector<std::shared_ptr<Entity>> objects;
 
+	// used a larger bounding box range because some objects were not being retrieved on the edge cases.
+	ObjectManager::MobQT->retrieve(objects, BoundingBox(getCenterX() - 500, getCenterY() - 500, 1000.0f, 1000.0f));
+	//quadTree->retrieve(objects, BoundingBox(std::fminf(bx, bx + bdx) - 32, std::fminf(by, by + bdy) - 32, bw + std::abs(bdx) + 64, bh + std::abs(bdy) + 64));
+
+	if (m_MissileTimer.elapsed() > 0.3f)// && Window::Instance().isKeyPressed(GLFW_KEY_G))
+	{
+		m_MissileTimer.reset();
+
+		if (!objects.empty())
+		{
+			int randomVal = Utils::random(0, objects.size());
+			ParticleManager::instance().add(Missile(getCenterX(), getCenterY(), objects[randomVal]));
+		}
+	}
 }
 
 void Player::render(Renderer& renderer)

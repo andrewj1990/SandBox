@@ -3,7 +3,7 @@
 MeleeMob::MeleeMob(float x, float y, std::unique_ptr<Player>& player)
 	: Mob(glm::vec3(x, y, 0), glm::vec2(32, 32), TextureManager::get("Textures/Mobs/mob4.png"), player),
 	m_Spear(glm::vec3(x, y, 0), glm::vec2(32, 10), TextureManager::get("Textures/Mobs/Spear.png")), m_SpearBB(0, 0, 10, 10)
-	, m_AttackTime(), m_KnockbackTime()
+	, m_AttackTime(), m_KnockbackTime(), m_MobTransform(), m_WeaponTransform()
 {
 	m_MaxHP = 1;
 	m_HP = m_MaxHP;
@@ -90,6 +90,8 @@ void MeleeMob::update(float timeElapsed)
 	transform = glm::rotate(transform, m_Angle, glm::vec3(0, 0, 1));
 	transform = glm::translate(transform, glm::vec3(-getPosition().x - getSize().x / 2.0f, -getPosition().y - getSize().y / 2.0f, 0));
 
+	m_MobTransform = transform;
+
 	const glm::vec3& pos = glm::vec3(m_Spear.getX() + m_Spear.getWidth(), m_Spear.getCenterY(), 0);
 	glm::vec4 spearPos = transform * glm::vec4(pos, 1.0f);
 	
@@ -99,6 +101,8 @@ void MeleeMob::update(float timeElapsed)
 	weapon_transform = glm::translate(weapon_transform, glm::vec3(getPosition().x + getSize().x / 2.0f, getPosition().y + getSize().y / 2.0f, 0));
 	weapon_transform = glm::rotate(weapon_transform, m_Angle, glm::vec3(0, 0, 1));
 	weapon_transform = glm::translate(weapon_transform, glm::vec3(-getPosition().x - getSize().x / 2.0f + 20 + m_SpearAttack, -getPosition().y - getSize().y / 2.0f - 5, 0));
+
+	m_WeaponTransform = weapon_transform;
 
 	spearPos = weapon_transform * glm::vec4(pos, 1.0f);
 
@@ -125,24 +129,42 @@ void MeleeMob::update(float timeElapsed)
 
 }
 
+void MeleeMob::submit(Renderer& renderer)
+{
+	renderer.push(m_MobTransform);
+	renderer.submit(*this);
+	renderer.pop();
+
+	//glm::mat4 weapon_transform;
+	//weapon_transform = glm::translate(weapon_transform, glm::vec3(getPosition().x + getSize().x / 2.0f, getPosition().y + getSize().y / 2.0f, 0));
+	//weapon_transform = glm::rotate(weapon_transform, m_Angle, glm::vec3(0, 0, 1));
+	//weapon_transform = glm::translate(weapon_transform, glm::vec3(-getPosition().x - getSize().x / 2.0f + 20 + m_SpearAttack, -getPosition().y - getSize().y / 2.0f - 5, 0));
+
+	renderer.push(m_WeaponTransform);
+	renderer.submit(m_Spear);
+	renderer.pop();
+
+	m_LifeBar.submit(renderer);
+}
+
 void MeleeMob::render(Renderer& renderer)
 {
-	glm::mat4 transform;
-	float mobAngle = Utils::calcAngleRad(getCenterX(), getCenterY(), m_Player->getCenterX(), m_Player->getCenterY());
-	transform = glm::translate(transform, glm::vec3(getPosition().x + getSize().x / 2.0f, getPosition().y + getSize().y / 2.0f, 0));
-	transform = glm::rotate(transform, mobAngle, glm::vec3(0, 0, 1));
-	transform = glm::translate(transform, glm::vec3(-getPosition().x - getSize().x / 2.0f, -getPosition().y - getSize().y / 2.0f, 0));
+	//glm::mat4 transform;
+	//float mobAngle = Utils::calcAngleRad(getCenterX(), getCenterY(), m_Player->getCenterX(), m_Player->getCenterY());
+	//transform = glm::translate(transform, glm::vec3(getPosition().x + getSize().x / 2.0f, getPosition().y + getSize().y / 2.0f, 0));
+	//transform = glm::rotate(transform, mobAngle, glm::vec3(0, 0, 1));
+	//transform = glm::translate(transform, glm::vec3(-getPosition().x - getSize().x / 2.0f, -getPosition().y - getSize().y / 2.0f, 0));
 
-	renderer.push(transform);
+	renderer.push(m_MobTransform);
 	renderer.render(*this);
 	renderer.pop();
 
-	glm::mat4 weapon_transform;
-	weapon_transform = glm::translate(weapon_transform, glm::vec3(getPosition().x + getSize().x / 2.0f, getPosition().y + getSize().y / 2.0f, 0));
-	weapon_transform = glm::rotate(weapon_transform, m_Angle, glm::vec3(0, 0, 1));
-	weapon_transform = glm::translate(weapon_transform, glm::vec3(-getPosition().x - getSize().x / 2.0f + 20 + m_SpearAttack, -getPosition().y - getSize().y / 2.0f - 5, 0));
+	//glm::mat4 weapon_transform;
+	//weapon_transform = glm::translate(weapon_transform, glm::vec3(getPosition().x + getSize().x / 2.0f, getPosition().y + getSize().y / 2.0f, 0));
+	//weapon_transform = glm::rotate(weapon_transform, m_Angle, glm::vec3(0, 0, 1));
+	//weapon_transform = glm::translate(weapon_transform, glm::vec3(-getPosition().x - getSize().x / 2.0f + 20 + m_SpearAttack, -getPosition().y - getSize().y / 2.0f - 5, 0));
 
-	renderer.push(weapon_transform);
+	renderer.push(m_WeaponTransform);
 	renderer.render(m_Spear);
 	renderer.pop();
 
