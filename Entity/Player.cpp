@@ -82,6 +82,8 @@ void Player::move(Region& region, float timeElapsed)
 	//	m_Moving = false;
 	//}
 
+	m_Moving = false;
+
 	if (window.isKeyPressed(GLFW_KEY_W))
 	{
 		m_Row = 3;
@@ -307,7 +309,7 @@ void Player::update(Region& region, float timeElapsed)
 	ObjectManager::MobQT->retrieve(objects, BoundingBox(getCenterX() - 500, getCenterY() - 500, 1000.0f, 1000.0f));
 	//quadTree->retrieve(objects, BoundingBox(std::fminf(bx, bx + bdx) - 32, std::fminf(by, by + bdy) - 32, bw + std::abs(bdx) + 64, bh + std::abs(bdy) + 64));
 
-	if (m_MissileTimer.elapsed() > 0.3f)// && Window::Instance().isKeyPressed(GLFW_KEY_G))
+	if (m_MissileTimer.elapsed() > 0.0f && Window::Instance().isKeyPressed(GLFW_KEY_G))
 	{
 		m_MissileTimer.reset();
 

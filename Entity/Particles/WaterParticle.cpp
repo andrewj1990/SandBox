@@ -30,7 +30,7 @@ void WaterParticle::update(Region& region, float timeElapsed)
 
 	m_Dx *= 0.99f;
 	m_Dy *= 0.99f;
-	fade();
+	fade(timeElapsed);
 
 	addDirection(m_Dx * timeElapsed, m_Dy * timeElapsed);
 	m_Duration -= timeElapsed;

@@ -5,7 +5,7 @@ MeleeMob::MeleeMob(float x, float y, std::unique_ptr<Player>& player)
 	m_Spear(glm::vec3(x, y, 0), glm::vec2(32, 10), TextureManager::get("Textures/Mobs/Spear.png")), m_SpearBB(0, 0, 10, 10)
 	, m_AttackTime(), m_KnockbackTime(), m_MobTransform(), m_WeaponTransform()
 {
-	m_MaxHP = 1;
+	m_MaxHP = 3;
 	m_HP = m_MaxHP;
 
 	m_AttackRange = 50;

@@ -9,6 +9,8 @@ Ragdoll::Ragdoll(float x, float y, float size, float angleDeg, Texture* texture)
 	m_Dx = m_KnockbackDistance * std::cosf(angleRad);
 	m_Dy = m_KnockbackDistance * std::sinf(angleRad);
 
+	Settings::Instance().timeModifier = 0.3f;
+
 	m_Angle = angleRad;
 }
 

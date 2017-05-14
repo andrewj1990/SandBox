@@ -1,7 +1,7 @@
 #include "Tree.h"
 
 Tree::Tree(int x, int y)
-	: Entity(glm::vec3(x, y, -y), glm::vec2(Utils::random(64, 128), Utils::random(64, 128)), TextureManager::get("Textures/Tree2.png"))
+	: Entity(glm::vec3(x, y, -y), glm::vec2(Utils::random(64, 128), Utils::random(64, 128)), TextureManager::get("Textures/Tree.png"))
 {
 	float sizeFactorX = getWidth() / 10.0f;
 	float sizeFactorY = getHeight() / 10.0f;
