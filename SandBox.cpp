@@ -91,7 +91,7 @@ int main()
 	float updateTimer = 0.0f;
 	float tick = 1.0f / 60.0f;
 	float t = 0.0f;
-	float dt = 0.01f;
+	constexpr float dt = 1.0f / 100.0f;
 	float accumulator = 0.0f;
 	int prevDrawCount = 0;
 	float timeModifier = 1.0f;

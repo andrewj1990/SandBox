@@ -3,17 +3,17 @@
 
 void ParticleManager::update(float timeElapsed)
 {
-	while (!m_ReadyParticles.empty())
+	while (!ready_particles_.empty())
 	{
-		m_Particles.emplace_back(std::move(m_ReadyParticles.back()));
-		m_ReadyParticles.pop_back();
+		particles_.emplace_back(std::move(ready_particles_.back()));
+		ready_particles_.pop_back();
 	}
 
-	for (auto it = m_Particles.begin(); it != m_Particles.end(); )
+	for (auto it = particles_.begin(); it != particles_.end(); )
 	{
 		if ((*it)->shouldDestroy())
 		{
-			it = m_Particles.erase(it);
+			it = particles_.erase(it);
 		}
 		else
 		{
@@ -27,7 +27,7 @@ void ParticleManager::render(Renderer& renderer)
 {
 	renderer.begin();
 
-	for (auto& particle : m_Particles)
+	for (auto& particle : particles_)
 	{
 		particle->submit(renderer);
 	}

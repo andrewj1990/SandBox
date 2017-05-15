@@ -7,7 +7,7 @@
 class Missile : public Entity
 {
 public:
-	Missile(float x, float y, std::shared_ptr<Entity> target);
+	Missile(float x, float y, Entity* target);
 	~Missile() {}
 
 	void update(float timeElapsed) override;
@@ -18,7 +18,7 @@ private:
 	void angleDelta(float timeElapsed);
 
 private:
-	std::shared_ptr<Entity> m_Target;
+	Entity* m_Target;
 
 	float m_Velocity;
 	float m_AngleDelta;

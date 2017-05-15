@@ -101,18 +101,18 @@ void Region::unload()
 	}
 }
 
-void Region::addTiles(std::shared_ptr<QTree<Sprite>>& quadTree)
+void Region::addTiles(std::unique_ptr<QTree<Sprite>>& quadTree)
 {
 	for (auto& tileRegion : m_Regions)
 	{
 		for (auto& tile : tileRegion->getTiles())
 		{
-			quadTree->insert(tile);
+			quadTree->insert(tile.get());
 		}
 	}
 }
 
-void Region::addWaterTiles(std::shared_ptr<QTree<Sprite>>& quadTree)
+void Region::addWaterTiles(std::unique_ptr<QTree<Sprite>>& quadTree)
 {
 	for (auto& tileRegion : m_Regions)
 	{
@@ -120,19 +120,19 @@ void Region::addWaterTiles(std::shared_ptr<QTree<Sprite>>& quadTree)
 		{
 			if (tile->getType() == TileType::SHALLOW_WATER)
 			{
-				quadTree->insert(tile);
+				quadTree->insert(tile.get());
 			}
 		}
 	}
 }
 
-void Region::addObjects(std::shared_ptr<QTree<Entity>>& quadTree)
+void Region::addObjects(std::unique_ptr<QTree<Entity>>& quadTree)
 {
 	for (auto& tileRegion : m_Regions)
 	{
 		for (auto& object : tileRegion->getObjects())
 		{
-			quadTree->insert(object);
+			quadTree->insert(object.get());
 		}
 	}
 }

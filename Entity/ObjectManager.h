@@ -11,9 +11,9 @@ public:
 	
 	static void init(const BoundingBox& bbox);
 
-	static std::shared_ptr<QTree<Sprite>> WaterTilesQT;
-	static std::shared_ptr<QTree<Sprite>> QuadTree;
-	static std::shared_ptr<QTree<Entity>> ObjectsQT;
-	static std::shared_ptr<QTree<Entity>> MobQT;
+	static std::unique_ptr<QTree<Sprite>> WaterTilesQT;
+	static std::unique_ptr<QTree<Sprite>> QuadTree;
+	static std::unique_ptr<QTree<Entity>> ObjectsQT;
+	static std::unique_ptr<QTree<Entity>> MobQT;
 
 };

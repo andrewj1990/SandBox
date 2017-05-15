@@ -81,8 +81,8 @@ void Level2D::update(float timeElapsed)
 		}
 		else
 		{
-			ObjectManager::ObjectsQT->insert(*it);
-			ObjectManager::MobQT->insert(*it);
+			ObjectManager::ObjectsQT->insert(it->get());
+			ObjectManager::MobQT->insert(it->get());
 
 			(*it)->update(timeElapsed);
 
@@ -235,7 +235,7 @@ void Level2D::render(Renderer& renderer)
 		BoundingBox mouseBoundingBox(mx-8, my-8, 16, 16);
 
 		renderer.render(Renderable(glm::vec3(mx - 8, my - 8, 0), glm::vec2(16), TextureManager::get("Textures/collision_box.png")));
-		std::vector<std::shared_ptr<Sprite>> tiles;
+		std::vector<Sprite*> tiles;
 		ObjectManager::QuadTree->retrieve(tiles, mouseBoundingBox);
 		renderer.begin();
 		for (auto& t : tiles)
@@ -257,7 +257,7 @@ void Level2D::render(Renderer& renderer)
 			renderer.debugRender(bb, TextureManager::get("Textures/bbox.png"));
 		}
 
-		std::vector<std::shared_ptr<Entity>> m_Data;
+		std::vector<Entity*> m_Data;
 		ObjectManager::ObjectsQT->retrieve(m_Data, m_PointLight.getLightRegion());
 
 		for (auto sprite : m_Data)

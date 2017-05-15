@@ -5,7 +5,7 @@ Player::Player(float x, float y)
 	m_Gun(x, y), m_MissileTimer()
 {
 	m_TexSize = 32;
-	m_CollisionBox = std::make_shared<BoundingBox>(x, y, (getWidth() / 32.0f) * 25, (getHeight() / 32.0f) * 25);
+	m_CollisionBox = std::make_unique<BoundingBox>(x, y, (getWidth() / 32.0f) * 25, (getHeight() / 32.0f) * 25);
 
 	init();
 }
@@ -43,7 +43,7 @@ bool Player::playerCollision(float dx, float dy)
 	float w = m_CollisionBox->width - 5;
 	float h = 1;			// collision with feet only for movement
 
-	std::vector<std::shared_ptr<Entity>> tiles;
+	std::vector<Entity*> tiles;
 	ObjectManager::ObjectsQT->retrieve(tiles, *m_CollisionBox);
 
 	for (auto& tile : tiles)
@@ -303,7 +303,7 @@ void Player::update(Region& region, float timeElapsed)
 		m_Gun.setDepth(m_Position.z - 0.5f);
 	}
 
-	std::vector<std::shared_ptr<Entity>> objects;
+	std::vector<Entity*> objects;
 
 	// used a larger bounding box range because some objects were not being retrieved on the edge cases.
 	ObjectManager::MobQT->retrieve(objects, BoundingBox(getCenterX() - 500, getCenterY() - 500, 1000.0f, 1000.0f));

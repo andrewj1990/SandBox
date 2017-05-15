@@ -1,14 +1,14 @@
 #include "ObjectManager.h"
 
-std::shared_ptr<QTree<Sprite>> ObjectManager::WaterTilesQT = std::shared_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(0, 0, 0, 0)));
-std::shared_ptr<QTree<Sprite>> ObjectManager::QuadTree = std::shared_ptr<QTree<Sprite>>(new QTree<Sprite>(0, BoundingBox(0, 0, 0, 0)));
-std::shared_ptr<QTree<Entity>> ObjectManager::ObjectsQT = std::shared_ptr<QTree<Entity>>(new QTree<Entity>(0, BoundingBox(0, 0, 0, 0)));
-std::shared_ptr<QTree<Entity>> ObjectManager::MobQT = std::shared_ptr<QTree<Entity>>(new QTree<Entity>(0, BoundingBox(0, 0, 0, 0)));
+std::unique_ptr<QTree<Sprite>> ObjectManager::WaterTilesQT = std::make_unique<QTree<Sprite>>(0, BoundingBox(0, 0, 0, 0));
+std::unique_ptr<QTree<Sprite>> ObjectManager::QuadTree = std::make_unique<QTree<Sprite>>(0, BoundingBox(0, 0, 0, 0));
+std::unique_ptr<QTree<Entity>> ObjectManager::ObjectsQT = std::make_unique<QTree<Entity>>(0, BoundingBox(0, 0, 0, 0));
+std::unique_ptr<QTree<Entity>> ObjectManager::MobQT = std::make_unique<QTree<Entity>>(0, BoundingBox(0, 0, 0, 0));
 
 void ObjectManager::init(const BoundingBox& bbox)
 {
-	ObjectsQT = std::shared_ptr<QTree<Entity>>(new QTree<Entity>(0, bbox));
-	MobQT = std::shared_ptr<QTree<Entity>>(new QTree<Entity>(0, bbox));
-	WaterTilesQT = std::shared_ptr<QTree<Sprite>>(new QTree<Sprite>(0, bbox));
-	QuadTree = std::shared_ptr<QTree<Sprite>>(new QTree<Sprite>(0, bbox));
+	ObjectsQT	 = std::make_unique<QTree<Entity>>(0, bbox);
+	MobQT		 = std::make_unique<QTree<Entity>>(0, bbox);
+	WaterTilesQT = std::make_unique<QTree<Sprite>>(0, bbox);
+	QuadTree	 = std::make_unique<QTree<Sprite>>(0, bbox);
 }

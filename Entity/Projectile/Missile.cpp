@@ -1,6 +1,6 @@
 #include "Missile.h"
 
-Missile::Missile(float x, float y, std::shared_ptr<Entity> target)
+Missile::Missile(float x, float y, Entity* target)
 	: Entity(glm::vec3(x, y, 0), glm::vec2(16), TextureManager::get("Textures/Missile.png")), m_Target(target), m_Transform()
 {
 	m_Angle = glm::radians(Utils::random(0.0f, 360.0f));
@@ -19,7 +19,7 @@ void Missile::update(float timeElapsed)
 	}
 
 	// target is dead so retarget
-	if (m_Target->shouldDestroy())
+	if (m_Target == nullptr || m_Target->shouldDestroy())
 	{
 		retarget();
 	}
@@ -61,7 +61,7 @@ void Missile::submit(Renderer & renderer)
 
 void Missile::retarget()
 {
-	std::vector<std::shared_ptr<Entity>> objects;
+	std::vector<Entity*> objects;
 
 	ObjectManager::MobQT->retrieve(objects, BoundingBox(getCenterX() - 500, getCenterY() - 500, 1000.0f, 1000.0f));
 
