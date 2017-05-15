@@ -1,6 +1,6 @@
 #include "Missile.h"
 
-Missile::Missile(float x, float y, std::shared_ptr<Entity> target)
+Missile::Missile(float x, float y, Entity* target)
 	: Entity(glm::vec3(x, y, 0), glm::vec2(16), TextureManager::get("Textures/Missile.png")), m_Target(target), m_Transform()
 {
 	m_Angle = glm::radians(Utils::random(0.0f, 360.0f));
@@ -19,7 +19,7 @@ void Missile::update(float timeElapsed)
 	}
 
 	// target is dead so retarget
-	if (m_Target->shouldDestroy())
+	if (m_Target == nullptr || m_Target->shouldDestroy())
 	{
 		retarget();
 	}
@@ -41,7 +41,7 @@ void Missile::update(float timeElapsed)
 	float colour = Utils::random(0.8f, 1.0f);
 	for (int i = 0; i < 3; i++)
 	{
-		ParticleManager::instance().add(Particle(getX(), getY(), 5, glm::vec4(glm::vec3(colour, colour, 0.0f), 1), glm::degrees(m_Angle + 180.0f), false, 2.0f));
+		ParticleManager::instance().add(Particle(getX(), getY(), 5, glm::vec4(glm::vec3(colour, colour, 0.0f), 1), glm::degrees(m_Angle + 180.0f), false, 5.0f));
 	}
 
 	m_Transform = glm::mat4();
@@ -61,7 +61,7 @@ void Missile::submit(Renderer & renderer)
 
 void Missile::retarget()
 {
-	std::vector<std::shared_ptr<Entity>> objects;
+	std::vector<Entity*> objects;
 
 	ObjectManager::MobQT->retrieve(objects, BoundingBox(getCenterX() - 500, getCenterY() - 500, 1000.0f, 1000.0f));
 

@@ -5,6 +5,9 @@
 
 class ParticleManager
 {
+	std::vector<std::unique_ptr<Entity>> particles_;
+	std::vector<std::unique_ptr<Entity>> ready_particles_;
+
 public:
 	
 	static ParticleManager& instance()
@@ -22,20 +25,17 @@ public:
 	void update(float timeElapsed);
 	void render(Renderer& renderer);
 
-private:
-	std::vector<std::unique_ptr<Entity>> m_Particles;
-	std::vector<std::unique_ptr<Entity>> m_ReadyParticles;
 
 };
 
 template<class T>
 inline void ParticleManager::add(T&& entity)
 {
-	m_ReadyParticles.emplace_back(std::make_unique<T>(entity));
+	ready_particles_.emplace_back(std::make_unique<T>(entity));
 }
 
 template<class T>
 inline void ParticleManager::addReady(T&& entity)
 {
-	m_ReadyParticles.emplace_back(std::make_unique<T>(entity));
+	ready_particles_.emplace_back(std::make_unique<T>(entity));
 }

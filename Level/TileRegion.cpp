@@ -31,7 +31,7 @@ void TileRegion::init(const std::unordered_set<std::string>& region_tiles, const
 			auto it = region_tiles.find(positionInRegion);
 			if (it == region_tiles.end())
 			{
-				m_Tiles.push_back(std::unique_ptr<Tile>(new Tile(glm::vec2(Settings::Instance().TILE_SIZE, Settings::Instance().TILE_SIZE))));
+				m_Tiles.push_back(std::make_unique<Tile>(glm::vec2(Settings::Instance().TILE_SIZE, Settings::Instance().TILE_SIZE)));
 				auto& t = m_Tiles.back();
 				int di = Utils::random(0, 1);
 				t->init(m_X + xx, m_Y + yy, glm::vec4(0, di, 0, 1), false);
@@ -94,7 +94,7 @@ void TileRegion::removeTile(int x, int y)
 	m_Tiles.erase(tileIt);
 }
 
-std::shared_ptr<Tile>& TileRegion::getTile(int x, int y)
+std::unique_ptr<Tile>& TileRegion::getTile(int x, int y)
 {
 	int px = x - (m_IndexX * (Settings::Instance().SUB_REGION_TILE_COUNT - Settings::Instance().TILE_SIZE));
 	int py = y - (m_IndexY * (Settings::Instance().SUB_REGION_TILE_COUNT - Settings::Instance().TILE_SIZE));
@@ -141,12 +141,11 @@ TileType TileRegion::calculateTileType(int x, int y)
 	return TileType::VOID;
 }
 
-std::vector<std::shared_ptr<Tile>>::iterator TileRegion::getTileIterator(int x, int y)
+std::vector<std::unique_ptr<Tile>>::iterator TileRegion::getTileIterator(int x, int y)
 {
 	return std::find_if(m_Tiles.begin(), m_Tiles.end(), [x, y](const auto& tile) { return (tile->getPosition().x == x && tile->getPosition().y == y); });
 }
-
-void TileRegion::setTileUV(std::shared_ptr<Tile>& tile, const std::unordered_set<std::string>& region_tiles)
+void TileRegion::setTileUV(std::unique_ptr<Tile>& tile, const std::unordered_set<std::string>& region_tiles)
 {
 	float sum = 0;
 
@@ -233,7 +232,7 @@ void TileRegion::addObjects(int x, int y, const std::unordered_set<std::string>&
 		{
 			if (r1 < 0.3)
 			{
-				m_Objects.push_back(std::shared_ptr<Entity>(new Tree(x + xOffset, y + yOffset)));
+				m_Objects.push_back(std::make_unique<Tree>(x + xOffset, y + yOffset));
 			}
 			else if (r1 < 0.8)
 			{

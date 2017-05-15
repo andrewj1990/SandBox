@@ -22,9 +22,9 @@ public:
 	void load();
 	void unload();
 	
-	void addTiles(std::shared_ptr<QTree<Sprite>>& quadTree);
-	void addWaterTiles(std::shared_ptr<QTree<Sprite>>& quadTree);
-	void addObjects(std::shared_ptr<QTree<Entity>>& quadTree);
+	void addTiles(std::unique_ptr<QTree<Sprite>>& quadTree);
+	void addWaterTiles(std::unique_ptr<QTree<Sprite>>& quadTree);
+	void addObjects(std::unique_ptr<QTree<Entity>>& quadTree);
 
 	void removeTiles(float x, float y, bool exactCoord = true, bool ripple = false);
 	void removeObject(float x, float y, bool exactCoord = true);

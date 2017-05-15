@@ -99,7 +99,7 @@ void Gun::update(Region& region, float timeElapsed)
 		bullet->update(timeElapsed);
 		if (bullet->shouldDestroy()) continue;
 
-		std::vector<std::shared_ptr<Entity>> objects;
+		std::vector<Entity*> objects;
 
 		float bx = bullet->getCollisionBox()->x;
 		float by = bullet->getCollisionBox()->y;

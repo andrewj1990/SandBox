@@ -7,7 +7,7 @@ Ray::Ray(glm::vec2 startPoint, float angleRad)
 	m_Direction.y = std::sinf(m_AngleRad);
 }
 
-void Ray::findIntersections(const std::vector<std::shared_ptr<Entity>>& sprites, const BoundingBox& bbox, float radius)
+void Ray::findIntersections(const std::vector<Entity*>& sprites, const BoundingBox& bbox, float radius)
 {
 	m_T1 = INT_MAX;
 	for (const auto& sprite : sprites)
