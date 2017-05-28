@@ -65,6 +65,7 @@ void Window::init()
 
 	glfwSetFramebufferSizeCallback(m_Window, window_resize);
 	glfwSetKeyCallback(m_Window, key_callback);
+	glfwSetCharCallback(m_Window, character_callback);
 	glfwSetMouseButtonCallback(m_Window, mouse_button_callback);
 	glfwSetCursorPosCallback(m_Window, mouse_callback);
 
@@ -134,6 +135,19 @@ bool Window::isButtonPressed(unsigned int mousebutton) const
 bool Window::isButtonClicked(unsigned int mousebutton) const
 {
 	return m_MouseClicked[mousebutton];
+}
+
+void Window::clearKeyPresses()
+{
+	for (int i = 0; i < MAX_KEYS; i++)
+	{
+		m_Keys[i] = m_KeyTyped[i] = m_KeyState[i] = false;
+	}
+
+	for (int i = 0; i < MAX_BUTTONS; i++)
+	{
+		m_MouseButtons[i] = m_MouseClicked[i] = m_MouseState[i] = false;
+	}
 }
 
 void Window::moveCamera(const double& xpos, const double& ypos)
@@ -209,4 +223,10 @@ void mouse_callback(GLFWwindow* window, double x, double y)
 	Window* win = (Window*)glfwGetWindowUserPointer(window);
 	win->m_MousePosX = x;
 	win->m_MousePosY = y;
+}
+
+void character_callback(GLFWwindow* window, unsigned int codepoint)
+{
+	Window* win = (Window*)glfwGetWindowUserPointer(window);
+	win->char_input_ = codepoint;
 }

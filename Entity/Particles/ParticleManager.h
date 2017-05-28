@@ -17,25 +17,24 @@ public:
 	}
 
 	template<class T>
-	void add(T&& entity);
+	void add(const T& entity);
 	
 	template<class T>
-	void addReady(T&& entity);
+	void addReady(const T& entity);
 
 	void update(float timeElapsed);
 	void render(Renderer& renderer);
 
-
 };
 
 template<class T>
-inline void ParticleManager::add(T&& entity)
+inline void ParticleManager::add(const T& entity)
 {
 	ready_particles_.emplace_back(std::make_unique<T>(entity));
 }
 
 template<class T>
-inline void ParticleManager::addReady(T&& entity)
+inline void ParticleManager::addReady(const T& entity)
 {
 	ready_particles_.emplace_back(std::make_unique<T>(entity));
 }

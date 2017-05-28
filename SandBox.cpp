@@ -17,6 +17,7 @@
 #include "Utils\timer.h"
 #include "Settings.h"
 #include "Graphics\texture_manager.h"
+#include "Level\Editor\LevelEditor.h"
 
 void movement(const Window& window, Camera& camera, float deltaTime)
 {
@@ -75,6 +76,8 @@ int main()
 	std::unique_ptr<FrameBuffer> lightFBO = std::unique_ptr<FrameBuffer>(new FrameBuffer());
 	std::unique_ptr<FrameBuffer> shadowFBO = std::unique_ptr<FrameBuffer>(new FrameBuffer());
 	std::unique_ptr<FrameBuffer> bufferFBO = std::unique_ptr<FrameBuffer>(new FrameBuffer());
+
+	LevelEditor editor;
 
 	float lightIntensity = 0.3f;
 	float ambientIntensity = 0.6f;
@@ -205,6 +208,9 @@ int main()
 		while (accumulator >= dt)
 		{
 			level2d->update(dt * Settings::Instance().timeModifier);
+			if (Settings::Instance().showLevelEditor) {
+				editor.update(dt);
+			}
 			++updates;
 			updateTimer += tick;
 
@@ -215,6 +221,10 @@ int main()
 		fbo->bind();
 		ResourceManager::getInstance().shader("basic_shader")->use();
 		level2d->render(batchrenderer);
+
+		if (Settings::Instance().showLevelEditor) {
+			editor.render(batchrenderer);
+		}
 
 		batchrenderer.render(label);
 		fbo->unbind();

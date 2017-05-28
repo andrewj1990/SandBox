@@ -36,6 +36,9 @@ public:
 	bool isKeyTyped(unsigned int keycode) const;
 	bool isButtonPressed(unsigned int mousebutton) const;
 	bool isButtonClicked(unsigned int mousebutton) const;
+	void clearKeyPresses();
+	void clearCharPress() { char_input_ = '\0'; }
+	char getCharPressed() const { return (char)char_input_; }
 
 	void moveCamera(const double& xpos, const double& ypos);
 
@@ -60,6 +63,7 @@ private:
 	friend void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	friend void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 	friend void mouse_callback(GLFWwindow* window, double x, double y);
+	friend void character_callback(GLFWwindow* window, unsigned int codepoint);
 
 private:
 	std::string m_Name;
@@ -82,4 +86,6 @@ private:
 	Camera m_Camera;
 
 	bool m_WindowResized;
+
+	unsigned int char_input_;
 };

@@ -24,6 +24,7 @@ public:
 	bool debugShowQuadTree = false;
 	bool debugShowCollisionBoxes = false;
 	bool debugShowLightRange = false;
+	bool showLevelEditor = true;
 	bool ADS = true;
 
 	int drawCount = 0;

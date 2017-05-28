@@ -92,8 +92,20 @@ glm::mat4 Utils::calcTransformMat(float x, float y, float w, float h, float angl
 
 bool Utils::quadCollision(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2)
 {
+	float x11 = std::min(x1, x1 + w1);
+	float x12 = std::max(x1, x1 + w1);
+	float y11 = std::min(y1, y1 + h1);
+	float y12 = std::max(y1, y1 + h1);
 
-	return (x1 <= x2 + w2 && x1 + w1 >= x2 && y1 <= y2 + h2 && y1 + h1 >= y2);
+	float x21 = std::min(x2, x2 + w2);
+	float x22 = std::max(x2, x2 + w2);
+	float y21 = std::min(y2, y2 + h2);
+	float y22 = std::max(y2, y2 + h2);
+
+	//return (x11 <= x22 && x12 >= x21 && y11 <= y22 && y12 >= y22);
+	return (x11 <= x22 && x12 >= x21 && y11 <= y22 && y12 >= y21);
+
+	//return (x1 <= x2 + w2 && x1 + w1 >= x2 && y1 <= y2 + h2 && y1 + h1 >= y2);
 }
 
 // credit goes to blackpawn : http://blackpawn.com/texts/pointinpoly/default.html
