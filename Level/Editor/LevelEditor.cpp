@@ -17,10 +17,58 @@ LevelEditor::LevelEditor()
 
 void LevelEditor::save()
 {
+	std::ofstream level;
+	level.open("level.txt");
+
+	for (const auto& object : entities_) {
+		level << "Object\n";
+		level << "\ttexture " << object->getTexture()->getName() << "\n";
+		level << "\tposition " << object->getX() << " " << object->getY() << "\n";
+		level << "\tsize " << object->getWidth() << " " << object->getHeight() << "\n";
+	}
+
+	level.close();
+}
+
+void LevelEditor::load()
+{
+	entities_.clear();
+	selected_object_ = SelectedObject::NOTHING;
+	std::string param_name;
+	std::string texture_name;
+	float x;
+	float y;
+	float w;
+	float h;
+
+	std::ifstream level("level.txt");
+
+	while (level >> param_name) {
+		level >> param_name >> texture_name;
+		level >> param_name >> x >> y;
+		level >> param_name >> w >> h;
+
+		std::unique_ptr<Entity> object = std::make_unique<Entity>(glm::vec3(x, y, 0), glm::vec2(w, h), TextureManager::get(texture_name));
+		entities_.push_back(std::move(object));
+	}
+
+	std::cout << "objects : " << entities_.size() << "\n";
+
+	level.close();
 }
 
 void LevelEditor::update(float timeElapsed)
 {
+	if (Window::Instance().isKeyPressed(GLFW_KEY_0) && key_press_delay_.elapsed() > 0.1f) {
+		save();
+		key_press_delay_.reset();
+	}
+
+	if (Window::Instance().isKeyPressed(GLFW_KEY_5) && key_press_delay_.elapsed() > 0.1f) {
+		load();
+		key_press_delay_.reset();
+	}
+
 	if (Window::Instance().isKeyPressed(GLFW_KEY_E)) {
 		start_pos_.x = Window::Instance().getMouseWorldPosX();
 		start_pos_.y = Window::Instance().getMouseWorldPosY();
@@ -79,7 +127,7 @@ void LevelEditor::update(float timeElapsed)
 			}
 		}
 
-		if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_1) && key_press_delay_.elapsed() > 0.5f) {
+		if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_1) && key_press_delay_.elapsed() > 0.1f) {
 			selected_object_ = SelectedObject::NOTHING;
 			key_press_delay_.reset();
 		}
@@ -151,7 +199,26 @@ void LevelEditor::selectObject()
 {
 	if (selected_object_ == SelectedObject::OLD_OBJECT) return;
 
-	if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_1) && key_press_delay_.elapsed() > 0.5f) {
+	if (Window::Instance().isKeyPressed(GLFW_KEY_LEFT_CONTROL) && Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_1) && key_press_delay_.elapsed() > 0.1f) {
+		float x = Window::Instance().getMouseWorldPosX();
+		float y = Window::Instance().getMouseWorldPosY();
+
+		BoundingBox mouseBox(x, y, 5, 5);
+
+		for (auto& object : entities_) {
+			if (object->collide(mouseBox)) {
+				selected_object_ = SelectedObject::OLD_OBJECT;
+				std::unique_ptr<Entity> copy = std::make_unique<Entity>();
+				copy->setTexture(TextureManager::get(object->getTexture()->getName()));
+				copy->setSize(object->getSize());
+				entities_.push_back(std::move(copy));
+				edit_object_ = entities_.back().get();
+				break;
+			}
+		}
+		key_press_delay_.reset();
+	}
+	else if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_1) && key_press_delay_.elapsed() > 0.1f) {
 		float x = Window::Instance().getMouseWorldPosX();
 		float y = Window::Instance().getMouseWorldPosY();
 
@@ -163,6 +230,7 @@ void LevelEditor::selectObject()
 				edit_object_ = object.get();
 				offset_pos_.x = object->getX() - x;
 				offset_pos_.y = object->getY() - y;
+				break;
 			}
 		}
 		key_press_delay_.reset();

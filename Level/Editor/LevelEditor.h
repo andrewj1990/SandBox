@@ -1,9 +1,10 @@
 #pragma once
 
+#include <fstream>
+
 #include "..\..\Graphics\Renderer.h"
 #include "..\..\Entity\Entity.h"
 #include "..\..\Graphics\label.h"
-
 
 class LevelEditor
 {
@@ -43,6 +44,7 @@ public:
 	LevelEditor();
 
 	void save();
+	void load();
 
 	void update(float timeElapsed);
 	void render(Renderer& renderer);
