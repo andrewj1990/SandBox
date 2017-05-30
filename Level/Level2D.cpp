@@ -147,7 +147,7 @@ void Level2D::update(float timeElapsed)
 	if (m_MobSpawnTimer.elapsed() > m_MobSpawnTime)
 	{
 		m_MobSpawnTimer.reset();
-		m_Mobs.push_back(std::make_shared<MeleeMob>(m_Player->getCenterX() + Utils::random(-1000, 1000), m_Player->getCenterY() + Utils::random(-1000, 1000), m_Player));
+		//m_Mobs.push_back(std::make_shared<MeleeMob>(m_Player->getCenterX() + Utils::random(-1000, 1000), m_Player->getCenterY() + Utils::random(-1000, 1000), m_Player));
 	}
 
 	for (auto i = m_FireParticles.begin(); i != m_FireParticles.end(); )
@@ -202,7 +202,7 @@ void Level2D::render(Renderer& renderer)
 {
 	m_EntityManager.render(renderer);
 
-	renderer.render(m_Background);
+	//renderer.render(m_Background);
 	m_Region.render(renderer);
 	ParticleManager::instance().render(renderer);
 

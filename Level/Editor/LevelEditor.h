@@ -12,11 +12,13 @@ class LevelEditor
 	{
 		NEW_OBJECT,
 		OLD_OBJECT,
+		AREA_SELECT,
 		NOTHING
 	};
 
 	std::vector<std::unique_ptr<Entity>> entities_;
 	std::unique_ptr<Entity> current_object_;
+	std::vector<std::unique_ptr<Entity>>  area_objects_;
 	Entity* edit_object_;
 	glm::vec2 start_pos_;
 	glm::vec2 end_pos_;
