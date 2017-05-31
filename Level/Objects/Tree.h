@@ -5,6 +5,8 @@
 
 class Tree : public Entity
 {
+	glm::mat4 transform_;
+
 public:
 	Tree(int x, int y);
 	~Tree() {}
@@ -12,7 +14,7 @@ public:
 	void damage(int amount) override { m_Destroy = true; }
 
 	void update(float timeElapsed) override;
-	void submit(Renderer& renderer) const override;
+	void submit(Renderer& renderer) override;
 
 private:
 

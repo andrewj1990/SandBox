@@ -13,6 +13,7 @@ class LevelEditor
 		NEW_OBJECT,
 		OLD_OBJECT,
 		AREA_PLACE,
+		MULTI_OBJECT_DRAG_SELECT,
 		MULTI_OBJECT_SELECT,
 		OLD_OBJECT_COLLISION_BOX,
 		NOTHING
@@ -22,6 +23,7 @@ class LevelEditor
 	std::unique_ptr<Entity> current_object_;
 	std::vector<std::unique_ptr<Entity>> area_objects_;
 	std::vector<std::unique_ptr<Entity>> selected_objects_boxes_;
+	std::vector<Entity*> selected_objects_;
 	Entity* edit_object_;
 
 	glm::vec2 start_pos_;
@@ -49,6 +51,7 @@ class LevelEditor
 	bool render_collision_box_;
 	bool mouse_state_;
 	bool area_select_mouse_state_;
+	bool area_drag_mouse_state_;
 
 	SelectedObject selected_object_;
 
@@ -68,4 +71,6 @@ private:
 
 	bool selectObject();
 	void areaSelect();
+	void areaSelectDrag();
+	void areaSelectDelete();
 };

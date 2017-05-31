@@ -15,6 +15,7 @@ LevelEditor::LevelEditor()
 	render_collision_box_ = false;
 	mouse_state_ = false;
 	area_select_mouse_state_ = false;
+	area_drag_mouse_state_ = false;
 	input_ = "";
 	selected_object_ = SelectedObject::NOTHING;
 }
@@ -76,8 +77,10 @@ void LevelEditor::update(float timeElapsed)
 {
 	area_objects_.clear();
 	
-	//if (selected_object_ != SelectedObject::MULTI_OBJECT_SELECT) 
-	selected_objects_boxes_.clear();
+	if (selected_object_ != SelectedObject::MULTI_OBJECT_SELECT) {
+		selected_objects_boxes_.clear();
+		selected_objects_.clear();
+	}
 
 	float mx = Window::Instance().getMouseWorldPosX();
 	float my = Window::Instance().getMouseWorldPosY();
@@ -148,6 +151,7 @@ void LevelEditor::update(float timeElapsed)
 			std::cout << "size : " << entities_.size() << "\n";
 			selected_object_ = SelectedObject::NOTHING;
 		}
+		selected_objects_boxes_.push_back(std::make_unique<Entity>(current_object_->getPosition(), current_object_->getSize(), TextureManager::get("Textures/box.png")));
 
 		updateMenu(current_object_.get());
 		break;
@@ -193,6 +197,8 @@ void LevelEditor::update(float timeElapsed)
 				mouse_state_ = false;
 				selected_object_ = SelectedObject::NOTHING;
 			}
+
+			selected_objects_boxes_.push_back(std::make_unique<Entity>(edit_object_->getPosition(), edit_object_->getSize(), TextureManager::get("Textures/box.png")));
 		}
 		break;
 	}
@@ -206,6 +212,7 @@ void LevelEditor::update(float timeElapsed)
 		for (int i = std::min(sx, x); i < std::max(sx, x); i += 32) {
 			for (int j = std::min(sy, y); j < std::max(sy, y); j += 32) {
 				area_objects_.push_back(std::make_unique<Entity>(glm::vec3(i, j, 0), glm::vec2(32), TextureManager::get(input_)));
+				selected_objects_boxes_.push_back(std::make_unique<Entity>(area_objects_.back()->getPosition(), area_objects_.back()->getSize(), TextureManager::get("Textures/box.png")));
 			}
 		}
 
@@ -221,14 +228,8 @@ void LevelEditor::update(float timeElapsed)
 	}
 	case SelectedObject::MULTI_OBJECT_SELECT:
 	{
-		if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_1)) {
-			if (multi_select_box_.collide(BoundingBox(mx, my, 1, 1))) {
-				std::cout << "selected\n";
-			}
-			else if (!area_select_mouse_state_) {
-				selected_object_ = SelectedObject::NOTHING;
-			}
-		}
+		areaSelectDrag();
+		areaSelectDelete();
 		break;
 	}
 	default:
@@ -266,6 +267,7 @@ void LevelEditor::render(Renderer& renderer)
 	if (selected_object_ == SelectedObject::NEW_OBJECT) current_object_->submit(renderer);
 
 	renderer.end();
+	multi_select_box_.render(renderer);
 	renderer.flush();
 
 	renderMenu(renderer);
@@ -377,16 +379,18 @@ bool LevelEditor::selectObject()
 
 void LevelEditor::areaSelect()
 {
+	if (selected_object_ == SelectedObject::MULTI_OBJECT_SELECT) return;
+
 	if (selected_object_ == SelectedObject::NOTHING) {
 		if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_1) && !area_select_mouse_state_) {
 			multi_select_box_.setPosition(Window::Instance().getMouseWorldPosX(), Window::Instance().getMouseWorldPosY());
 			area_select_mouse_state_ = true;
 
-			selected_object_ = SelectedObject::MULTI_OBJECT_SELECT;
+			selected_object_ = SelectedObject::MULTI_OBJECT_DRAG_SELECT;
 		}
 	}
 
-	if (selected_object_ == SelectedObject::MULTI_OBJECT_SELECT) {
+	if (selected_object_ == SelectedObject::MULTI_OBJECT_DRAG_SELECT) {
 		int w = 0;
 		int h = 0;
 		if (area_select_mouse_state_) {
@@ -405,18 +409,78 @@ void LevelEditor::areaSelect()
 		for (auto& object : entities_) {
 			if (object->collide(*select_box)) {
 				selected_objects_boxes_.push_back(std::make_unique<Entity>(object->getPosition(), object->getSize(), TextureManager::get("Textures/box.png")));
+				selected_objects_.push_back(object.get());
 			}
 		}
 
 		if (Window::Instance().isButtonReleased(GLFW_MOUSE_BUTTON_1) && area_select_mouse_state_) {
 			multi_select_end_pos_.x = Window::Instance().getMouseWorldPosX();
 			multi_select_end_pos_.y = Window::Instance().getMouseWorldPosY();
+			selected_object_ = SelectedObject::MULTI_OBJECT_SELECT;
 			area_select_mouse_state_ = false;
 
 			return;
 		}
 
-		if (area_select_mouse_state_) selected_objects_boxes_.push_back(std::move(select_box));
+		//if (area_select_mouse_state_) selected_objects_boxes_.push_back(std::move(select_box));
 	}
 
+}
+
+void LevelEditor::areaSelectDrag()
+{
+	float mx = Window::Instance().getMouseWorldPosX();
+	float my = Window::Instance().getMouseWorldPosY();
+
+	if (Window::Instance().isButtonPressed(GLFW_MOUSE_BUTTON_1)) {
+		if (!area_drag_mouse_state_) {
+			area_drag_mouse_state_ = true;
+			multi_select_start_pos_.x = mx;
+			multi_select_start_pos_.y = my;
+		}
+
+		if (multi_select_box_.collide(BoundingBox(mx, my, 1, 1))) {
+			float dx = mx - multi_select_start_pos_.x;
+			float dy = my - multi_select_start_pos_.y;
+
+			for (auto object : selected_objects_) {
+				object->addDirection(dx, dy);
+				object->getCollisionBox().x += dx;
+				object->getCollisionBox().y += dy;
+			}
+			for (auto& object_box : selected_objects_boxes_) {
+				object_box->addDirection(dx, dy);
+			}
+			multi_select_box_.addDirection(dx, dy);
+
+			multi_select_start_pos_.x = mx;
+			multi_select_start_pos_.y = my;
+
+		}
+		else if (!area_select_mouse_state_) {
+			multi_select_box_.setSize(glm::vec2(0));
+			area_drag_mouse_state_ = false;
+			selected_object_ = SelectedObject::NOTHING;
+		}
+	}
+
+	if (Window::Instance().isButtonReleased(GLFW_MOUSE_BUTTON_1)) {
+		area_drag_mouse_state_ = false;
+	}
+
+
+}
+
+void LevelEditor::areaSelectDelete()
+{
+	if (Window::Instance().isKeyPressed(GLFW_KEY_DELETE)) {
+		entities_.erase(std::remove_if(entities_.begin(), entities_.end(), 
+			[&](const std::unique_ptr<Entity>& p) { 
+				return std::find(selected_objects_.cbegin(), selected_objects_.cend(), p.get()) != selected_objects_.end(); 
+			}), entities_.end());
+
+		multi_select_box_.setSize(glm::vec2(0));
+		area_drag_mouse_state_ = false;
+		selected_object_ = SelectedObject::NOTHING;
+	}
 }
