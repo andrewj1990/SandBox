@@ -39,6 +39,7 @@ class LevelEditor
 	bool read_chars_;
 	std::string input_;
 	bool grid_snap_;
+	bool render_collision_box_;
 
 	SelectedObject selected_object_;
 

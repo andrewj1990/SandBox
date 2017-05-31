@@ -11,6 +11,7 @@ LevelEditor::LevelEditor()
 {
 	read_chars_ = false;
 	grid_snap_ = true;
+	render_collision_box_ = false;
 	input_ = "";
 	selected_object_ = SelectedObject::NOTHING;
 }
@@ -60,6 +61,9 @@ void LevelEditor::load()
 void LevelEditor::update(float timeElapsed)
 {
 	area_objects_.clear();
+	if (Window::Instance().isKeyPressed(GLFW_KEY_C) && key_press_delay_.elapsed() > 0.1f) {
+		render_collision_box_ = !render_collision_box_;
+	}
 
 	if (Window::Instance().isKeyPressed(GLFW_KEY_0) && key_press_delay_.elapsed() > 0.1f) {
 		save();
@@ -193,6 +197,13 @@ void LevelEditor::render(Renderer& renderer)
 	renderer.flush();
 
 	renderMenu(renderer);
+
+	if (render_collision_box_) {
+		for (auto& entity : entities_) {
+			auto& cb = entity->getCollisionBox();
+			renderer.debugRender(*cb, TextureManager::get("Textures/collision_box.png"));
+		}
+	}
 }
 
 void LevelEditor::updateMenu(Entity* object)

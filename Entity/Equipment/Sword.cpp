@@ -107,7 +107,7 @@ void Sword::update(const std::unique_ptr<QuadTree>& quadTree, float timeElapsed)
 		}
 	}
 
-	for (auto& particle : m_Entities)
+	for (auto& particle : m_Entities) 
 	{
 		particle->update(timeElapsed);
 	}
