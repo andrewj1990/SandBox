@@ -12,16 +12,23 @@ class LevelEditor
 	{
 		NEW_OBJECT,
 		OLD_OBJECT,
-		AREA_SELECT,
+		AREA_PLACE,
+		MULTI_OBJECT_SELECT,
+		OLD_OBJECT_COLLISION_BOX,
 		NOTHING
 	};
 
 	std::vector<std::unique_ptr<Entity>> entities_;
 	std::unique_ptr<Entity> current_object_;
-	std::vector<std::unique_ptr<Entity>>  area_objects_;
+	std::vector<std::unique_ptr<Entity>> area_objects_;
+	std::vector<std::unique_ptr<Entity>> selected_objects_boxes_;
 	Entity* edit_object_;
+
 	glm::vec2 start_pos_;
 	glm::vec2 end_pos_;
+	glm::vec2 multi_select_start_pos_;
+	glm::vec2 multi_select_end_pos_;
+	Entity multi_select_box_;
 	glm::vec2 offset_pos_;
 
 	Sprite background_;
@@ -40,6 +47,8 @@ class LevelEditor
 	std::string input_;
 	bool grid_snap_;
 	bool render_collision_box_;
+	bool mouse_state_;
+	bool area_select_mouse_state_;
 
 	SelectedObject selected_object_;
 
@@ -57,5 +66,6 @@ private:
 	void updateMenu(Entity* object);
 	void renderMenu(Renderer& renderer);
 
-	void selectObject();
+	bool selectObject();
+	void areaSelect();
 };

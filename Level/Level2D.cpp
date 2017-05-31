@@ -21,8 +21,7 @@ void Level2D::init()
 
 	for (int i = 0; i < 5; i++)
 	{
-		//m_Mobs.push_back(std::make_shared<BasicMob>(100, 100, m_Player));
-		m_Mobs.push_back(std::make_shared<MeleeMob>(Utils::random(1, 1000), Utils::random(1,1000), m_Player));
+		//m_Mobs.push_back(std::make_shared<MeleeMob>(Utils::random(1, 1000), Utils::random(1,1000), m_Player));
 	}
 
 	m_MobSpawnTimer.reset();

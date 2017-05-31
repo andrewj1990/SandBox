@@ -9,7 +9,7 @@ Window::Window()
 
 	for (int i = 0; i < MAX_BUTTONS; i++)
 	{
-		m_MouseButtons[i] = m_MouseClicked[i] = m_MouseState[i] = false;
+		m_MouseButtons[i] = m_MouseClicked[i] = m_MouseButtonsReleased[i] = m_MouseState[i] = false;
 	}
 }
 
@@ -102,7 +102,7 @@ void Window::update()
 	// update key/button state
 	memcpy(m_KeyState, m_Keys, MAX_KEYS);
 	memcpy(m_MouseState, m_MouseButtons, MAX_BUTTONS);
-
+	
 	glfwSwapBuffers(m_Window);
 	glfwPollEvents();
 }
@@ -132,6 +132,11 @@ bool Window::isButtonPressed(unsigned int mousebutton) const
 	return m_MouseButtons[mousebutton];
 }
 
+bool Window::isButtonReleased(unsigned int mousebutton) const
+{
+	return m_MouseButtonsReleased[mousebutton];
+}
+
 bool Window::isButtonClicked(unsigned int mousebutton) const
 {
 	return m_MouseClicked[mousebutton];
@@ -146,7 +151,7 @@ void Window::clearKeyPresses()
 
 	for (int i = 0; i < MAX_BUTTONS; i++)
 	{
-		m_MouseButtons[i] = m_MouseClicked[i] = m_MouseState[i] = false;
+		m_MouseButtons[i] = m_MouseButtonsReleased[i] = m_MouseClicked[i] = m_MouseState[i] = false;
 	}
 }
 
@@ -206,6 +211,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
 	Window* win = (Window*)glfwGetWindowUserPointer(window);
 	win->m_MouseButtons[button] = action != GLFW_RELEASE;
+	win->m_MouseButtonsReleased[button] = action == GLFW_RELEASE;
 }
 
 void window_resize(GLFWwindow* window, int width, int height)

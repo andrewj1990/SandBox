@@ -28,8 +28,14 @@ void Sprite::init()
 
 void Sprite::setPosition(float x, float y)
 {
+	int offsetX = m_CollisionBox.x - m_Position.x;
+	int offsetY = m_CollisionBox.y - m_Position.y;
+
 	m_Position.x = x;
 	m_Position.y = y;
+
+	m_CollisionBox.x = x + offsetX;
+	m_CollisionBox.y = y + offsetY;
 }
 
 void Sprite::fade(float fadeAmount)

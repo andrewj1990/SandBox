@@ -35,6 +35,7 @@ public:
 	bool isKeyPressed(unsigned int keycode) const;
 	bool isKeyTyped(unsigned int keycode) const;
 	bool isButtonPressed(unsigned int mousebutton) const;
+	bool isButtonReleased(unsigned int mousebutton) const;
 	bool isButtonClicked(unsigned int mousebutton) const;
 	void clearKeyPresses();
 	void clearCharPress() { char_input_ = '\0'; }
@@ -79,6 +80,7 @@ private:
 	bool m_KeyTyped[MAX_KEYS];
 	bool m_KeyState[MAX_KEYS];
 	bool m_MouseButtons[MAX_BUTTONS];
+	bool m_MouseButtonsReleased[MAX_BUTTONS];
 	bool m_MouseClicked[MAX_BUTTONS];
 	bool m_MouseState[MAX_BUTTONS];
 
