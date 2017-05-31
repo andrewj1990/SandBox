@@ -13,10 +13,10 @@ void Ray::findIntersections(const std::vector<Entity*>& sprites, const BoundingB
 	for (const auto& sprite : sprites)
 	{
 		// calculate intersection on each line segment in the renderable
-		int x = sprite->getOccluder()->x;
-		int y = sprite->getOccluder()->y;
-		int w = sprite->getOccluder()->width;
-		int h = sprite->getOccluder()->height;
+		int x = sprite->getOccluder().x;
+		int y = sprite->getOccluder().y;
+		int w = sprite->getOccluder().width;
+		int h = sprite->getOccluder().height;
 
 		if (!Utils::inRange(m_StartPoint.x, m_StartPoint.y, x, y, radius)) continue;
 

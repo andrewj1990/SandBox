@@ -32,8 +32,8 @@ void Bullet::update(float timeElapsed)
 	// use tail end of bullet trail if shooting downwards
 	if (glm::degrees(m_Angle) < 0) m_Position.z = -m_Position.y - m_Size.x;
 
-	m_CollisionBox->x = getPosition().x;
-	m_CollisionBox->y = getPosition().y;
+	m_CollisionBox.x = getPosition().x;
+	m_CollisionBox.y = getPosition().y;
 
 	if (m_Duration <= 0)
 	{

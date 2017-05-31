@@ -12,9 +12,9 @@ MeleeMob::MeleeMob(float x, float y, std::unique_ptr<Player>& player)
 
 	float sizeFactorX = getWidth() / 32.0f;
 	float sizeFactorY = getHeight() / 32.0f;
-	m_CollisionBox = std::make_shared<BoundingBox>(x + (sizeFactorX * 5), y, (sizeFactorX * 27), sizeFactorY * 32);
+	m_CollisionBox = BoundingBox(x + (sizeFactorX * 5), y, (sizeFactorX * 27), sizeFactorY * 32);
 	//m_Occluder = std::make_shared<BoundingBox>(x + (sizeFactorX * 10), y, (sizeFactorX * 10), sizeFactorY + 32);
-	m_Occluder = std::make_shared<BoundingBox>(x + (sizeFactorX * 10), y, 0, 0);
+	m_Occluder = BoundingBox(x + (sizeFactorX * 10), y, 0, 0);
 
 	m_Movespeed = 100.0f;
 	m_SpearAttack = 0;
@@ -78,8 +78,8 @@ void MeleeMob::update(float timeElapsed)
 
 	float sizeFactorX = getWidth() / 32.0f;
 	float sizeFactorY = getHeight() / 32.0f;
-	m_CollisionBox->x = m_Position.x + (sizeFactorX * 5);
-	m_CollisionBox->y = m_Position.y;
+	m_CollisionBox.x = m_Position.x + (sizeFactorX * 5);
+	m_CollisionBox.y = m_Position.y;
 
 	m_LifeBar.setPosition(getX(), getY() + sizeFactorY * 32);
 	m_Spear.setPosition(getX(), getY());
@@ -178,7 +178,7 @@ void MeleeMob::attack(float timeElapsed)
 	m_Attacking = true;
 	if (m_AttackTime.elapsed() < m_AttackDuration)
 	{
-		if (m_SpearBB.intersects(*m_Player->getCollisionBox()))
+		if (m_SpearBB.intersects(m_Player->getCollisionBox()))
 		{
 			m_Player->damage(1);
 		}

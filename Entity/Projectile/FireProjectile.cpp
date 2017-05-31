@@ -21,8 +21,8 @@ void FireProjectile::update(float timeElapsed)
 
 	addDirection(m_Dx * timeElapsed, m_Dy * timeElapsed);
 
-	m_CollisionBox->x = getPosition().x;
-	m_CollisionBox->y = getPosition().y;
+	m_CollisionBox.x = getPosition().x;
+	m_CollisionBox.y = getPosition().y;
 
 	if (m_Duration <= 0)
 	{

@@ -240,7 +240,7 @@ void Level2D::render(Renderer& renderer)
 		renderer.begin();
 		for (auto& t : tiles)
 		{
-			renderer.submit(Renderable(glm::vec3(t->getCollisionBox()->x, t->getCollisionBox()->y, 0), glm::vec2(t->getCollisionBox()->width, t->getCollisionBox()->height), TextureManager::get("Textures/collision_box.png")));
+			renderer.submit(Renderable(glm::vec3(t->getCollisionBox().x, t->getCollisionBox().y, 0), glm::vec2(t->getCollisionBox().width, t->getCollisionBox().height), TextureManager::get("Textures/collision_box.png")));
 		}
 		renderer.end();
 		renderer.flush();
@@ -262,7 +262,7 @@ void Level2D::render(Renderer& renderer)
 
 		for (auto sprite : m_Data)
 		{
-			renderer.debugRender(*(sprite->getCollisionBox()), TextureManager::get("Textures/collision_box.png"));
+			renderer.debugRender((sprite->getCollisionBox()), TextureManager::get("Textures/collision_box.png"));
 		}
 	}
 

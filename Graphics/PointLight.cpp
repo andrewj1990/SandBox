@@ -29,10 +29,10 @@ void PointLight::update(float x, float y, float timeElapsed)
 	// add rays for each sprite
 	for (const auto& sprite : sprites)
 	{
-		int sx = sprite->getOccluder()->x;
-		int sy = sprite->getOccluder()->y;
-		int sw = sprite->getOccluder()->width;
-		int sh = sprite->getOccluder()->height;
+		int sx = sprite->getOccluder().x;
+		int sy = sprite->getOccluder().y;
+		int sw = sprite->getOccluder().width;
+		int sh = sprite->getOccluder().height;
 
 		if (!Utils::inRange(m_Position.x, m_Position.y, sx, sy, (m_LightRegion.width / 2.0f))) continue;
 

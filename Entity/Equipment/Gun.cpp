@@ -101,10 +101,10 @@ void Gun::update(Region& region, float timeElapsed)
 
 		std::vector<Entity*> objects;
 
-		float bx = bullet->getCollisionBox()->x;
-		float by = bullet->getCollisionBox()->y;
-		float bw = bullet->getCollisionBox()->width;
-		float bh = bullet->getCollisionBox()->height;
+		float bx = bullet->getCollisionBox().x;
+		float by = bullet->getCollisionBox().y;
+		float bw = bullet->getCollisionBox().width;
+		float bh = bullet->getCollisionBox().height;
 
 		float bdx = bullet->m_Dx * timeElapsed;
 		float bdy = bullet->m_Dy * timeElapsed;
@@ -116,10 +116,10 @@ void Gun::update(Region& region, float timeElapsed)
 		{
 			const auto& collisionBox = object->getCollisionBox();
 
-			float cx = collisionBox->x;
-			float cy = collisionBox->y;
-			float cw = collisionBox->width;
-			float ch = collisionBox->height;
+			float cx = collisionBox.x;
+			float cy = collisionBox.y;
+			float cw = collisionBox.width;
+			float ch = collisionBox.height;
 
 			if (Utils::lineIntersection(glm::vec4(bx, by, bx - bullet->m_Dx * timeElapsed, by - bullet->m_Dy * timeElapsed), glm::vec4(cx, cy, cx + cw, cy + ch)) ||
 				Utils::lineIntersection(glm::vec4(bx, by, bx - bullet->m_Dx * timeElapsed, by - bullet->m_Dy * timeElapsed), glm::vec4(cx, cy + ch, cx + cw, cy))

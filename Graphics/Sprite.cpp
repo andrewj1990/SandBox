@@ -16,7 +16,7 @@ Sprite::Sprite(const glm::vec3& position, const glm::vec2 size, Texture* texture
 	: Renderable(position, size, texture)
 {
 	init();
-	m_CollisionBox = std::shared_ptr<BoundingBox>(new BoundingBox(position.x, position.y, size.x, size.y));
+	m_CollisionBox = BoundingBox(position.x, position.y, size.x, size.y);
 	//m_Occluder = std::shared_ptr<BoundingBox>(new BoundingBox(position.x, position.y, size.x, size.y));
 }
 

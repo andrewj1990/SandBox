@@ -5,7 +5,7 @@ Player::Player(float x, float y)
 	m_Gun(x, y), m_MissileTimer()
 {
 	m_TexSize = 32;
-	m_CollisionBox = std::make_unique<BoundingBox>(x, y, (getWidth() / 32.0f) * 25, (getHeight() / 32.0f) * 25);
+	m_CollisionBox = BoundingBox(x, y, (getWidth() / 32.0f) * 25, (getHeight() / 32.0f) * 25);
 
 	init();
 }
@@ -38,21 +38,21 @@ void Player::init()
 
 bool Player::playerCollision(float dx, float dy)
 {
-	float x = m_CollisionBox->x + 2 + dx;
-	float y = m_CollisionBox->y + dy;
-	float w = m_CollisionBox->width - 5;
+	float x = m_CollisionBox.x + 2 + dx;
+	float y = m_CollisionBox.y + dy;
+	float w = m_CollisionBox.width - 5;
 	float h = 1;			// collision with feet only for movement
 
 	std::vector<Entity*> tiles;
-	ObjectManager::ObjectsQT->retrieve(tiles, *m_CollisionBox);
+	ObjectManager::ObjectsQT->retrieve(tiles, m_CollisionBox);
 
 	for (auto& tile : tiles)
 	{
 		const auto& collisionBox = tile->getCollisionBox();
-		float tx = collisionBox->x;
-		float ty = collisionBox->y;
-		float tw = collisionBox->width;
-		float th = collisionBox->height;
+		float tx = collisionBox.x;
+		float ty = collisionBox.y;
+		float tw = collisionBox.width;
+		float th = collisionBox.height;
 
 		if (tile->isSolid() && Utils::quadCollision(x, y, w, h, tx, ty, tw, th))
 		{
@@ -242,8 +242,8 @@ void Player::move(float dx, float dy)
 	m_Gun.move(dx, dy);
 
 	float sizeFactorX = getWidth() / 32.0f;
-	m_CollisionBox->x = m_Position.x + (sizeFactorX * 3);
-	m_CollisionBox->y = m_Position.y + 2;
+	m_CollisionBox.x = m_Position.x + (sizeFactorX * 3);
+	m_CollisionBox.y = m_Position.y + 2;
 
 	Camera& camera = Window::Instance().getCamera();
 	camera.moveCamera(dx, dy);
@@ -344,7 +344,7 @@ void Player::render(Renderer& renderer)
 	ResourceManager::getInstance().shader("basic_shader")->use();
 	if (Settings::Instance().debugShowCollisionBoxes)
 	{
-		renderer.render(Sprite(glm::vec3(m_CollisionBox->x, m_CollisionBox->y, getY() + 1), glm::vec2(m_CollisionBox->width, m_CollisionBox->height), TextureManager::get("Textures/collision_box.png")));
+		renderer.render(Sprite(glm::vec3(m_CollisionBox.x, m_CollisionBox.y, getY() + 1), glm::vec2(m_CollisionBox.width, m_CollisionBox.height), TextureManager::get("Textures/collision_box.png")));
 	}
 }
 

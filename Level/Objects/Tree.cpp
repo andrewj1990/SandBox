@@ -5,8 +5,8 @@ Tree::Tree(int x, int y)
 {
 	float sizeFactorX = getWidth() / 10.0f;
 	float sizeFactorY = getHeight() / 10.0f;
-	m_CollisionBox = std::shared_ptr<BoundingBox>(new BoundingBox(x + (sizeFactorX * 3), y, (sizeFactorX * 3), sizeFactorY));
-	m_Occluder = std::shared_ptr<BoundingBox>(new BoundingBox(x + (sizeFactorX * 3), y, (sizeFactorX * 3), sizeFactorY));
+	m_CollisionBox = BoundingBox(x + (sizeFactorX * 3), y, (sizeFactorX * 3), sizeFactorY);
+	m_Occluder = BoundingBox(x + (sizeFactorX * 3), y, (sizeFactorX * 3), sizeFactorY);
 
 }
 
@@ -20,6 +20,6 @@ void Tree::submit(Renderer& renderer) const
 
 	if (Settings::Instance().debugShowCollisionBoxes)
 	{
-		renderer.submit(Sprite(glm::vec3(m_CollisionBox->x, m_CollisionBox->y, getY() + 1), glm::vec2(m_CollisionBox->width, m_CollisionBox->height), TextureManager::get("Textures/collision_box.png")));
+		renderer.submit(Sprite(glm::vec3(m_CollisionBox.x, m_CollisionBox.y, getY() + 1), glm::vec2(m_CollisionBox.width, m_CollisionBox.height), TextureManager::get("Textures/collision_box.png")));
 	}
 }

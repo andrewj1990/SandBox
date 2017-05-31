@@ -17,8 +17,8 @@ Entity::Entity(const glm::vec3& pos, const glm::vec2& size, Texture* texture)
 {
 	init();
 
-	m_CollisionBox = std::shared_ptr<BoundingBox>(new BoundingBox(pos.x, pos.y, size.x, size.y));
-	m_Occluder = std::shared_ptr<BoundingBox>(new BoundingBox(pos.x, pos.y, size.x, size.y));
+	m_CollisionBox = BoundingBox(pos.x, pos.y, size.x, size.y);
+	m_Occluder = BoundingBox(pos.x, pos.y, size.x, size.y);
 }
 
 Entity::Entity(const glm::vec3& pos, const glm::vec2& size, const glm::vec4& colour)
@@ -26,8 +26,8 @@ Entity::Entity(const glm::vec3& pos, const glm::vec2& size, const glm::vec4& col
 {
 	init();
 
-	m_CollisionBox = std::shared_ptr<BoundingBox>(new BoundingBox(pos.x, pos.y, size.x, size.y));
-	m_Occluder = std::shared_ptr<BoundingBox>(new BoundingBox(pos.x, pos.y, size.x, size.y));
+	m_CollisionBox = BoundingBox(pos.x, pos.y, size.x, size.y);
+	m_Occluder = BoundingBox(pos.x, pos.y, size.x, size.y);
 }
 
 Entity::~Entity()
@@ -37,8 +37,8 @@ Entity::~Entity()
 void Entity::init(const glm::vec3& pos, const glm::vec2& size, Texture* texture)
 {
 	init();
-	m_CollisionBox = std::shared_ptr<BoundingBox>(new BoundingBox(pos.x, pos.y, size.x, size.y));
-	m_Occluder = std::shared_ptr<BoundingBox>(new BoundingBox(pos.x, pos.y, size.x, size.y));
+	m_CollisionBox = BoundingBox(pos.x, pos.y, size.x, size.y);
+	m_Occluder = BoundingBox(pos.x, pos.y, size.x, size.y);
 }
 
 void Entity::update(float timeElapsed)

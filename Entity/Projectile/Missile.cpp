@@ -27,7 +27,7 @@ void Missile::update(float timeElapsed)
 	m_CumulativeTime += timeElapsed;
 	angleDelta(timeElapsed);
 
-	if (collide(*m_Target->getCollisionBox()))
+	if (collide(m_Target->getCollisionBox()))
 	{
 		if (!m_Target->shouldDestroy())
 		{

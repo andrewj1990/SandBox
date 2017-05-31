@@ -201,7 +201,7 @@ void LevelEditor::render(Renderer& renderer)
 	if (render_collision_box_) {
 		for (auto& entity : entities_) {
 			auto& cb = entity->getCollisionBox();
-			renderer.debugRender(*cb, TextureManager::get("Textures/collision_box.png"));
+			renderer.debugRender(cb, TextureManager::get("Textures/collision_box.png"));
 		}
 	}
 }

@@ -8,9 +8,9 @@ ProjectileMob::ProjectileMob(float x, float y, std::unique_ptr<Player>& player)
 
 	float sizeFactorX = getWidth() / 32.0f;
 	float sizeFactorY = getHeight() / 32.0f;
-	m_CollisionBox = std::make_shared<BoundingBox>(x + (sizeFactorX * 10), y, (sizeFactorX * 10), sizeFactorY * 20);
+	m_CollisionBox = BoundingBox(x + (sizeFactorX * 10), y, (sizeFactorX * 10), sizeFactorY * 20);
 	//m_Occluder = std::make_shared<BoundingBox>(x + (sizeFactorX * 5), y, (sizeFactorX * 10), sizeFactorY * 1);
-	m_Occluder = std::make_shared<BoundingBox>(0, 0, 0, 0);
+	m_Occluder = BoundingBox(0, 0, 0, 0);
 
 	m_Actions.push_back(std::make_unique<DamageAction>());
 	m_Actions.push_back(std::make_unique<MoveAction>());
@@ -61,8 +61,8 @@ void ProjectileMob::update(float timeElapsed)
 
 	float sizeFactorX = getWidth() / 32.0f;
 	float sizeFactorY = getHeight() / 32.0f;
-	m_CollisionBox->x = m_Position.x + (sizeFactorX * 10);
-	m_CollisionBox->y = m_Position.y;
+	m_CollisionBox.x = m_Position.x + (sizeFactorX * 10);
+	m_CollisionBox.y = m_Position.y;
 	//m_Occluder->x = m_Position.x + (sizeFactorX * 5);
 	//m_Occluder->y = m_Position.y;
 
