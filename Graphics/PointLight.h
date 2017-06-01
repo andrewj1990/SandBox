@@ -29,6 +29,6 @@ private:
 	glm::vec2 m_Position;
 	BoundingBox m_LightRegion;
 
-	std::vector<std::unique_ptr<Renderable>> m_LightQuads;
+	//std::vector<std::unique_ptr<Renderable>> m_LightQuads;
 	std::vector<Renderable> m_Quads;
 };

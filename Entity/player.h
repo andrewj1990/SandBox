@@ -15,6 +15,7 @@
 #include "..\Level\Region.h"
 #include "ObjectManager.h"
 #include "Projectile\Missile.h"
+#include "..\Graphics\SpotLight.h"
 
 enum PlayerState
 {
@@ -67,6 +68,7 @@ private:
 	float m_DodgeAngle;
 
 	Gun m_Gun;
+	SpotLight line_of_sight_;
 
 	//BoundingBox m_CollisionBox;
 

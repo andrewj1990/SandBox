@@ -319,6 +319,8 @@ void Player::update(Region& region, float timeElapsed)
 			ParticleManager::instance().add(Missile(getCenterX(), getCenterY(), objects[randomVal]));
 		}
 	}
+
+	line_of_sight_.update(getCenterX(), getCenterY(), timeElapsed);
 }
 
 void Player::render(Renderer& renderer)
@@ -346,6 +348,8 @@ void Player::render(Renderer& renderer)
 	{
 		renderer.render(Sprite(glm::vec3(m_CollisionBox.x, m_CollisionBox.y, getY() + 1), glm::vec2(m_CollisionBox.width, m_CollisionBox.height), TextureManager::get("Textures/collision_box.png")));
 	}
+
+	line_of_sight_.render(renderer);
 }
 
 void Player::renderLight(Renderer& renderer)
