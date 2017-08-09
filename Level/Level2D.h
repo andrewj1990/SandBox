@@ -35,6 +35,9 @@ public:
 
 	const std::unique_ptr<Player>& getPlayerPtr() { return m_Player; }
 	void waterRipple(int x, int y);
+
+private:
+	void load();
 	
 private:
 	std::unique_ptr<Player> m_Player;
@@ -44,6 +47,7 @@ private:
 	PointLight m_PointLight;
 
 	std::vector<std::shared_ptr<Sprite>> m_TestObjects;
+	std::vector<std::unique_ptr<Entity>> objects_;
 
 	Sprite m_Background;
 

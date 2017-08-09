@@ -41,7 +41,8 @@ bool Player::playerCollision(float dx, float dy)
 	float x = m_CollisionBox.x + 2 + dx;
 	float y = m_CollisionBox.y + dy;
 	float w = m_CollisionBox.width - 5;
-	float h = 1;			// collision with feet only for movement
+	//float h = 1;			// collision with feet only for movement
+	float h = m_CollisionBox.height;
 
 	std::vector<Entity*> tiles;
 	ObjectManager::ObjectsQT->retrieve(tiles, m_CollisionBox);

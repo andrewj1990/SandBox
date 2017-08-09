@@ -1,0 +1,1212 @@
+Object
+	texture Textures/wall_tile.png
+	position 1344 448
+	size 32 32
+	solid 1
+	cbox 1344 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1312 448
+	size 32 32
+	solid 1
+	cbox 1312 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1280 448
+	size 32 32
+	solid 1
+	cbox 1280 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1248 448
+	size 32 32
+	solid 1
+	cbox 1248 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1216 448
+	size 32 32
+	solid 1
+	cbox 1216 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1184 448
+	size 32 32
+	solid 1
+	cbox 1184 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1152 448
+	size 32 32
+	solid 1
+	cbox 1152 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1120 448
+	size 32 32
+	solid 1
+	cbox 1120 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1088 448
+	size 32 32
+	solid 1
+	cbox 1088 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1056 448
+	size 32 32
+	solid 1
+	cbox 1056 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1024 448
+	size 32 32
+	solid 1
+	cbox 1024 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 992 448
+	size 32 32
+	solid 1
+	cbox 992 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 960 448
+	size 32 32
+	solid 1
+	cbox 960 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 928 448
+	size 32 32
+	solid 1
+	cbox 928 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 896 448
+	size 32 32
+	solid 1
+	cbox 896 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 864 448
+	size 32 32
+	solid 1
+	cbox 864 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 832 448
+	size 32 32
+	solid 1
+	cbox 832 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 800 448
+	size 32 32
+	solid 1
+	cbox 800 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 768 448
+	size 32 32
+	solid 1
+	cbox 768 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 736 448
+	size 32 32
+	solid 1
+	cbox 736 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 704 448
+	size 32 32
+	solid 1
+	cbox 704 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 384
+	size 32 32
+	solid 1
+	cbox 288 384 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 352
+	size 32 32
+	solid 1
+	cbox 288 352 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 320
+	size 32 32
+	solid 1
+	cbox 288 320 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 288
+	size 32 32
+	solid 1
+	cbox 288 288 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 256
+	size 32 32
+	solid 1
+	cbox 288 256 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 224
+	size 32 32
+	solid 1
+	cbox 288 224 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 192
+	size 32 32
+	solid 1
+	cbox 288 192 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 160
+	size 32 32
+	solid 1
+	cbox 288 160 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 128
+	size 32 32
+	solid 1
+	cbox 288 128 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 96
+	size 32 32
+	solid 1
+	cbox 288 96 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 416
+	size 32 32
+	solid 1
+	cbox 288 416 32 32
+Object
+	texture Textures/wall_tile.png
+	position 320 416
+	size 32 32
+	solid 1
+	cbox 320 416 32 32
+Object
+	texture Textures/wall_tile.png
+	position 320 448
+	size 32 32
+	solid 1
+	cbox 320 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 352 448
+	size 32 32
+	solid 1
+	cbox 352 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 640 448
+	size 32 32
+	solid 1
+	cbox 640 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 608 448
+	size 32 32
+	solid 1
+	cbox 608 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 576 448
+	size 32 32
+	solid 1
+	cbox 576 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 544 448
+	size 32 32
+	solid 1
+	cbox 544 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 512 448
+	size 32 32
+	solid 1
+	cbox 512 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 480 448
+	size 32 32
+	solid 1
+	cbox 480 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 448 448
+	size 32 32
+	solid 1
+	cbox 448 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 416 448
+	size 32 32
+	solid 1
+	cbox 416 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 384 448
+	size 32 32
+	solid 1
+	cbox 384 448 32 32
+Object
+	texture Textures/brick_wall.png
+	position 928 288
+	size 32 32
+	solid 1
+	cbox 928 288 32 32
+Object
+	texture Textures/brick_wall.png
+	position 896 288
+	size 32 32
+	solid 1
+	cbox 896 288 32 32
+Object
+	texture Textures/brick_wall.png
+	position 864 288
+	size 32 32
+	solid 1
+	cbox 864 288 32 32
+Object
+	texture Textures/brick_wall.png
+	position 832 288
+	size 32 32
+	solid 1
+	cbox 832 288 32 32
+Object
+	texture Textures/brick_wall.png
+	position 800 288
+	size 32 32
+	solid 1
+	cbox 800 288 32 32
+Object
+	texture Textures/brick_wall.png
+	position 768 288
+	size 32 32
+	solid 1
+	cbox 768 288 32 32
+Object
+	texture Textures/brick_wall.png
+	position 736 288
+	size 32 32
+	solid 1
+	cbox 736 288 32 32
+Object
+	texture Textures/brick_wall.png
+	position 704 288
+	size 32 32
+	solid 1
+	cbox 704 288 32 32
+Object
+	texture Textures/brick_wall.png
+	position 672 288
+	size 32 32
+	solid 1
+	cbox 672 288 32 32
+Object
+	texture Textures/brick_wall.png
+	position 640 288
+	size 32 32
+	solid 1
+	cbox 640 288 32 32
+Object
+	texture Textures/brick_wall.png
+	position 1440 288
+	size 32 32
+	solid 1
+	cbox 1440 288 32 32
+Object
+	texture Textures/brick_wall.png
+	position 1408 288
+	size 32 32
+	solid 1
+	cbox 1408 288 32 32
+Object
+	texture Textures/brick_wall.png
+	position 1376 288
+	size 32 32
+	solid 1
+	cbox 1376 288 32 32
+Object
+	texture Textures/brick_wall.png
+	position 1344 288
+	size 32 32
+	solid 1
+	cbox 1344 288 32 32
+Object
+	texture Textures/brick_wall.png
+	position 1312 288
+	size 32 32
+	solid 1
+	cbox 1312 288 32 32
+Object
+	texture Textures/brick_wall.png
+	position 1280 288
+	size 32 32
+	solid 1
+	cbox 1280 288 32 32
+Object
+	texture Textures/brick_wall.png
+	position 1248 288
+	size 32 32
+	solid 1
+	cbox 1248 288 32 32
+Object
+	texture Textures/brick_wall.png
+	position 1216 288
+	size 32 32
+	solid 1
+	cbox 1216 288 32 32
+Object
+	texture Textures/brick_wall.png
+	position 1184 288
+	size 32 32
+	solid 1
+	cbox 1184 288 32 32
+Object
+	texture Textures/brick_wall.png
+	position 1152 288
+	size 32 32
+	solid 1
+	cbox 1152 288 32 32
+Object
+	texture Textures/brick_wall.png
+	position 1120 288
+	size 32 32
+	solid 1
+	cbox 1120 288 32 32
+Object
+	texture Textures/tree_top4.png
+	position 320 0
+	size 128 -128
+	solid 1
+	cbox 363 -52 47 -40
+Object
+	texture Textures/tree_top4.png
+	position 128 128
+	size 128 -128
+	solid 1
+	cbox 178 74 27 -28
+Object
+	texture Textures/wall_tile.png
+	position 672 448
+	size 32 32
+	solid 1
+	cbox 672 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1344 448
+	size 32 32
+	solid 1
+	cbox 1344 448 32 32
+Object
+	texture Textures/crate2.png
+	position 322 414.857
+	size 96 -96
+	solid 1
+	cbox 322 414.857 96 -96
+Object
+	texture Textures/crate2.png
+	position 418 318.857
+	size 96 -96
+	solid 1
+	cbox 418 318.857 96 -96
+Object
+	texture Textures/crate2.png
+	position 322 318.857
+	size 96 -96
+	solid 1
+	cbox 322 318.857 96 -96
+Object
+	texture Textures/wall_tile.png
+	position 288 64
+	size 32 32
+	solid 1
+	cbox 288 64 32 32
+Object
+	texture Textures/wall_tile.png
+	position 320 0
+	size -32 0
+	solid 1
+	cbox 320 0 -32 0
+Object
+	texture Textures/wall_tile.png
+	position 288 32
+	size 32 32
+	solid 1
+	cbox 288 32 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 -32
+	size 32 32
+	solid 1
+	cbox 288 -32 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 -64
+	size 32 32
+	solid 1
+	cbox 288 -64 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 -96
+	size 32 32
+	solid 1
+	cbox 288 -96 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 -128
+	size 32 32
+	solid 1
+	cbox 288 -128 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 -160
+	size 32 32
+	solid 1
+	cbox 288 -160 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 -192
+	size 32 32
+	solid 1
+	cbox 288 -192 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 -224
+	size 32 32
+	solid 1
+	cbox 288 -224 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 -256
+	size 32 32
+	solid 1
+	cbox 288 -256 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 -288
+	size 32 32
+	solid 1
+	cbox 288 -288 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 -320
+	size 32 32
+	solid 1
+	cbox 288 -320 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 -352
+	size 32 32
+	solid 1
+	cbox 288 -352 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 -384
+	size 32 32
+	solid 1
+	cbox 288 -384 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 -416
+	size 32 32
+	solid 1
+	cbox 288 -416 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 -448
+	size 32 32
+	solid 1
+	cbox 288 -448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 -480
+	size 32 32
+	solid 1
+	cbox 288 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 -512
+	size 32 32
+	solid 1
+	cbox 288 -512 32 32
+Object
+	texture Textures/wall_tile.png
+	position 288 0
+	size 32 32
+	solid 1
+	cbox 288 0 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 -480
+	size 32 32
+	solid 1
+	cbox 1696 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1664 -480
+	size 32 32
+	solid 1
+	cbox 1664 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1632 -480
+	size 32 32
+	solid 1
+	cbox 1632 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1600 -480
+	size 32 32
+	solid 1
+	cbox 1600 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1568 -480
+	size 32 32
+	solid 1
+	cbox 1568 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1536 -480
+	size 32 32
+	solid 1
+	cbox 1536 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1504 -480
+	size 32 32
+	solid 1
+	cbox 1504 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1472 -480
+	size 32 32
+	solid 1
+	cbox 1472 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1440 -480
+	size 32 32
+	solid 1
+	cbox 1440 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1408 -480
+	size 32 32
+	solid 1
+	cbox 1408 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1376 -480
+	size 32 32
+	solid 1
+	cbox 1376 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1344 -480
+	size 32 32
+	solid 1
+	cbox 1344 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1312 -480
+	size 32 32
+	solid 1
+	cbox 1312 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1280 -480
+	size 32 32
+	solid 1
+	cbox 1280 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1248 -480
+	size 32 32
+	solid 1
+	cbox 1248 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1216 -480
+	size 32 32
+	solid 1
+	cbox 1216 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1184 -480
+	size 32 32
+	solid 1
+	cbox 1184 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1152 -480
+	size 32 32
+	solid 1
+	cbox 1152 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1120 -480
+	size 32 32
+	solid 1
+	cbox 1120 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1088 -480
+	size 32 32
+	solid 1
+	cbox 1088 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1056 -480
+	size 32 32
+	solid 1
+	cbox 1056 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1024 -480
+	size 32 32
+	solid 1
+	cbox 1024 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 992 -480
+	size 32 32
+	solid 1
+	cbox 992 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 960 -480
+	size 32 32
+	solid 1
+	cbox 960 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 928 -480
+	size 32 32
+	solid 1
+	cbox 928 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 896 -480
+	size 32 32
+	solid 1
+	cbox 896 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 864 -480
+	size 32 32
+	solid 1
+	cbox 864 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 832 -480
+	size 32 32
+	solid 1
+	cbox 832 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 800 -480
+	size 32 32
+	solid 1
+	cbox 800 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 768 -480
+	size 32 32
+	solid 1
+	cbox 768 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 736 -480
+	size 32 32
+	solid 1
+	cbox 736 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 704 -480
+	size 32 32
+	solid 1
+	cbox 704 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 672 -480
+	size 32 32
+	solid 1
+	cbox 672 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 640 -480
+	size 32 32
+	solid 1
+	cbox 640 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 608 -480
+	size 32 32
+	solid 1
+	cbox 608 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 576 -480
+	size 32 32
+	solid 1
+	cbox 576 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 544 -480
+	size 32 32
+	solid 1
+	cbox 544 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 512 -480
+	size 32 32
+	solid 1
+	cbox 512 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 480 -480
+	size 32 32
+	solid 1
+	cbox 480 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 448 -480
+	size 32 32
+	solid 1
+	cbox 448 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 416 -480
+	size 32 32
+	solid 1
+	cbox 416 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 384 -480
+	size 32 32
+	solid 1
+	cbox 384 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 352 -480
+	size 32 32
+	solid 1
+	cbox 352 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 320 -480
+	size 32 32
+	solid 1
+	cbox 320 -480 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 448
+	size 32 32
+	solid 1
+	cbox 1696 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 416
+	size 32 32
+	solid 1
+	cbox 1696 416 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 384
+	size 32 32
+	solid 1
+	cbox 1696 384 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 352
+	size 32 32
+	solid 1
+	cbox 1696 352 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 320
+	size 32 32
+	solid 1
+	cbox 1696 320 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 288
+	size 32 32
+	solid 1
+	cbox 1696 288 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 256
+	size 32 32
+	solid 1
+	cbox 1696 256 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 224
+	size 32 32
+	solid 1
+	cbox 1696 224 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 192
+	size 32 32
+	solid 1
+	cbox 1696 192 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 160
+	size 32 32
+	solid 1
+	cbox 1696 160 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 128
+	size 32 32
+	solid 1
+	cbox 1696 128 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 96
+	size 32 32
+	solid 1
+	cbox 1696 96 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 64
+	size 32 32
+	solid 1
+	cbox 1696 64 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 32
+	size 32 32
+	solid 1
+	cbox 1696 32 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 0
+	size 32 32
+	solid 1
+	cbox 1696 0 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 -32
+	size 32 32
+	solid 1
+	cbox 1696 -32 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 -64
+	size 32 32
+	solid 1
+	cbox 1696 -64 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 -96
+	size 32 32
+	solid 1
+	cbox 1696 -96 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 -128
+	size 32 32
+	solid 1
+	cbox 1696 -128 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 -160
+	size 32 32
+	solid 1
+	cbox 1696 -160 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 -192
+	size 32 32
+	solid 1
+	cbox 1696 -192 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 -224
+	size 32 32
+	solid 1
+	cbox 1696 -224 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 -256
+	size 32 32
+	solid 1
+	cbox 1696 -256 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 -288
+	size 32 32
+	solid 1
+	cbox 1696 -288 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 -320
+	size 32 32
+	solid 1
+	cbox 1696 -320 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 -352
+	size 32 32
+	solid 1
+	cbox 1696 -352 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 -384
+	size 32 32
+	solid 1
+	cbox 1696 -384 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 -416
+	size 32 32
+	solid 1
+	cbox 1696 -416 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1664 448
+	size 32 32
+	solid 1
+	cbox 1664 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1632 448
+	size 32 32
+	solid 1
+	cbox 1632 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1600 448
+	size 32 32
+	solid 1
+	cbox 1600 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1568 448
+	size 32 32
+	solid 1
+	cbox 1568 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1536 448
+	size 32 32
+	solid 1
+	cbox 1536 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1504 448
+	size 32 32
+	solid 1
+	cbox 1504 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1472 448
+	size 32 32
+	solid 1
+	cbox 1472 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1440 448
+	size 32 32
+	solid 1
+	cbox 1440 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1408 448
+	size 32 32
+	solid 1
+	cbox 1408 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1376 448
+	size 32 32
+	solid 1
+	cbox 1376 448 32 32
+Object
+	texture Textures/wall_tile.png
+	position 1696 -448
+	size 32 32
+	solid 1
+	cbox 1696 -448 32 32
+Object
+	texture Textures/tree_top4.png
+	position 512 -256
+	size 128 -128
+	solid 1
+	cbox 555 -308 47 -40
+Object
+	texture Textures/tree_top4.png
+	position 544 -128
+	size 128 -128
+	solid 1
+	cbox 587 -180 47 -40
+Object
+	texture Textures/tree_top4.png
+	position 736 -288
+	size 128 -128
+	solid 1
+	cbox 779 -340 47 -40
+Object
+	texture Textures/crate2.png
+	position 608 0
+	size 96 -96
+	solid 1
+	cbox 608 0 96 -96
+Object
+	texture Textures/crate2.png
+	position 704 0
+	size 96 -96
+	solid 1
+	cbox 704 0 96 -96
+Object
+	texture Textures/crate2.png
+	position 704 -96
+	size 96 -96
+	solid 1
+	cbox 704 -96 96 -96
+Object
+	texture Textures/crate2.png
+	position 800 -192
+	size 96 -96
+	solid 1
+	cbox 800 -192 96 -96
+Object
+	texture Textures/crate2.png
+	position 704 -192
+	size 96 -96
+	solid 1
+	cbox 704 -192 96 -96
+Object
+	texture Textures/tree_top4.png
+	position 800 -224
+	size 128 -128
+	solid 1
+	cbox 843 -276 47 -40
+Object
+	texture Textures/tree_top4.png
+	position 1376 320
+	size 128 -128
+	solid 1
+	cbox 1419 268 47 -40
+Object
+	texture Textures/crate2.png
+	position 1120 96
+	size 96 -96
+	solid 1
+	cbox 1120 96 96 -96
+Object
+	texture Textures/crate2.png
+	position 1120 0
+	size 96 -96
+	solid 1
+	cbox 1120 0 96 -96
+Object
+	texture Textures/crate2.png
+	position 1216 0
+	size 96 -96
+	solid 1
+	cbox 1216 0 96 -96
+Object
+	texture Textures/crate2.png
+	position 1216 192
+	size 96 -96
+	solid 1
+	cbox 1216 192 96 -96
+Object
+	texture Textures/crate2.png
+	position 1120 192
+	size 96 -96
+	solid 1
+	cbox 1120 192 96 -96
+Object
+	texture Textures/crate2.png
+	position 1312 0
+	size 96 -96
+	solid 1
+	cbox 1312 0 96 -96
+Object
+	texture Textures/crate2.png
+	position 1312 192
+	size 96 -96
+	solid 1
+	cbox 1312 192 96 -96
+Object
+	texture Textures/tree_top4.png
+	position 1312 288
+	size 128 -128
+	solid 1
+	cbox 1355 236 47 -40
+Object
+	texture Textures/crate2.png
+	position 416 224
+	size 96 -96
+	solid 1
+	cbox 416 224 96 -96
+Object
+	texture Textures/crate2.png
+	position 416 128
+	size 96 -96
+	solid 1
+	cbox 416 128 96 -96
+Object
+	texture Textures/tree_top4.png
+	position 864 96
+	size 128 -128
+	solid 1
+	cbox 907 44 47 -40
+Object
+	texture Textures/tree_top4.png
+	position 864 32
+	size 128 -128
+	solid 1
+	cbox 907 -20 47 -40
+Object
+	texture Textures/tree_top4.png
+	position 928 64
+	size 128 -128
+	solid 1
+	cbox 971 12 47 -40
+Object
+	texture Textures/tree_top4.png
+	position 768 480
+	size 128 -128
+	solid 1
+	cbox 811 428 47 -40
+Object
+	texture Textures/tree_top4.png
+	position 1568 480
+	size 128 -128
+	solid 1
+	cbox 1611 428 47 -40
+Object
+	texture Textures/crate2.png
+	position 1600 320
+	size 96 -96
+	solid 1
+	cbox 1600 320 96 -96
+Object
+	texture Textures/crate2.png
+	position 1600 224
+	size 96 -96
+	solid 1
+	cbox 1600 224 96 -96

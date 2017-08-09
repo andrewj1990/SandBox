@@ -24,6 +24,9 @@ void Level2D::init()
 		//m_Mobs.push_back(std::make_shared<MeleeMob>(Utils::random(1, 1000), Utils::random(1,1000), m_Player));
 	}
 
+	// create box around player
+	load();
+
 	m_MobSpawnTimer.reset();
 	m_MobSpawnTime = 1.0f;
 
@@ -85,6 +88,15 @@ void Level2D::update(float timeElapsed)
 
 			(*it)->update(timeElapsed);
 
+			++it;
+		}
+	}
+
+	for (auto& it = objects_.begin(); it != objects_.end(); ) {
+		if ((*it)->shouldDestroy()) {
+			it = objects_.erase(it);
+		} else {
+			ObjectManager::ObjectsQT->insert(it->get());
 			++it;
 		}
 	}
@@ -209,10 +221,11 @@ void Level2D::render(Renderer& renderer)
 	renderer.m_AlphaTest = false;
 	for (auto& waterRipple : m_WaterRipples) waterRipple->submit(renderer);
 	for (auto& fireParticle : m_FireParticles) fireParticle->submit(renderer);
+	for (auto& object : objects_) object->submit(renderer);
 	renderer.end();
 	renderer.flush();
 	renderer.m_AlphaTest = true;
-
+	
 	renderer.begin();
 	for (auto& mob : m_Mobs)
 	{
@@ -311,4 +324,41 @@ void Level2D::waterRipple(int x, int y)
 	{
 		m_WaterRipples.push_back(std::unique_ptr<WaterRipple>(new WaterRipple(x, y, Utils::random(100, 300))));
 	}
+}
+
+void Level2D::load()
+{
+	std::string param_name;
+	std::string texture_name;
+	bool solid;
+	float x;
+	float y;
+	float w;
+	float h;
+
+	std::ifstream level("level.txt");
+
+	while (level >> param_name) {
+		level >> param_name >> texture_name;
+		level >> param_name >> x >> y;
+		level >> param_name >> w >> h;
+
+		std::unique_ptr<Entity> object = std::make_unique<Entity>(glm::vec3(x, y, 0), glm::vec2(w, h), TextureManager::get(texture_name));
+		level >> param_name >> solid;
+		object->setSolid(solid);
+		level >> param_name >> x >> y >> w >> h;
+		object->getCollisionBox().x = x;
+		object->getCollisionBox().y = y;
+		object->getCollisionBox().width = w;
+		object->getCollisionBox().height = h;
+		object->getOccluder().x = x;
+		object->getOccluder().y = y;
+		object->getOccluder().width = w;
+		object->getOccluder().height = h;
+		objects_.push_back(std::move(object));
+	}
+
+	std::cout << "objects : " << objects_.size() << "\n";
+
+	level.close();
 }

@@ -151,7 +151,7 @@ void LevelEditor::update(float timeElapsed)
 			std::cout << "size : " << entities_.size() << "\n";
 			selected_object_ = SelectedObject::NOTHING;
 		}
-		selected_objects_boxes_.push_back(std::make_unique<Entity>(current_object_->getPosition(), current_object_->getSize(), TextureManager::get("Textures/box.png")));
+		//selected_objects_boxes_.push_back(std::make_unique<Entity>(current_object_->getPosition(), current_object_->getSize(), TextureManager::get("Textures/box.png")));
 
 		updateMenu(current_object_.get());
 		break;

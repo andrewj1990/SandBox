@@ -3,7 +3,7 @@
 SpotLight::SpotLight()
 	: position_(0, 0), light_region_(0, 0, 0, 0)
 {
-	light_region_.width = 400;		// diameter
+	light_region_.width = 0;		// diameter
 	light_region_.height = light_region_.width;
 }
 

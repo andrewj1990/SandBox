@@ -29,7 +29,7 @@ public:
 	float getAngle(const Entity& entity);
 	float getAngle() const override { return m_Angle; }
 	float calcDistanceSqrd(const Entity& entity) const;
-	virtual void damage(int amount) {}
+	virtual void damage(int amount) {/* m_Destroy = true; */}
 
 	float m_Dx;
 	float m_Dy;
