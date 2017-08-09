@@ -81,6 +81,51 @@ bool Utils::lineIntersection(const glm::vec4& line1, const glm::vec4& line2)
 	return false;
 }
 
+glm::vec2 Utils::intersection(const BoundingBox& bbox, const glm::vec4& line)
+{
+	int t1 = INT_MAX;
+
+	// intersections of bounding box
+	int x = bbox.x;
+	int y = bbox.y;
+	int w = bbox.width;
+	int h = bbox.height;
+
+	float endX = 0;
+	float endY = 0;
+
+	float dirX = line.z - line.x;
+	float dirY = line.w - line.y;
+
+	// find the end point
+	intersect(x, y, x + w, y, line, dirX, dirY, t1, endX, endY);
+	intersect(x, y, x, y + h, line, dirX, dirY, t1, endX, endY);
+	intersect(x, y + h, x + w, y + h, line, dirX, dirY, t1, endX, endY);
+	intersect(x + w, y, x + w, y + h, line, dirX, dirY, t1, endX, endY);
+
+	return glm::vec2(endX, endY);
+}
+
+void Utils::intersect(float sx, float sy, float ex, float ey, const glm::vec4& line, float dirX, float dirY, int& T1, float& endPointX, float& endPointY)
+{
+	float dx = ex - sx;
+	float dy = ey - sy;
+
+	float t2 = (dirX * (sy - line.y) + dirY * (line.x - sx)) / (dx * dirY - dy * dirX);
+	float t1 = (sx + dx * t2 - line.x) / dirX;
+
+
+	if (t1 > 0 && t2 > 0 && t2 < 1)
+	{
+		if (t1 < T1)
+		{
+			T1 = t1;
+			endPointX = line.x + dirX * t1;
+			endPointY = line.y + dirY * t1;
+		}
+	}
+}
+
 glm::mat4 Utils::calcTransformMat(float x, float y, float w, float h, float angle)
 {
 	glm::mat4 transform;

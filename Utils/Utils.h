@@ -8,6 +8,7 @@
 #include "..\Entity\Mob\Actions\Action.h"
 #include "..\Entity\Mob\Actions\MoveAction.h"
 #include "..\Entity\Mob\Actions\AttackAction.h"
+#include "BoundingBox.h"
 
 enum class ActionType {
 	MOVE, ATTACK, AOEATTACK, END
@@ -27,6 +28,8 @@ public:
 	static bool inRange(float px, float py, float tx, float ty, float radius);
 
 	static bool lineIntersection(const glm::vec4& line1, const glm::vec4& line2);
+	static glm::vec2 intersection(const BoundingBox& bbox, const glm::vec4& line);
+	static void intersect(float sx, float sy, float ex, float ey, const glm::vec4& line, float dirX, float dirY, int& T1, float& endPointX, float& endPointY);
 	static glm::mat4 calcTransformMat(float x, float y, float w, float h, float angle);
 
 	static bool quadCollision(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2);

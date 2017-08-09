@@ -3,7 +3,7 @@
 PointLight::PointLight()
 	: m_Position(0, 0), m_LightRegion(0, 0, 0, 0)
 {
-	m_LightRegion.width = 400;		// diameter
+	m_LightRegion.width = 900;		// diameter
 	m_LightRegion.height = m_LightRegion.width;
 }
 

@@ -68,7 +68,10 @@ void Level2D::update(float timeElapsed)
 	}
 
 	int qTreeOffset = 200;
-	ObjectManager::init(BoundingBox(camX - qTreeOffset, camY - qTreeOffset, Settings::Instance().PROJECTION_WIDTH + qTreeOffset * 2, Settings::Instance().PROJECTION_HEIGHT + qTreeOffset * 2));
+	//ObjectManager::init(BoundingBox(camX - qTreeOffset, camY - qTreeOffset, Settings::Instance().PROJECTION_WIDTH + qTreeOffset * 2, Settings::Instance().PROJECTION_HEIGHT + qTreeOffset * 2));
+	ObjectManager::init(BoundingBox(-5000, -5000, 10000, 10000));
+	//ObjectManager::init(BoundingBox(m_Player->getCenterX() - Settings::Instance().PROJECTION_WIDTH, m_Player->getCenterY() - Settings::Instance().PROJECTION_HEIGHT, 
+	//	Settings::Instance().PROJECTION_WIDTH * 2, Settings::Instance().PROJECTION_HEIGHT * 2));
 
 	//m_Region.addTiles(m_QTree);
 	//m_Region.addTiles(m_QuadTree);
@@ -247,10 +250,12 @@ void Level2D::render(Renderer& renderer)
 		BoundingBox mouseBoundingBox(mx-8, my-8, 16, 16);
 
 		renderer.render(Renderable(glm::vec3(mx - 8, my - 8, 0), glm::vec2(16), TextureManager::get("Textures/collision_box.png")));
-		std::vector<Sprite*> tiles;
-		ObjectManager::QuadTree->retrieve(tiles, mouseBoundingBox);
+		//std::vector<Sprite*> tiles;
+		//ObjectManager::QuadTree->retrieve(tiles, mouseBoundingBox);
+		std::vector<Entity*> entities;
+		ObjectManager::ObjectsQT->retrieve(entities, mouseBoundingBox);
 		renderer.begin();
-		for (auto& t : tiles)
+		for (auto& t : entities)
 		{
 			renderer.submit(Renderable(glm::vec3(t->getCollisionBox().x, t->getCollisionBox().y, 0), glm::vec2(t->getCollisionBox().width, t->getCollisionBox().height), TextureManager::get("Textures/collision_box.png")));
 		}
