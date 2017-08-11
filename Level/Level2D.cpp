@@ -221,20 +221,25 @@ void Level2D::render(Renderer& renderer, FrameBuffer* fbo)
 	glViewport(0, 0, particleFBO->getTexture()->getWidth(), particleFBO->getTexture()->getHeight());
 
 	glm::mat4 mat;
-	float aspectX = (float)fbo->getTexture()->getWidth() / (float)particleFBO->getTexture()->getWidth();
-	float aspectY = (float)fbo->getTexture()->getHeight() / (float)particleFBO->getTexture()->getHeight();
+	float aspectX = (float)Settings::Instance().PROJECTION_WIDTH / (float)particleFBO->getTexture()->getWidth();
+	float aspectY = (float)Settings::Instance().PROJECTION_HEIGHT / (float)particleFBO->getTexture()->getHeight();
 	//float pFBOx = m_Player->getCenterX() - Window::Instance().getWidth() / 2;
 	//float pFBOy = m_Player->getCenterY() - Window::Instance().getHeight() / 2;
+	float offset = 5000.0f;
 	mat = glm::translate(mat, glm::vec3(Window::Instance().getCamera().getPosition().x, Window::Instance().getCamera().getPosition().y, 0));
 	mat = glm::scale(mat, glm::vec3(aspectX, aspectY, 0));
+	mat = glm::translate(mat, glm::vec3(offset, offset, 0));
+	//mat = glm::translate(mat, glm::vec3(-m_Player->getCameraOffsetX(), -m_Player->getCameraOffsetY(), 0));
 	renderer.push(mat);
 	renderer.seperate = true;
 	ParticleManager::instance().renderOnce(renderer);
+	//ParticleManager::instance().render(renderer);
 	renderer.seperate = false;
 	renderer.pop();
 
 	particleFBO->unbind(false);
 	fbo->bind();
+	//glViewport(0, 0, fbo->getTexture()->getWidth(), fbo->getTexture()->getHeight());
 	glViewport(0, 0, fbo->getTexture()->getWidth(), fbo->getTexture()->getHeight());
 
 	m_EntityManager.render(renderer);
@@ -245,7 +250,7 @@ void Level2D::render(Renderer& renderer, FrameBuffer* fbo)
 
 	//renderer.render(Renderable(glm::vec3(Window::Instance().getCamera().getPosition().x, Window::Instance().getCamera().getPosition().y, 0), glm::vec2(particleFBO->getTexture()->getWidth(), particleFBO->getTexture()->getHeight()), particleFBO->getTexture()));
 	renderer.m_SrcFactor = GL_ONE;
-	renderer.render(Renderable(glm::vec3(0), glm::vec2(particleFBO->getTexture()->getWidth(), particleFBO->getTexture()->getHeight()), particleFBO->getTexture()));
+	renderer.render(Renderable(glm::vec3(-offset, -offset, 0), glm::vec2(particleFBO->getTexture()->getWidth(), particleFBO->getTexture()->getHeight()), particleFBO->getTexture()));
 	renderer.m_SrcFactor = GL_SRC_ALPHA;
 
 	ParticleManager::instance().render(renderer);

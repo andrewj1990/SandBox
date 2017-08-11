@@ -19,15 +19,19 @@ void Bullet::update(float timeElapsed)
 	// bullet tracer effect
 	if (m_Destroy)
 	{
+		updateLight();
 		m_Size.x -= (3000 * timeElapsed);
 		return;
 	}
+	else {
+		addDirection(m_Dx * timeElapsed, m_Dy * timeElapsed);
+		updateLight();
 
-	m_Size.x += (1500 * timeElapsed);
+		m_Size.x += (1500 * timeElapsed);
+	}
 
 	m_Duration -= timeElapsed;
 
-	addDirection(m_Dx * timeElapsed, m_Dy * timeElapsed);
 
 	// use tail end of bullet trail if shooting downwards
 	if (glm::degrees(m_Angle) < 0) m_Position.z = -m_Position.y - m_Size.x;
@@ -39,10 +43,6 @@ void Bullet::update(float timeElapsed)
 	{
 		m_Destroy = true;
 	}
-
-	m_Light.setSize(glm::vec2(m_Size.x, m_Light.getSize().y));
-	m_Light.setLightPosition(getX(), getY(), m_Size.x / 2);
-	m_Light.setPosition(getCenterX() - m_Light.getSize().x / 2, getCenterY() - m_Light.getSize().y / 2);
 }
 
 void Bullet::submit(Renderer& renderer)
@@ -65,4 +65,11 @@ void Bullet::renderLight(Renderer& renderer)
 	renderer.push(transform);
 	renderer.submit(m_Light);
 	renderer.pop();
+}
+
+void Bullet::updateLight()
+{
+	m_Light.setSize(glm::vec2(m_Size.x, m_Light.getSize().y));
+	m_Light.setLightPosition(getX(), getY(), m_Size.x / 2);
+	m_Light.setPosition(getCenterX() - m_Light.getSize().x / 2, getCenterY() - m_Light.getSize().y / 2);
 }

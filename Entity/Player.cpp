@@ -291,7 +291,7 @@ void Player::update(Region& region, float timeElapsed)
 	shoot(angle, timeElapsed);
 
 	move(region, timeElapsed);
-	//moveCamera();
+	moveCamera();
 	m_Gun.update(region, timeElapsed);
 
 	m_Position.z = -m_Position.y;

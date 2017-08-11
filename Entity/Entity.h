@@ -30,6 +30,7 @@ public:
 	float getAngle() const override { return m_Angle; }
 	float calcDistanceSqrd(const Entity& entity) const;
 	virtual void damage(int amount) {/* m_Destroy = true; */}
+	virtual void updateLight() { }
 
 	float m_Dx;
 	float m_Dy;

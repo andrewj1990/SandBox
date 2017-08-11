@@ -11,6 +11,7 @@ public:
 
 	void submit(Renderer& renderer) override;
 	void renderLight(Renderer& renderer) override;
+	void updateLight() override;
 
 private:
 	float m_Duration;

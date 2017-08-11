@@ -121,12 +121,15 @@ void Gun::update(Region& region, float timeElapsed)
 			float cw = collisionBox.width;
 			float ch = collisionBox.height;
 
-			if (Utils::lineIntersection(glm::vec4(bx, by, bx - bullet->m_Dx * timeElapsed, by - bullet->m_Dy * timeElapsed), glm::vec4(cx, cy, cx + cw, cy + ch)) ||
-				Utils::lineIntersection(glm::vec4(bx, by, bx - bullet->m_Dx * timeElapsed, by - bullet->m_Dy * timeElapsed), glm::vec4(cx, cy + ch, cx + cw, cy))
+			if (Utils::lineIntersection(glm::vec4(bx, by, bx - bullet->m_Dx * timeElapsed, by - bullet->m_Dy * timeElapsed), glm::vec4(cx, cy, cx, cy + ch)) ||
+				Utils::lineIntersection(glm::vec4(bx, by, bx - bullet->m_Dx * timeElapsed, by - bullet->m_Dy * timeElapsed), glm::vec4(cx, cy, cx + cw, cy)) ||
+				Utils::lineIntersection(glm::vec4(bx, by, bx - bullet->m_Dx * timeElapsed, by - bullet->m_Dy * timeElapsed), glm::vec4(cx + cw, cy + ch, cx + cw, cy)) ||
+				Utils::lineIntersection(glm::vec4(bx, by, bx - bullet->m_Dx * timeElapsed, by - bullet->m_Dy * timeElapsed), glm::vec4(cx, cy + ch, cx + cw, cy + ch))
 				)
 			{
 				glm::vec2 collision_pos = Utils::intersection(collisionBox, glm::vec4(bx, by, bx - bullet->m_Dx * timeElapsed, by - bullet->m_Dy * timeElapsed));
-
+				bullet->setPosition(collision_pos.x, collision_pos.y);
+				bullet->updateLight();
 				//float randOffset = Utils::random(-30.0f, 30.0f);
 				for (int i = 0; i < 50; i++)
 				{
