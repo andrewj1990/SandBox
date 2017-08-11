@@ -287,11 +287,11 @@ void Player::update(Region& region, float timeElapsed)
 	float angle = Utils::calcAngleRad(getCenterX(), getCenterY(), window.getMouseWorldPosX(), window.getMouseWorldPosY());
 	m_Angle = angle;
 
-	aimDownSight(timeElapsed);
+	//aimDownSight(timeElapsed);
 	shoot(angle, timeElapsed);
 
 	move(region, timeElapsed);
-	moveCamera();
+	//moveCamera();
 	m_Gun.update(region, timeElapsed);
 
 	m_Position.z = -m_Position.y;

@@ -81,6 +81,8 @@ public:
 	GLenum m_BlendFactor = GL_ONE_MINUS_SRC_ALPHA;
 	bool m_AlphaTest = true;
 
+	bool seperate = false;
+	
 private:
 	void init();
 

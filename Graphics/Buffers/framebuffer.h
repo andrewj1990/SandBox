@@ -3,18 +3,20 @@
 #include <GL\glew.h>
 #include "..\Window.h"
 #include "..\..\Utils\ResourceManager.h"
+#include "..\texture.h"
 
 class FrameBuffer
 {
 public:
-	FrameBuffer();
+	FrameBuffer(int width = 0, int height = 0);
 	~FrameBuffer();
 
-	void bind();
-	void unbind();
+	void bind(bool clear = true);
+	void unbind(bool clear = true);
 
 	GLuint getTID() const { return m_Texture; }
 	GLuint getVAO() const { return m_VAO; }
+	Texture* getTexture() { return texture_; }
 
 	void render();
 
@@ -39,4 +41,5 @@ private:
 	GLuint m_VBO;
 	GLuint m_RBO;
 
+	Texture* texture_;
 };

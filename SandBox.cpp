@@ -220,7 +220,7 @@ int main()
 
 		fbo->bind();
 		ResourceManager::getInstance().shader("basic_shader")->use();
-		level2d->render(batchrenderer);
+		level2d->render(batchrenderer, fbo);
 
 		if (Settings::Instance().showLevelEditor) {
 			editor.render(batchrenderer);

@@ -30,7 +30,7 @@ public:
 	void init();
 
 	void update(float timeElapsed);
-	void render(Renderer& renderer);
+	void render(Renderer& renderer, FrameBuffer* fbo);
 	void renderLights(Renderer& renderer);
 
 	const std::unique_ptr<Player>& getPlayerPtr() { return m_Player; }
@@ -60,6 +60,8 @@ private:
 
 	EntityManager m_EntityManager;
 	std::vector<std::unique_ptr<Particle>> m_FireParticles;
+
+	std::unique_ptr<FrameBuffer> particleFBO;
 
 	Sprite aoe_test;
 

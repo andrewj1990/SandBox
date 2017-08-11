@@ -1,6 +1,6 @@
 #include "framebuffer.h"
 
-FrameBuffer::FrameBuffer()
+FrameBuffer::FrameBuffer(int width, int height)
 {
 	glGenFramebuffers(1, &m_FBO);
 
@@ -8,16 +8,21 @@ FrameBuffer::FrameBuffer()
 
 	glGenTextures(1, &m_Texture);
 	glBindTexture(GL_TEXTURE_2D, m_Texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Window::Instance().getWidth(), Window::Instance().getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width == 0 ? Window::Instance().getWidth() : width, height == 0 ? Window::Instance().getHeight() : height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	texture_ = new Texture(width == 0 ? Window::Instance().getWidth() : width, height == 0 ? Window::Instance().getHeight() : height, m_Texture);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_Texture, 0);
 
 	glGenRenderbuffers(1, &m_RBO);
 	glBindRenderbuffer(GL_RENDERBUFFER, m_RBO);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, Window::Instance().getWidth(), Window::Instance().getHeight());
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width == 0 ? Window::Instance().getWidth() : width, height == 0 ? Window::Instance().getHeight() : height);
 
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_RBO);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
@@ -44,22 +49,27 @@ FrameBuffer::~FrameBuffer()
 	glDeleteTextures(1, &m_Texture);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDeleteFramebuffers(1, &m_FBO);
+	delete texture_;
 }
 
-void FrameBuffer::bind()
+void FrameBuffer::bind(bool clear)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
 	glBindRenderbuffer(GL_RENDERBUFFER, m_RBO);
-	glClearColor(0, 0, 0, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	if (clear) {
+		glClearColor(0, 0, 0, 0.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
 }
 
-void FrameBuffer::unbind()
+void FrameBuffer::unbind(bool clear)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	if (clear) {
+		glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
 }
 
 void FrameBuffer::render()

@@ -379,7 +379,12 @@ void Renderer::flush()
 
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE);	// additive blending
 	//glBlendFunc(GL_ONE, GL_ONE);
-	glBlendFunc(m_SrcFactor, m_BlendFactor);
+	if (seperate) {
+		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+	}
+	else {
+		glBlendFunc(m_SrcFactor, m_BlendFactor);
+	}
 
 	glDrawElements(GL_TRIANGLES, m_IndexCount, GL_UNSIGNED_INT, NULL);
 

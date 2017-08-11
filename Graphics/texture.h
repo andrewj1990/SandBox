@@ -9,7 +9,7 @@
 class Texture
 {
 public:
-	
+	Texture(unsigned int width, unsigned int height, GLuint tid);
 	Texture(const std::string& filename);
 	~Texture();
 

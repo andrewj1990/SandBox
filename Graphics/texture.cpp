@@ -1,5 +1,11 @@
 #include "texture.h"
 
+Texture::Texture(unsigned int width, unsigned int height, GLuint tid)
+	: m_Width(width), m_Height(height), m_TID(tid)
+{
+	setDefaultUV();
+}
+
 Texture::Texture(const std::string& filename)
 	: m_FileName(filename), m_xIndex(0), m_yIndex(0)
 {

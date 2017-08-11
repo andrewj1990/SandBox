@@ -7,6 +7,7 @@ class ParticleManager
 {
 	std::vector<std::unique_ptr<Entity>> particles_;
 	std::vector<std::unique_ptr<Entity>> ready_particles_;
+	std::vector<std::unique_ptr<Entity>> render_once_particles_;
 
 public:
 	
@@ -24,6 +25,7 @@ public:
 
 	void update(float timeElapsed);
 	void render(Renderer& renderer);
+	void renderOnce(Renderer& renderer);
 
 };
 

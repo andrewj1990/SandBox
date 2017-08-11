@@ -7,8 +7,10 @@ Level2D::Level2D()
 	m_Region(),
 	aoe_test(glm::vec3(0, 0, 0), glm::vec2(100, 100), TextureManager::get("Textures/aoe.png")),
 	m_MobSpawnTimer(),
-	m_MobSpawnTime(0)
+	m_MobSpawnTime(0),
+	particleFBO(std::make_unique<FrameBuffer>(10000, 10000))
 {
+	//particleFBO = std::make_unique<FrameBuffer>();
 	init();
 	aoe_test.setColor(glm::vec4(0, 0, 0, 1));
 	m_WaterRippleTime = 0; 
@@ -212,12 +214,40 @@ void Level2D::update(float timeElapsed)
 	Settings::Instance().timeModifier = std::min(Settings::Instance().timeModifier, 1.0f);
 }
 
-void Level2D::render(Renderer& renderer)
+void Level2D::render(Renderer& renderer, FrameBuffer* fbo)
 {
+	fbo->unbind();
+	particleFBO->bind(false);
+	glViewport(0, 0, particleFBO->getTexture()->getWidth(), particleFBO->getTexture()->getHeight());
+
+	glm::mat4 mat;
+	float aspectX = (float)fbo->getTexture()->getWidth() / (float)particleFBO->getTexture()->getWidth();
+	float aspectY = (float)fbo->getTexture()->getHeight() / (float)particleFBO->getTexture()->getHeight();
+	//float pFBOx = m_Player->getCenterX() - Window::Instance().getWidth() / 2;
+	//float pFBOy = m_Player->getCenterY() - Window::Instance().getHeight() / 2;
+	mat = glm::translate(mat, glm::vec3(Window::Instance().getCamera().getPosition().x, Window::Instance().getCamera().getPosition().y, 0));
+	mat = glm::scale(mat, glm::vec3(aspectX, aspectY, 0));
+	renderer.push(mat);
+	renderer.seperate = true;
+	ParticleManager::instance().renderOnce(renderer);
+	renderer.seperate = false;
+	renderer.pop();
+
+	particleFBO->unbind(false);
+	fbo->bind();
+	glViewport(0, 0, fbo->getTexture()->getWidth(), fbo->getTexture()->getHeight());
+
 	m_EntityManager.render(renderer);
 
 	//renderer.render(m_Background);
 	m_Region.render(renderer);
+ 
+
+	//renderer.render(Renderable(glm::vec3(Window::Instance().getCamera().getPosition().x, Window::Instance().getCamera().getPosition().y, 0), glm::vec2(particleFBO->getTexture()->getWidth(), particleFBO->getTexture()->getHeight()), particleFBO->getTexture()));
+	renderer.m_SrcFactor = GL_ONE;
+	renderer.render(Renderable(glm::vec3(0), glm::vec2(particleFBO->getTexture()->getWidth(), particleFBO->getTexture()->getHeight()), particleFBO->getTexture()));
+	renderer.m_SrcFactor = GL_SRC_ALPHA;
+
 	ParticleManager::instance().render(renderer);
 
 	renderer.begin();
