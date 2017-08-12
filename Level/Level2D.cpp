@@ -163,6 +163,22 @@ void Level2D::update(float timeElapsed)
 	if (m_MobSpawnTimer.elapsed() > m_MobSpawnTime)
 	{
 		m_MobSpawnTimer.reset();
+		std::vector<Entity*> objs;
+		float mobX = m_Player->getCenterX() + Utils::random(-1000, 1000);
+		float mobY = m_Player->getCenterY() + Utils::random(-1000, 1000);
+		BoundingBox mobBbox(mobX, mobY, 32, 32);
+		ObjectManager::ObjectsQT->retrieve(objs, mobBbox);
+		bool collision = false;
+		for (const auto& obj : objs) {
+			if (obj->collide(mobBbox)) {
+				collision = true;
+				break;
+			}
+		}
+
+		if (!collision) {
+			m_Mobs.push_back(std::make_shared<MeleeMob>(mobX, mobY, m_Player));
+		}
 		//m_Mobs.push_back(std::make_shared<MeleeMob>(m_Player->getCenterX() + Utils::random(-1000, 1000), m_Player->getCenterY() + Utils::random(-1000, 1000), m_Player));
 	}
 
@@ -226,10 +242,18 @@ void Level2D::render(Renderer& renderer, FrameBuffer* fbo)
 	//float pFBOx = m_Player->getCenterX() - Window::Instance().getWidth() / 2;
 	//float pFBOy = m_Player->getCenterY() - Window::Instance().getHeight() / 2;
 	float offset = 5000.0f;
+	float cx = Window::Instance().getCamera().getPosition().x - m_Player->getCameraOffsetX();
+	float cy = Window::Instance().getCamera().getPosition().y - m_Player->getCameraOffsetY();
 	mat = glm::translate(mat, glm::vec3(Window::Instance().getCamera().getPosition().x, Window::Instance().getCamera().getPosition().y, 0));
+	//mat = glm::translate(mat, glm::vec3(cx, cy, 0));
+	//mat = glm::translate(mat, glm::vec3(m_Player->getCenterX() - Settings::Instance().PROJECTION_WIDTH / 2, m_Player->getCenterY() - Settings::Instance().PROJECTION_HEIGHT / 2, 0));
 	mat = glm::scale(mat, glm::vec3(aspectX, aspectY, 0));
 	mat = glm::translate(mat, glm::vec3(offset, offset, 0));
 	//mat = glm::translate(mat, glm::vec3(-m_Player->getCameraOffsetX(), -m_Player->getCameraOffsetY(), 0));
+	//std::cout << Window::Instance().getCamera().getPosition().x << ", " << Window::Instance().getCamera().getPosition().y << " | ";
+	//std::cout << m_Player->getCameraOffsetX() << ", " << m_Player->getCameraOffsetY() << " | ";
+	//std::cout << m_Player->getCenterX() << ", " << m_Player->getCenterY() << " | ";
+	//std::cout << cx << ", " << cy << "\n";
 	renderer.push(mat);
 	renderer.seperate = true;
 	ParticleManager::instance().renderOnce(renderer);

@@ -1,15 +1,15 @@
 #include "GunParticle.h"
 
-GunParticle::GunParticle(float x, float y, float angle, float movespeed)
+GunParticle::GunParticle(float x, float y, float angle, float movespeed, float maxAngle, float minSpeed, float maxSpeed)
 	: Particle(x, y, 4, angle)
 {
-	float maxAngle = 90.0f;
+	//float maxAngle = 90.0f;
 	float angleOffset = Utils::random(-maxAngle, maxAngle);
 
-	glm::vec4 colour = glm::vec4(1, 0.5f + (rand() % 1000 / 2000.0f), 0, Utils::random(0.98f, 1.0f));
+	glm::vec4 colour = glm::vec4(1, 0.5f + (rand() % 1000 / 2000.0f), 0, Utils::random(0.6f, 1.0f));
 	setColor(colour);
 
-	float vel = Utils::random(50.0f, 400.0f);// +280.0f;// +movespeed;
+	float vel = Utils::random(minSpeed, maxSpeed);// +280.0f;// +movespeed;
 	float a = angle + glm::radians(angleOffset);
 
 	float scale = (1.0f - (std::abs(angleOffset) / maxAngle)) + 0.1f;

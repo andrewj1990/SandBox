@@ -26,6 +26,7 @@ void Gun::shoot(float x, float y, float angle, float movespeed)
 
 	//float newAngle = Utils::calcAngleRad(gunPos.x, gunPos.y, Window::Instance().getMouseWorldPosX(), Window::Instance().getMouseWorldPosY());
 	for (int i = 0; i < 100; i++) m_Entities.push_back(std::make_unique<GunParticle>(gunPos.x, gunPos.y, m_Angle, movespeed));
+	for (int i = 0; i < 100; i++) m_Entities.push_back(std::make_unique<GunParticle>(gunPos.x, gunPos.y, m_Angle, movespeed, 20.0f, 400.0f, 1000.0f));
 	m_Bullets.push_back(std::make_unique<Bullet>(gunPos.x, gunPos.y, m_Angle + angle));
 
 	m_Light.setSize(glm::vec2(Utils::random(100, 350)));
